@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-  <html lang="en">
-  
-  <head>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -9,338 +9,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Test</title>
     <style>
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #000000e6;
-          color: #ffffffc4;
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000e6;
+                color: #ffffffc4;
+            }
         }
-      }
-  
-      @media (prefers-color-scheme: light) {
-        body {
-          background-color: #ffffffc4;
-          color: #000000e6;
+
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #ffffffc4;
+                color: #000000e6;
+            }
         }
-      }
-  
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-  
-      body {
-        font-size: 18px
-      }
-  
-      @media screen and (max-width: 720px) {
-        body {
-          font-size: 17px;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-  
-      #button {
-        width: 10vw;
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        z-index: 999;
-        display: flex;
-        flex-direction: column;
-      }
-      
-      .reading {
-        font-family: 'Times New Roman', Times, serif;
-        font-weight: 500;
-        margin: 0 auto;
-        padding: 18px;
-        line-height: 1.4;
-      }
-  
-      #menu-toggle {
-        display: none;
-      }
-  
-      .popup-menu {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #000000e6;
-        color: #fff;
-        z-index: 1005;
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
-      }
-      .popup-menu a {
-        color: #f38d2e;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        white-space: normal;
-        word-wrap: break-word;
-      }
-      .popup-menu a:hover {
-        color: #fff;
-        background-color: #c19260;
-      }
-      .popup-menu a:visited {
-        font-weight: bold;
-        color: #ff0000;
-        background-color: #eb780c;
-      }
-      .popup-menu.show {
-        display: block;
-      }
-  
-      #menu-toggle:checked~#menu {
-        display: block;
-      }
 
-      .chapter-title {
-        font-weight: bolder;
-        position: sticky;
-        top: 0;
-        background-color: #0c0c0cf5;
-        padding: 2px;
-        z-index: 999;
-        text-align: center;
-      }
+        body {
+            font-size: 18px
+        }
 
-      .reading>div>p {
-        display: inline-block;
-        padding: 5px 0px;
-      }
+        @media screen and (max-width: 720px) {
+            body {
+                font-size: 17px;
+            }
+        }
 
+        #button {
+            width: 10vw;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+        }
 
+        .reading {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: 500;
+            margin: 0 auto;
+            padding: 18px;
+            line-height: 1.4;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .popup-menu {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000000e6;
+            color: #fff;
+            z-index: 1005;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+
+        .popup-menu a {
+            color: #f38d2e;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .popup-menu a:hover {
+            color: #fff;
+            background-color: #c19260;
+        }
+
+        .popup-menu a:visited {
+            font-weight: bold;
+            color: #ff0000;
+            background-color: #eb780c;
+        }
+
+        .popup-menu.show {
+            display: block;
+        }
+
+        #menu-toggle:checked~#menu {
+            display: block;
+        }
+
+        .chapter-title {
+            font-weight: bolder;
+            position: sticky;
+            top: 0;
+            background-color: #0c0c0cf5;
+            padding: 2px;
+            z-index: 999;
+            text-align: center;
+        }
+
+        .reading>div>p {
+            display: inline-block;
+            padding: 5px 0px;
+        }
     </style>
     <script>
-      function scrollToElement() {
-        var element = document.querySelector(".msreadout-word-highlight");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        function scrollToElement() {
+            var element = document.querySelector(".msreadout-word-highlight");
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         }
-      }
-  
-      function closeMenu() {
-        var menu = document.getElementById("menu");
-        menu.classList.remove("show");
-      }
-  
-      function toggleMenu() {
-        var menu = document.getElementById("menu");
-        menu.classList.toggle("show");
-      }
-  
-  
-  
+
+        function closeMenu() {
+            var menu = document.getElementById("menu");
+            menu.classList.remove("show");
+        }
+
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            menu.classList.toggle("show");
+        }
+
+
+
+        async function fetchChapters(folderId) {
+            const apiUrl = "https://script.google.com/macros/s/AKfycbxnRz0sIsb-dViI7JND4cInT27LnWi9Yzw2GY5yZ2gu42-zzh7XFeTcqTX_x-xf1NWO/exec";
+
+            try {
+                let response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "GET_CHAPTER", folderId: folderId })
+                });
+
+                let data = await response.json();
+                console.log("✅ Dữ liệu nhận được:", data);
+            } catch (error) {
+                console.error("❌ Lỗi khi fetch API:", error);
+            }
+        }
+
+        fetchChapters("1dswrO6tANIDeZqlwOkxggEni2PUNYkF6");
+
+
+
+
+
     </script>
-  </head>
-  
-  <body>
+</head>
+
+<body>
     <div class="reading">
-        <div id="chapter-10">
-            <h4 class="chapter-title">Chương 10:: Trắc nghiệm</h4></br>
-            <p>Có khả năng hay không chết? Bị bút máy đem huyết nhục đều hút rơi, biến thành một khối khô? Hoặc là dẫn
-                tới biến dị, thành khoa huyễn điện ảnh trung khác loại quái nhân? Kỷ Thiên Vũ trong đầu các loại làm kỳ
-                bách quái ý tưởng phân trào mà.</p></br>
-            <p>Kỷ Thiên Vũ chí phủ không thôi, một lát sau, gặp chính mình còn không có việc, Kỷ Thiên Vũ đơn giản cũng
-                không quản rồi, dù sao sự tình đều đã xảy ra. Nỗi lòng lại lần nữa trở lại hệ thống đi lên.</p></br>
-            <p>địt một cái mợ liền đạt được một vật, vậy nếu là tại thượng một cái, chẳng phải là còn đạt được này nọ.
-                Chỉ hy vọng kế tiếp đồ vật không muốn như vậy hố, bằng không chính mình không được cùng nữ nhân vô
-                duyên!</p></br>
-            <p>Đảo mắt, suy nghĩ lại nghĩ lại hôm nay cùng Tô Mỹ Phượng phát sinh sự tình, vốn là hắn đối với Tô Mỹ
-                Phượng cũng không có to gan như vậy ý tưởng, dù sao Tô Mỹ Phượng là chính mình mợ.</p></br>
-            <p>Nhưng là Kỷ Thiên Vũ buổi sáng đụng tới Đổng Cầm, bị đối phương gợi lên dục vọng, cả người dục hỏa không
-                biết như thế nào phát tiết, trùng hợp Tô Mỹ Phượng lại là một cái tịch mịch khó nhịn nữ nhân, liên tiếp
-                trùng hợp mới để cho hai người đã xảy ra quan hệ.</p></br>
-            <p>Nghĩ đến sự tình người khởi xướng là chính mình tẩu tử, Kỷ Thiên Vũ tâm lý bỗng nhiên sinh ra được đến
-                đối phương ý nghĩ, nếu như là trước hôm nay, Kỷ Thiên Vũ là không có khả năng loại nghĩ gì này, nhưng là
-                từ hắn và mợ phát sinh quan hệ sau đó, chợt phát hiện cao tới đâu ngạo nữ nhân cũng có sinh lý nhu cầu,
-                chỉ cần tìm đúng nhược điểm của các nàng, có thể chinh phục các nàng, chính là Đổng Cầm nhược điểm là
-                cái gì chứ.</p></br>
-            <p>Nghĩ đến tẩu tử hai cái kia so với Tô Mỹ Phượng còn lớn hơn vú cùng cao gầy đầy đặn gợi cảm thân thể, Kỷ
-                Thiên Vũ tâm lý âm thầm phát thiện, mình nhất định phải nghĩ biện pháp chiếm giữ cái này trường học tình
-                cảm nhất mê người nữ lão sư. Kỷ Thiên Vũ mơ mơ màng màng tiến vào mộng đẹp, trong mộng hắn và một cái
-                gợi cảm mê người nữ nhân triền miên, nhưng không biết đối phương là Tô Mỹ Phượng vẫn là Đổng Cầm.</p>
-            </br>
-            <p>Ngày hôm sau, Kỷ Thiên Vũ rời giường, mẹ Tống Bình sớm liền chuẩn bị xong bữa sáng, quần áo cũng đổi
-                xong, mặc lấy màu xám trước ngực mang cuốn hoa tơ tằm áo, phía dưới mặc lấy màu trắng bó sát người hào
-                mông váy ngắn, thủy tinh sáng màu đen tất chân bao hào trơn bóng bắp chân, ký gợi cảm vừa thần bí, trên
-                chân đặng nhũ giày cao gót màu trắng, khoá màu trắng tay xách bao, thật to vú to tại áo bọc vào lung lay
-                sắp đổ.</p></br>
-            <p>"Thiên vũ, đồ ăn tại trên bàn, ngươi chính mình ăn xong liền đi học, mẹ đi công tác.""Đã biết, ta tổng
-                tài đại nhân!"</p></br>
-            <p>Kỷ Thiên Vũ giơ giơ cánh tay.</p></br>
-            <p>"Bye bye!"</p></br>
-            <p>Tống Bình trên chân giẫm lấy giày cao gót, bộ ngực tùy theo Tống Bình đi đường mà run run nhất nhan.</p>
-            </br>
-            <p>『 gọi, vì sao chính là ta mẹ đâu! Nếu không là nên thật tốt!" Kỷ Thiên Vũ ném hất đầu, đem chính mình nội
-                tâm ý tưởng ném sau ót.</p></br>
-            <p>Rất nhanh sau khi ăn xong, Kỷ Thiên Vũ đi tới trường học, theo bản năng liếc mắt nhìn ký túc xá tầng hai
-                mợ phòng làm việc, nhìn đến môn đống chặt lấy, cũng không biết mợ có tới không. Bất quá rất nhanh Kỷ
-                Thiên Vũ liền muốn gặp được Tô Mỹ Phượng.</p></br>
-            <p>Lớp thứ hai là ngữ văn khóa. Kỷ Thiên Vũ nhìn chằm chằm nhìn chằm chằm cửa, rất nhanh liền nhìn thấy Tô
-                Mỹ Phượng quen thuộc ác thân ảnh xuất hiện ở cửa, vẫn như cũ cùng bình thường giống nhau mặc lấy t tuất
-                cùng quần bò.</p></br>
-            <p>Làm một cái hơn 40 tuổi nữ nhân. Tô Mỹ Phượng mặc lấy tương đối tương đối bảo thủ, rất ít giống tuổi trẻ
-                nữ lão sư như vậy mặc lấy bại lộ áo váy, tăng thêm nàng tướng mạo không phải là thực xuất chúng, bởi vậy
-                cũng rất khó hấp dẫn đến ánh mắt của nam nhân.</p></br>
-            <p>Đi qua Kỷ Thiên Vũ cũng rất ít lưu ý Tô Mỹ Phượng, càng không cần phải nói đem Tô Mỹ Phượng, trở thành
-                chính mình ảo tưởng đối tượng, nhưng là trải qua tối hôm qua sự tình, Kỷ Thiên Vũ đối đãi lớp của mình
-                chủ nhiệm ánh mắt thay đổi hoàn toàn, bắt đầu nghiêm túc quan sát Tô Mỹ Phượng mặc lấy.</p></br>
-            <p>Một đầu bó sát người quần bò bọc lấy Tô Mỹ Phượng đầy đặn bờ mông, càng ngày càng có vẻ tròn trịa đầy
-                đặn, làm người ta hận không thể hung hăng tóm lấy một phen, đáng tiếc hai đầu thẳng tắp đùi tàng cực kỳ
-                chặt chẽ. Chỉ có Kỷ Thiên Vũ mới biết được bị kia hai cái bắp đùi triền tại trên người mùi vị là bực nào
-                kích thích. Một kiện màu xanh nhạt bó sát người thuần miên t tuất có vẻ Tô Mỹ Phượng một đôi vú kiên cố
-                hơn đỉnh, đây là một cái thành thục nữ nhân thân thể.</p></br>
-            <p>Kỷ Thiên Vũ nhìn đến Tô Mỹ Phượng trang điểm, lại nhịn không được có chút táo chuyển động, trong não lập
-                tức hiện ra Tô Mỹ Phượng trần như nhộng ghé vào mép giường vểnh lên mông dâm mỹ tình cảnh, kia màu mỡ
-                trắng nõn mông mập, lưu tiêu dâm thủy huyệt dâm. Kỷ Thiên Vũ đũng quần lập tức nâng lên hiểu rõ một cái
-                đại bao, sợ tới mức hắn nhanh chóng dùng tay đè chặt, miễn cho bị bên cạnh nhân phát hiện xấu mặt.</p>
-            </br>
-            <p>Bất quá Tô Mỹ Phượng lại biểu hiện thập phần bình tĩnh, ti thất nhìn không ra bất kỳ khác thường gì,
-                chính là ngẫu nhiên cùng Kỷ Thiên Vũ tầm mắt va chạm đến cùng một chỗ khi theo bản năng tránh đi. Điều
-                này làm cho Kỷ Thiên Vũ có chút mê hoặc không hiểu, không biết Tô Mỹ Phượng là có ý gì, chẳng lẽ đã đem
-                đêm qua phát sinh sự tình quên mất không còn chút nào à. Ròng rã một tiết khóa, Kỷ Thiên Vũ vẫn luôn tâm
-                thần không yên, cái gì đều nghe không vào, chuông tan học vang lên.</p></br>
-            <p>Tô Mỹ Phượng bỏ lại trong tay phấn viết phủi bụi trên người một cái lớn tiếng nói: "Tốt lắm, khóa liền
-                thượng đến nơi này, đại gia thừa dịp nghỉ ngơi, ôn tập một chút, tuần sau muốn tiến hành trắc nghiệm."
-                Nói xong rồi đi ra ngoài cửa.</p></br>
-            <p>Dưới đài đám học sinh cũng đều riêng phần mình sống chuyển động, Kỷ Thiên Vũ đứng dậy đi ra ngoài cửa,
-                muốn đuổi theo hỏi đến tột cùng, có thể bỗng nhiên người trước mắt ảnh chợt lóe, cũng là Trình Đông đem
-                hắn cản lại, đem hắn kéo đến phòng học một góc. Nguyên lai Trình Đông nghe được tuần sau là Nhiếp Thanh
-                Lam sinh nhật, hắn muốn cấp Nhiếp Thanh Lam một cái kinh ngạc vui mừng, tuân hỏi một chút Kỷ Thiên Vũ
-                nàng biểu tỷ thích gì.</p></br>
-            <p>Kỷ Thiên Vũ hiện tại cả đầu đều là Tô Mỹ Phượng. Nào có tâm tư quản Trình Đông sự tình, càng thêm khỏi
-                phải nói hắn nội tâm cũng không nghĩ làm biểu tỷ trở thành người khác bạn gái, thuận miệng phu diễn vài
-                câu. Đuổi rồi Trình Đông, Kỷ Thiên Vũ đi ra phòng học, lại sớm đã nhìn không tới Tô Mỹ Phượng thân ảnh,
-                hắn hiện tại cũng không dám đi Tô Mỹ Phượng phòng làm việc truy vấn, đành phải bất đắc dĩ phản về lớp
-                học. Chuông vào lớp vang lên, Anh ngữ lão sư ôm lấy một xấp thật dày bài thi đứng ở bục giảng tiến!</p>
-            </br>
-            <p>"Này tiết khóa chúng ta hiểu rõ kiểm tra! Còn có nửa tháng liền muốn học lên rồi! Lần này kiểm tra, chủ
-                yếu là" Anh ngữ lão sư nói cái gì, Kỷ Thiên Vũ hoàn toàn không nghe vào, chính là biết, lại muốn trắc
-                nghiệm cuộc thi! Từ trước sắp xếp từng cái từng cái hướng về phía sau truyền bài thi, Kỷ Thiên Vũ xoa
-                xoa mồ hôi lạnh trên trán, cố tự trấn định xuống!</p></br>
-            <p>"Làm sao vậy? Mặt se khó như vậy nhìn? Ngươi không thoải mái?" Nhiếp Thanh Lam vừa vặn quay đầu cấp Kỷ
-                Thiên Vũ đưa bài thi, nhìn Kỷ Thiên Vũ hoảng loạn, có chút sắc mặt trắng bệch, dị hỏi!</p></br>
-            <p>"Không có việc gì... Không có việc gì.." Đối với biểu tỷ quan tâm, Kỷ Thiên Vũ cũng không có tâm tư phản
-                ứng, xua tay xua tay, lòng bàn tay tràn đầy mồ hôi! 『 nha.. Nhiếp Thanh Lam lông mi thật dài lóe lóe,
-                ngồi thẳng thân thể!</p></br>
-            <p>Nhìn trước mắt này mấy tờ bài thi, Kỷ Thiên Vũ tinh lực lúc nào cũng là không thể tập trung, dùng tay áo
-                xoa xoa mồ hôi trán, bóp bút đem tính danh điền xong về sau, nhìn tiếng Anh tuyển chọn đề!"Đã làm đạo
-                này đề.. Kỷ Thiên Vũ chậm rãi bình yên tĩnh xuống, nhìn đạo thứ nhất tuyển chọn đề, liền có một chút
-                phạm mờ mịt! Xác thực đã làm, bất quá, đáp án dĩ nhiên là.. Đã quên</p></br>
-            <p>Ngay tại Kỷ Thiên Vũ đau khổ suy nghĩ nhớ lại thời điểm trong đầu một tiếng: "Tìm tòi hệ thống khởi
-                động... Đọc đến bên trong.... Cái gì?</p></br>
-        </div>
-        <div id="chapter-19">
-            <h4 class="chapter-title">Chương 19:: Đối với đổ</h4></br>
-            <p>"Ngươi khích lệ cùng yêu thương để ta đầu óc vô hạn mở, sau đó cứ như vậy! Trước kia làm sao làm cũng
-                không hiểu, ký cũng không nhớ được hiện tại cũng có thể nhớ rõ ở."</p></br>
-            <p>Nói, Kỷ Thiên Vũ song khuỷu tay đặt tại trên mặt bàn, đem đầu đến gần Nhiếp Thanh Lam, cười xấu xa
-                nói."Vì cảm tạ xinh đẹp học ủy đại nhân, tiểu ta có phải hay không nên lấy thân báo đáp, vì ngài đi theo
-                làm tùy tùng, cúi đầu tẫn xét, tinh tẫn nhân vong, chết thì mới dừng à?" Hai người hai má cách xa nhau
-                không đến mười cm, nhìn trong mắt kịch liệt phóng đại khuôn mặt tuấn tú, Nhiếp Thanh Lam tiểu mặt càng
-                đỏ hơn.</p></br>
-            <p>Hô hấp hắn truyền đặc hơn nam nhân khí tức, Nhiếp Thanh Lam không kềm chế được trái tim kịch liệt nhảy
-                lên. Trắng nõn tay nhỏ đặt tại quy mô đã tương đương hùng vĩ bộ ngực phía trên.</p></br>
-            <p>"Ngươi, nói mò gì đâu!" Nhiếp Thanh Lam hờn dỗi nói: "Cái gì tinh tẫn nhân vong, ngươi cho ta là nữ yêu
-                tinh!"</p></br>
-            <p>"Ta nói đúng thật!" Kỷ Thiên Vũ nghiêm trang.</p></br>
-            <p>"Từ lần trước chơi đùa</p></br>
-            <p>"Tốt lắm, đừng bảo là." Gặp Kỷ Thiên Vũ lại nhắc tới lần trước sự tình đến, Nhiếp Thanh Lam đã xấu hổ
-                không được sau tai căn đều đỏ: "Ngươi nắm chặt đem thành tích xách lên đây đi!"</p></br>
-            <p>Nói xong, liền xoay người không ở nhìn Kỷ Thiên Vũ.</p></br>
-            <p>"Ta!"</p></br>
-            <p>Không còn đậu nàng, Kỷ Thiên Vũ tầng tầng lớp lớp đáp ứng nói.</p></br>
-            <p>Tần Tuyết tại một bên thờ ơ lạnh nhạt, sớm tức giận vô cùng, bắt được cơ hội, không khỏi nói châm biếm Kỷ
-                Thiên Vũ: "Nhân không có tự mình hiểu lấy liền thì không được, chính mình cái gì thành tích chính mình
-                không biết a, còn nghĩ thi đậu tốt trường học đâu này? Mỗi lần kiểm tra đều ở cuối xe chính là ai, chính
-                mình không biết à?"</p></br>
-            <p>Kỷ Thiên Vũ hoàn toàn đem nàng trở thành không khí, đem nàng nói trực tiếp loại bỏ rớt. Kỷ Thiên Vũ nhẫn
-                nại, không có nghĩa là chính nghĩa mười chân Nhiếp Thanh Lam cũng có thể nhẫn nại, huống hồ vốn đối với
-                Tần Tuyết phương pháp rất là xem không mắt.</p></br>
-            <p>"Tần Tuyết, ngươi đây là ý gì? Ngươi dựa vào cái gì nói Kỷ Thiên Vũ liền thi không học đại học?"</p></br>
-            <p>"Ta nói sai sao? Hắn cái gì thành tích các học sinh người nào không biết a. Hắn nếu có thể thi đậu kia
-                đại học cũng phải là, đại học biến thành giáo dục bắt buộc mới khả năng a."</p></br>
-            <p>"Ngươi..." Cứ việc sinh khí. Nhưng Nhiếp Thanh Lam vẫn để cho Tần Tuyết một câu hi không có câu dưới.
-                Đúng vậy a, lại như thế nào giải thích cũng không sửa đổi được Kỷ Thiên Vũ thành tích. Các khoa lạn quả
-                thật có điểm thê thảm không nỡ nhìn.</p></br>
-            <p>"Ta cái gì?" Gặp Nhiếp Thanh Lam nghẹn lời, Tần Tuyết được lý không cho nhân đốt sở thông tiến, "Ta đừng
-                nói trước kia thành tích thế nào, đã nói hôm nay thi tiếng Anh a, qua bán tiết khóa rồi, hắn một chữ
-                không lấp, Anh ngữ lão sư hỏi hắn vì sao không đáp cuốn, hắn dùng không đến 20 phút thời gian liền đem
-                toàn bộ cuộn giấy đáp xong. Nhiếp Thanh Lam. Ngươi là ủy viên học tập, ngươi là chúng ta toàn bộ cao tam
-                học sinh khá giỏi, ta hỏi một chút ngươi, ngươi có thể hay không tại 20 phút thời gian đem đề toàn bộ
-                đáp xong?"</p></br>
-            <p>Tần Tuyết vốn là cái không sợ trời không sợ đất nhân vật, càng có người chú ý nàng lại càng cảm thấy cao
-                hứng. Này cuối cùng có thể bắt được cái này cơ hội, đem luôn luôn cao cao tại thượng Nhiếp Thanh Lam
-                trách móc một trận, nàng còn như thế nào đè thấp âm lượng đâu này? Cả lớp đồng học đều nhìn về bọn hắn
-                ba người, gặp đoàn người đều chú ý nơi này, Tần Tuyết đắc ý trêu chọc dưới ba. Nhiếp Thanh Lam bị nàng
-                trách móc mặt nhỏ đỏ bừng, hô vị hô vị thở hổn hển, cũng không lực phản bác.</p></br>
-            <p>Đối với loại này không giá trị tranh chấp, Kỷ Thiên Vũ vốn không muốn cùng Tần Tuyết loại này nữ nhân nói
-                cái gì, có thể thấy được được Nhiếp Thanh Lam vì mình bị trách móc thành như vậy, Kỷ Thiên Vũ không khỏi
-                hơi hơi có chút không vui.</p></br>
-            <p>"Tần Tuyết, ngươi cùng ta biểu tỷ ồn ào cái gì, ngươi có chuyện nói với ta." Kỷ Thiên Vũ cuối cùng mở
-                miệng, "Ta học giỏi không tốt, thi không thi học đại học, cùng ngươi có một xu quan hệ không vậy?""Hừ,
-                học tập không giỏi còn sợ nói à? Nhiếp Thanh Lam nàng không can thiệp vào lời nói, ta còn làm được cùng
-                một cái con mọt sách nói chuyện đâu này?"</p></br>
-            <p>mGa</p></br>
-            <p>Nghiêng đầu nhìn nhìn Nhiếp Thanh Lam kia khuất mặt nhỏ, Kỷ Thiên Vũ nhíu mày trầm mặt, chần chờ một
-                chút, bỗng nhiên nở nụ cười, "Tần Tuyết, ngươi nói ta tiếng Anh mù điền quản. Nếu như ta không phải là
-                hồ điền, ngươi làm sao bây giờ?""Tính là không phải là mù viết, vậy nếu là thi cái 30' hai phần mười,
-                cũng coi như sổ à?"</p></br>
-            <p>"Đương nhiên không thể như vậy quên đi, ta liền ấn Nhiếp Thanh Lam thành tích đến tương đối, bình thường,
-                Nhiếp Thanh Lam thành tích đều tại 1 40 phân trở lên, nếu như, của ta tiếng Anh thành tích tại 145 phân
-                trở lên, ngươi phải tại bạn học cả lớp trước mặt hướng Nhiếp Thanh Lam đạo khoản!" Nói đến cuối cùng, Kỷ
-                Thiên Vũ âm thanh lại lãnh lại cứng.</p></br>
-            <p>Tần Tuyết cười khanh khách, "Tốt, có người là nhìn này cứu trong phòng không khởi phong, sẽ không sợ đau
-                đầu lưỡi khoe khoang. 『</p></br>
-            <p>Tần Tuyết cũng sưng mặt lên, "Ngươi Kỷ Thiên Vũ nếu thật có thể thi 145 phân trở lên, ta Tần Tuyết nói
-                lời giữ lời, liền trước mặt bạn học cả lớp cấp Nhiếp Thanh Lam đạo khoản. Quỳ xuống dập đầu đều không
-                sao cả. Nhưng là, nếu như, ngươi không có đạt tới ngươi nói điểm số, ngươi lại như thế nào đâu này?""Tùy
-                ngươi ra điều kiện, ngươi nói như thế nào ta liền như thế nào!" Nhiếp Thanh Lam gặp nói nói đến mức này,
-                bận rộn kéo lấy Kỷ Thiên Vũ tay áo.</p></br>
-            <p>"Đều là đồng học, làm gì vì chút chuyện nhỏ này ầm ĩ như vậy kịch liệt." Nhiếp Thanh Lam nơi nào không
-                biết Kỷ Thiên Vũ thành tích học tập a, thậm chí rõ ràng đưa đồ ăn cho ngươi Tần Tuyết sao? Vạn nhất Tần
-                Tuyết mở ra thất thường gì điều kiện, kia một cái đại nam nhân Kỷ Thiên Vũ như thế nào xuống đài a.</p>
-            </br>
-            <p>"Vậy thì tốt, mọi người nói nam nhi dưới đầu gối là vàng, lạy trời quỳ xuống đất lạy cha mẹ, ngươi đã
-                tự nguyện đánh cược, như vậy nếu như ngươi không đạt đến ngươi nói điểm số, như vậy ngươi ngay tại bạn
-                học cả lớp trước mặt cho ta quỳ xuống! Như thế nào đây? Nhìn ngươi tự tin như vậy, điều kiện này không
-                phải là thực quá mức a?" Tần Tuyết gương mặt chọc khóe.</p></br>
-            <p>"Ha ha, có cái gì không dám. Theo ý ngươi nói!"</p></br>
-            <p>"Xong rồi, xong rồi, phía dưới này tử ném đi được rồi!" Trình Đông một tay vỗ lấy trán, trước kia va chạm
-                mặt bàn uể oải đến cực điểm.</p></br>
-            <p>Bạn học cả lớp không có một cái không vì Kỷ Thiên Vũ bi ai. Bình thường gia hỏa kia không vọng động như
-                vậy a, hôm nay như thế nào cắn thuốc rồi hả? Tinh thần thất thường rồi hả? Này không rõ ràng có thua
-                không thắng tiền cược sao?"Thiên vũ!" Nhiếp Thanh Lam kéo lấy Kỷ Thiên Vũ tay áo, nước mắt đều phải rớt
-                xuống.</p></br>
-            <p>Nàng biết nếu không phải là vì chính mình hết giận, Kỷ Thiên Vũ không có khả năng cùng Tần Tuyết đánh cái
-                gì đổ. Nhưng này đổ đánh quá không được bên a, nếu là nói thành tích của mình tại 145 phân trở lên còn
-                hiện thực điểm, nhưng cũng không thể bảo đảm chuẩn tại 145 phân trở lên a.</p></br>
-            <p>Không chỉ Nhiếp Thanh Lam, liền Kỷ Thiên Vũ bản thân đều không xác định, khó bảo toàn này trí năng bút
-                máy cho ra đáp án có sai lầm, huống hồ, còn có tiếng Anh viết văn đâu hiện tại, liền kỳ vọng tại chính
-                mình bên trong thân thể trí tuệ bút máy rồi!</p></br>
-            <p>"Không có việc gì! Không đúng ta đột nhiên tiểu vũ trụ bạo đâu." Kỷ Thiên Vũ an ủi tiểu cô nương, danh
-                chính ngôn thuận vỗ lấy Nhiếp Thanh Lam trắng nõn tay nhỏ, cảm nhận ti trượt xúc cảm.</p></br>
-            <p>"Đinh.. Vô năng lượng!"</p></br>
-            <p>, lần trước trong vô tình đụng đến Nhiếp Thanh Lam tay nhỏ thời điểm, bổ sung năng lượng là 1 điểm, lần
-                này nhưng không có năng lượng, như vậy nhìn đến, này cùng bộ vị thu hoạch năng lượng là giảm dần thức đó
-                a!</p></br>
-            <p>Kỷ Thiên Vũ tầm mắt không tự chủ được tại Nhiếp Thanh Lam hơi hơi nâng lên bộ ngực trước quét liếc nhìn
-                một cái, thực dễ nhìn nha, lớn nhỏ vừa phải... Liên quan gia súc ánh mắt hâm mộ bên trong, Thạch Lỗi ánh
-                mắt có thể đem Kỷ Thiên Vũ chém thành bát đoàn.</p></br>
-            <p>"Khi đi học lúc, đại gia đừng nói chuyện, thật tốt ôn tập." Thạch Lỗi ra sân tạm thời bình ổn này quậy
-                một phát kịch.</p></br>
-            <p>Cũng không cần quay đầu, Kỷ Thiên Vũ liền cảm thấy theo Thạch Lỗi kia truyền đến đối với chính mình hận
-                ý, Kỷ Thiên Vũ ung dung cười, cũng không có đem Thạch Lỗi đặt ở trong lòng.</p></br>
-            <p>Có trí tuệ bút máy tại thân thể mình, đối với cao khảo, Kỷ Thiên Vũ không phải là thực lo lắng, nhưng một
-                cái càng thêm khó giải quyết vấn đề bày ở trước mặt, không có năng lượng duy trì, này bút máy chính là
-                bài trí, mình có thể như thế nào mới có thể có thể càng nhiều năng lượng đâu này?</p></br>
-        </div>
+
     </div>
 
     <div id="button">
@@ -348,20 +174,11 @@
         <button onclick="toggleMenu()">M</button>
     </div>
     <div id="menu" class="popup-menu">
-        <a href="#chapter-10" onclick="closeMenu()"> Chương 10:: Trắc nghiệm</a>
-        <a href="#chapter-11" onclick="closeMenu()"> Chương 11:: Trí tuệ bút máy phát uy</a>
-        <a href="#chapter-12" onclick="closeMenu()"> Chương 12:: Tần Tuyết</a>
-        <a href="#chapter-13" onclick="closeMenu()"> Chương 13:: Năng lượng</a>
-        <a href="#chapter-14" onclick="closeMenu()"> Chương 14:: Tại thượng mợ</a>
-        <a href="#chapter-15" onclick="closeMenu()"> Chương 15:: Tẩu tử thân thể yêu kiều</a>
-        <a href="#chapter-16" onclick="closeMenu()"> Chương 16:: Mợ ngoạn tẩu tử nãi</a>
-        <a href="#chapter-17" onclick="closeMenu()"> Chương 17:: Suy nghĩ lung tung biểu tỷ</a>
-        <a href="#chapter-18" onclick="closeMenu()"> Chương 18:: Hoàn mỹ không tỳ vết</a>
-        <a href="#chapter-19" onclick="closeMenu()"> Chương 19:: Đối với đổ</a>
+
     </div>
 
 
 
 </body>
-  
-  </html>
+
+</html>
