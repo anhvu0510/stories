@@ -138,24 +138,42 @@
 
 
 
-        async function fetchChapters(folderId) {
-            const apiUrl = "https://script.google.com/macros/s/AKfycbxnRz0sIsb-dViI7JND4cInT27LnWi9Yzw2GY5yZ2gu42-zzh7XFeTcqTX_x-xf1NWO/exec";
 
-            try {
-                let response = await fetch(apiUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "GET_CHAPTER", folderId: folderId })
-                });
 
-                let data = await response.json();
-                console.log("✅ Dữ liệu nhận được:", data);
-            } catch (error) {
-                console.error("❌ Lỗi khi fetch API:", error);
-            }
+        function fetchGetChapters(folderId, fileId) {
+
+
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow"
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbxnRz0sIsb-dViI7JND4cInT27LnWi9Yzw2GY5yZ2gu42-zzh7XFeTcqTX_x-xf1NWO/exec?action=GET_CHAPTER&folderId=1olv0BMGZp1IpLg2x_ewmmSqQFpgplEI6&fileId=1FO0BbGEgGByuD5KT32fdw2ZXfmC3jAxp", requestOptions)
+                .then(async (response) => {
+
+                    const data = JSON.parse(await response.json())
+
+                    const chapterHTML = (chapterJSON) => chapterJSON
+                        .split(".")
+                        .map((line, lineIndex) => {
+                            let content = line.trim();
+                            if (!!content === false) {
+                                return false;
+                            }
+
+                            return `<div>${content}</div></br>`;
+                        })
+                        .filter(Boolean)
+                        .join('');
+
+
+                    document.querySelector(".reading").innerHTML = data.map(item => chapterHTML(item.contentHTML)).join('')
+
+                })
+                .catch(err => { console.log(err); })
         }
 
-        fetchChapters("1dswrO6tANIDeZqlwOkxggEni2PUNYkF6");
+        fetchGetChapters("1dswrO6tANIDeZqlwOkxggEni2PUNYkF6", "10Xw4t19usfkQTn1IHZWN8cLjRI25ME3m");
 
 
 
