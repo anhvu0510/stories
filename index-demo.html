@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Trang Đọc Sách - Dark Mode</title>
+    <style>
+        /* Dark Mode mặc định */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Khung đọc sách */
+        .reading {
+            background: #1e1e1e;
+            width: 90%;
+            max-width: 800px;
+            padding: 40px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: justify;
+            line-height: 1.8;
+            margin: 0px 10px;
+        }
+
+        /* Tiêu đề */
+        center {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Định dạng đoạn văn */
+        p {
+            font-size: 18px;
+            /* text-indent: 2em; */
+            margin: 5px;
+        }
+
+        /* Nút nhỏ trên góc phải */
+        .menu-button {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            background: #ff9800;
+            color: #121212;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Menu danh sách chương */
+        /* Hiệu ứng mở/đóng menu */
+        .menu {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+            width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        }
+
+        .menu-list {
+            display: block;
+            margin-bottom: 50px;
+        }
+
+        .menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu li {
+            background: #333;
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .menu li:hover {
+            background: #ff9800;
+            color: #121212;
+        }
+
+        /* Style cho nút thay đổi kích thước */
+        .text-size-controls {
+            display: block;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .text-size-controls button {
+            background: #ff9800;
+            color: #121212;
+            border: none;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .text-size-controls button:hover {
+            background: #ffa726;
+        }
+
+
+
+
+        @media (max-width: 600px) {
+            .reading {
+                padding: 20px;
+                width: 100%;
+                margin-top: 10px;
+                overflow-x: hidden;
+
+            }
+
+            center {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 18px;
+                speak: normal;
+            }
+
+            .menu-button {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NÚT MENU -->
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
+
+    <!-- DANH SÁCH CHƯƠNG -->
+    <article class="menu" aria-hidden="true">
+        <div class="menu-list">
+            <ul>
+                <li onclick="scrollToChapter('chapter1')">Chương 1: Đây là chương 1 vơi ký tự dài lắm</li>
+                <li onclick="scrollToChapter('chapter2')">Chương 2 Đây là chương 1 vơi ký tự dài lắm</li>
+                <li onclick="scrollToChapter('chapter3')">Chương 3 Đây là chương 1 vơi ký tự dài lắm.........</li>
+            </ul>
+        </div>
+
+        <!-- NÚT THAY ĐỔI KÍCH THƯỚC CHỮ -->
+        <div class="text-size-controls">
+            <button onclick="changeTextSize(1)">A+</button>
+            <button onclick="changeTextSize(-1)">A-</button>
+        </div>
+    </article>
+
+    <!-- NỘI DUNG ĐỌC -->
+    <main class="reading" style="font-family: Piazzolla;line-height: 30px;">
+        <article id="chapter-0">
+            <p>《 thục nữ ký 》1-1150, chính mình sắp xếp tác giả: Thẻ bài</p>
+        </article>
+
+    </main>
+
+    <script>
+        // Hiển thị / Ẩn danh sách chương
+        function toggleMenu() {
+            const menu = document.querySelector('.menu');
+            menu.classList.toggle('open');
+        }
+
+        // Cuộn đến chương được chọn
+        function scrollToChapter(chapterId) {
+            const chapter = document.getElementById(chapterId);
+            if (chapter) {
+                chapter.scrollIntoView({ behavior: 'smooth' });
+                toggleMenu(); // Đóng menu sau khi chọn
+            }
+        }
+
+
+        let currentSize = 18; // Kích thước mặc định
+        function changeTextSize(amount) {
+            currentSize += amount;
+            if (currentSize < 12) currentSize = 12; // Giới hạn nhỏ nhất
+            if (currentSize > 30) currentSize = 30; // Giới hạn lớn nhất
+
+            document.querySelectorAll('.reading p').forEach(p => {
+                p.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const readingElement = document.querySelector(".reading");
+            if (readingElement) {
+                let content = readingElement.innerHTML.replace(/"/g, " &quot; ") 
+                readingElement.innerHTML = content;
+            }
+        });
+
+       
+
+
+
+
+    </script>
+
+</body>
+
+</html>
