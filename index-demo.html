@@ -2,9 +2,10 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 
     <title>Trang Đọc Sách - Dark Mode</title>
     <style>
@@ -164,7 +165,6 @@
 
             p {
                 font-size: 18px;
-                speak: normal;
             }
 
             .menu-button {
@@ -199,11 +199,17 @@
     </article>
 
     <!-- NỘI DUNG ĐỌC -->
-    <main class="reading" style="font-family: Piazzolla;line-height: 30px;">
+    <main class="reading" role="document" style="font-family: Piazzolla;line-height: 30px;">
         <article id="chapter-0">
-            <p>《 thục nữ ký 》1-1150, chính mình sắp xếp tác giả: Thẻ bài</p>
+            <center>Tiêu đề chương</center>
+            <section>
+                <p> Nội dung chương</p>
+                <p> Nội dung chương</p>
+                <p> Nội dung chương</p>
+                <p> Nội dung chương</p>
+                <p> Nội dung chương</p>
+            </section>
         </article>
-
     </main>
 
     <script>
@@ -237,7 +243,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const readingElement = document.querySelector(".reading");
             if (readingElement) {
-                let content = readingElement.innerHTML.replace(/"/g, " &quot; ") 
+                let content = readingElement.innerHTML.replace(/"/g, "&quot;") 
                 readingElement.innerHTML = content;
             }
         });
