@@ -309,16 +309,16 @@
 
 
             // Điều hướng trong cùng tab
-            window.location.href = hostUrl + url;
+            // window.location.href = hostUrl + url;
 
 
-            // let newTab = window.open(hostUrl + url, '_blank');
-            // if (newTab) {
-            //     newTab.blur(); // Làm mờ tab mới
-            //     window.focus(); // Giữ tab hiện tại
-            // } else {
-            //     alert("Trình duyệt chặn pop-up, hãy bật cho phép!");
-            // }
+            let newTab = window.open(hostUrl + url, '_blank');
+            if (newTab) {
+                newTab.blur(); // Làm mờ tab mới
+                window.focus(); // Giữ tab hiện tại
+            } else {
+                alert("Trình duyệt chặn pop-up, hãy bật cho phép!");
+            }
         }
 
         function htmlControl(chapterTitle, preChapterUrl, nextChapterUrl) {
