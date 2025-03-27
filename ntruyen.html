@@ -70,7 +70,7 @@
             height: 40px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
         }
 
@@ -127,14 +127,14 @@
             position: fixed;
             /* Cố định trên top */
             top: 0;
-            left: 0;
-            width: 100%;
+            right: 0;
+            /* width: 100%; */
             height: 30px;
             background: rgba(255, 255, 255, 0.9);
             /* Nền trắng mờ */
             /* padding: 10px; */
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             /* Hiệu ứng đổ bóng */
@@ -335,9 +335,7 @@
                 prevButton.innerText = "⬅";
                 prevButton.onclick = () => gotoChapter(preChapterUrl);
 
-                // Tạo tiêu đề
-                const title = document.createElement("h2");
-                title.innerText = chapterTitle;
+
 
                 // Tạo nút Next
                 const nextButton = document.createElement("button");
@@ -347,7 +345,6 @@
 
                 // Thêm tất cả vào container
                 container.appendChild(prevButton);
-                container.appendChild(title);
                 container.appendChild(nextButton);
 
                 return container;
@@ -419,13 +416,18 @@
 
             const chapterTitle = doc.querySelector('center>h1');
 
+            // Tạo tiêu đề
+            const title = document.createElement("p");
+            title.innerText = chapterTitle.textContent.trim();
+            readingElement.prepend(title);
+
             const prevElement = doc.querySelector('.prev');
             const prevHref = prevElement.getAttribute('href');
 
             const nextElement = doc.querySelector('.prev');
             const nextHref = prevElement.getAttribute('href');
 
-            const htmlChapterHandler = htmlControl(chapterTitle.textContent.trim(), prevElement, nextHref)
+            const htmlChapterHandler = htmlControl("", prevElement, nextHref)
             readingElement.prepend(htmlChapterHandler);
 
 
