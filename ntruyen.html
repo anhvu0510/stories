@@ -425,9 +425,10 @@
             const prevHref = prevElement.getAttribute('href');
 
             const nextElement = doc.querySelector('.next');
-            const nextHref = prevElement.getAttribute('href');
+            const nextHref = nextElement.getAttribute('href');
 
-            const htmlChapterHandler = htmlControl("", prevElement, nextHref)
+            console.log({ prevHref, nextHref });
+            const htmlChapterHandler = htmlControl("", prevHref, nextHref)
             readingElement.prepend(htmlChapterHandler);
 
 
