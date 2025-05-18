@@ -1,1788 +1,294 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter Viewer</title>
+    <title>VuLA Reading Stories</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* General styles */
+        :root {
+            --primary-color: #4a9eff;
+            --primary-dark: #3a7ecc;
+            --accent-color: #e74c3c;
+            --dark-bg: #17222b;
+            --darker-bg: rgb(23, 33, 43);
+            --menu-bg: #2d4863; /* Màu nền menu rõ hơn */
+            --text-light: #e0e0e0;
+            --text-dark: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Palatino Linotype', 'Roboto', sans-serif;
-            line-height: 1.6;
-            background-color: rgb(23, 33, 43);
-            color: #b0b0b0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* Header styles */
-        #header {
-            background-color: #17222b;
-            color: #b0b0b0;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        #story-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-            color: #e0e0e0;
-        }
-
-        #header-buttons {
-            display: flex;
-            gap: 20px;
-        }
-
-        #header-buttons button {
-            background-color: #1e2a36;
-            color: #b0b0b0;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        #header-buttons button:hover {
-            background-color: #24303d;
-            color: #ffffff;
-        }
-
-        #header-buttons button:active {
-            background-color: #10171d;
-            transform: scale(1);
-        }
-
-        /* Container and content area */
-        #container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Chapter menu styles */
-        #chapter-menu {
-            width: 300px;
-            background-color: rgba(23, 33, 43, 0.95);
-            color: #e0e0e0;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: -300px;
-            overflow-y: auto;
-            padding: 0 0 20px 0;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            z-index: 1500;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(5px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        #chapter-menu.open {
-            left: 0;
-            transform: translateZ(0);
-            padding-top: 0;
-        }
-
-        #chapter-menu-header {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 15px 15px 12px 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background-color: rgba(28, 40, 51, 0.98);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            border-radius: 0 0 8px 8px;
-        }
-
-        #chapter-menu-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #fff;
-            margin: 0;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
-            padding-left: 10px;
-        }
-
-        .menu-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .menu-header-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            gap: 18px;
-            z-index: 11;
-            width: 100%;
-            padding: 8px 0 2px 0;
-            background-color: rgba(20, 30, 40, 0.4);
-            border-radius: 10px;
-        }
-
-        .menu-header-btn {
-            background: transparent;
-            border: none;
-            color: #4a9eff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-            background-color: rgba(40, 50, 60, 0.5);
-        }
-
-        .menu-header-btn:hover {
-            color: #70b5ff;
-            transform: translateY(-2px) scale(1.05);
-            background-color: rgba(60, 70, 80, 0.7);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .menu-header-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-
-        #close-menu {
-            color: #95a5a6;
-        }
-
-        #close-menu:hover {
-            color: #fff;
-            background-color: rgba(255, 0, 0, 0.2);
-        }
-
-        #menu-list {
-            list-style: none;
-            padding: 0 20px;
-            margin: 0;
-            transition: padding-top 0.3s ease;
-            padding-top: 5px;
-        }
-
-        #menu-list li {
-            margin-bottom: 12px;
-            padding: 12px 15px;
-            border-radius: 8px;
-            background-color: rgba(33, 43, 53, 0.7);
-            color: #e0e0e0;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-            word-wrap: break-word;
-            border-left: 3px solid transparent;
-        }
-
-        /* #menu-list li:hover {
-            background-color: rgba(43, 53, 63, 0.9);
-            color: #ffffff;
-            transform: translateX(5px);
-            border-left: 3px solid #e74c3c;
-        } */
-
-        #menu-list li.active {
-            background-color: rgba(43, 53, 63, 0.9);
-            color: #ffffff;
-            border-left: 3px solid #e74c3c;
-        }
-
-        #menu-list a {
-            text-decoration: none;
-            color: inherit;
-            font-size: 16px;
-            font-weight: 500;
-            display: block;
-        }
-
-        /* Setting menu item styles */
-        #menu-list li.setting-menu-item {
-            margin-top: 20px;
-            background-color: rgba(43, 53, 63, 0.8);
-            border-left: 3px solid #3498db;
-        }
-
-        #menu-list li.setting-menu-item:hover {
-            background-color: rgba(52, 152, 219, 0.3);
-            border-left: 3px solid #3498db;
-        }
-
-        .setting-icon {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        /* Menu backdrop overlay */
-        #menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 996;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(2px);
-        }
-
-        #menu-overlay.open {
-            opacity: 1;
-            display: block;
-        }
-
-        #chapter-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: rgb(23, 33, 43);
-            color: #e0e0e0;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-            word-spacing: 2px;
-            text-align: justify;
-            scrollbar-width: thin;
-        }
-
-        #chapter-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #chapter-content::-webkit-scrollbar-thumb {
-            background-color: #888;
-            border-radius: 4px;
-        }
-
-        #chapter-content::-webkit-scrollbar-thumb:hover {
-            background-color: #555;
-        }
-
-        .chapter-title {
-            background-color: rgb(33, 43, 53);
-            color: #ffffff;
-            border-bottom: 1px solid #ddd;
-            font-size: 18px;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
-            z-index: 110;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-        .chapter {
-            margin-bottom: 20px;
-            text-align: justify;
-        }
-
-        #file-input {
-            display: inline-block;
-            padding: 4px 8px;
-            font-size: 12px;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: rgb(33, 43, 53);
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        #file-input:hover {
-            background-color: rgb(43, 53, 63);
-            transform: scale(1.03);
-        }
-
-        #file-input:active {
-            background-color: #1e7e34;
-            transform: scale(1);
-        }
-
-        /* Loading spinner styles */
-        #loading-spinner {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 8px solid rgba(243, 243, 243, 0.8);
-            border-top: 8px solid #007BFF;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            z-index: 1000;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive styles for mobile */
-        @media (max-width: 768px) {
-            #header {
-                font-size: 20px;
-                padding: 15px;
-            }
-
-            #container {
-                flex-direction: column;
-            }
-
-            #chapter-menu {
-                width: 80%;
-                max-width: 300px;
-                height: 100%;
-                position: fixed;
-                left: -100%;
-            }
-
-            #menu-list li {
-                font-size: 16px;
-                padding: 10px;
-            }
-
-            #chapter-content {
-                padding: 0px 20px;
-                font-size: 20px;
-            }
-
-            #show-menu {
-                top: 5px;
-                right: 5px;
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-
-            #settings-modal {
-                width: 90%;
-                max-width: 90%;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-            }
-        }
-
-        /* Enhanced Modal styles */
-        #settings-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #17222b;
-            color: #ecf0f1;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            width: 350px;
             font-family: 'Roboto', sans-serif;
-            max-height: 80vh;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            opacity: 0;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            position: relative;
+            min-height: 100vh;
         }
-
-        #settings-modal h3 {
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+        
+        .links {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .link-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--darker-bg);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            background-color: var(--darker-bg);
+        }
+        
+        .link-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .link-item h2 {
+            color: var(--primary-color);
             margin-top: 0;
-            font-size: 22px;
+        }
+        
+        .link-item p {
+            color: var(--text-light);
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+        }
+        
+        footer {
             text-align: center;
-            color: #e74c3c;
-            font-weight: bold;
+            margin-top: 30px;
+            color: var(--text-light);
         }
-
-        #settings-modal label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #bdc3c7;
+        
+        /* Float Menu Styles */
+        .float-menu-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
         }
-
-        #settings-modal input,
-        #settings-modal select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            background-color: #34495e;
-            color: #ecf0f1;
-            font-size: 14px;
-        }
-
-        #settings-modal input:focus,
-        #settings-modal select:focus {
-            outline: none;
-            border-color: #e74c3c;
-            box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
-        }
-
-        #settings-modal button {
-            color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #settings-modal button:hover {
-            background-color: #c0392b;
-        }
-
-        #save-settings {
-            display: block;
-            margin: 20px auto;
-            padding: 12px 20px;
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        #save-settings:hover {
-            background-color: #c0392b;
-        }
-
-        #font-size-controls,
-        #lines-per-sentence-controls {
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-around;
-            margin-right: 20px;
-        }
-
-        #settings-modal .control-group {
+        
+        #float-menu-toggle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--dark-bg);
+            color: white;
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border: none;
+            font-size: 18px;
+            z-index: 1002;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        #float-menu-toggle:hover {
+            background-color: var(--darker-bg);
+            transform: scale(1.1);
+            outline: none;
+        }
+        
+        #float-menu-toggle:active {
+            outline: none !important;
+            background-color: var(--primary-color) !important;
+            border-radius: 50% !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
 
-        #font-size-controls span,
-        #lines-per-sentence-controls span {
-            font-size: 16px;
-            font-weight: bold;
-            color: #ecf0f1;
-            margin: 0 10px;
-        }
 
-        #font-size-controls button,
-        #lines-per-sentence-controls button {
+        .float-menu-items {
+            position: absolute;
+            bottom: 55px;
+            right: 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            transform: translateY(20px);
+        }
+        
+        .float-menu-container.active .float-menu-items {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            outline: none;
+            background-color: transparent;
+        }
+        
+        .float-menu-button {
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: var(--menu-bg);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
             width: 30px;
             height: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 50%;
-            background-color: #e74c3c;
-            color: #fff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            font-size: 12px;
         }
-
-        #font-size-controls button:hover,
-        #lines-per-sentence-controls button:hover {
-            background-color: #c0392b;
+        
+        .float-menu-button:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
         }
-
-        #control-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #34495e;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #control-box div {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        #control-box label {
-            display: block;
-            font-size: 14px;
-            color: #ecf0f1;
-            text-align: center;
-        }
-
-        #regex-replace-controls {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        #regex-replace-controls input {
-            flex: 1;
-            max-width: 200px;
-            padding: 10px;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            background-color: #34495e;
-            color: #ecf0f1;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        #regex-replace-controls button {
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #regex-replace-controls button:hover {
-            background-color: #c0392b;
-        }
-
-        #regex-settings {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px;
-            background-color: #2c3e50;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #regex-settings input {
-            flex: 1;
-            max-width: 200px;
-            padding: 10px;
-            margin: auto;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            background-color: #34495e;
-            color: #ecf0f1;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        #regex-settings button {
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #regex-settings button:hover {
-            background-color: #c0392b;
-        }
-
-        #regex-replace-list {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px;
-            background-color: #2c3e50;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            min-height: 14vh;
-            max-height: 14vh;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        #regex-replace-list li {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            color: #ecf0f1;
-            font-size: 14px;
-        }
-
-        #regex-replace-list li input {
-            flex: 1;
-            max-width: 200px;
-            padding: 10px;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            background-color: #34495e;
-            color: #ecf0f1;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        #regex-replace-list li button {
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #regex-replace-list li button:hover {
-            background-color: #c0392b;
-        }
-
-        #font-family-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background-color: #34495e;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 10px;
-            color: #ecf0f1;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #font-family-controls label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #bdc3c7;
-        }
-
-        #font-family-controls select {
-            padding: 10px;
-            border: 1px solid #34495e;
-            border-radius: 6px;
-            background-color: #e74c3c;
-            color: #ecf0f1;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        /* Close button styles */
-        #close-settings {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            background-color: none;
-            border: none;
-            font-size: 18px;
-            color: #ecf0f1;
-            cursor: pointer;
-        }
-
-        /* Modal animations */
-        @keyframes modalOpen {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
-
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        @keyframes modalClose {
-            from {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            to {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
-        }
-
-        #settings-modal.open {
-            display: block;
-            animation: modalOpen 0.3s ease forwards;
-        }
-
-        #settings-modal.close {
-            animation: modalClose 0.3s ease forwards;
-        }
-
-        /* Modal overlay styles */
-        #modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 998;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        #modal-overlay.open {
-            opacity: 1;
-        }
-
-        #modal-overlay.close {
-            opacity: 0;
-        }
-
-        /* Updated styles for #show-menu button to remove the three horizontal lines */
-        #show-menu {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease, color 0.3s ease;
-            position: relative;
+        
+        .float-menu-button:focus {
             outline: none;
         }
-
-        #show-menu::before {
-            content: '\2630';
-            font-size: 24px;
+        
+        .float-menu-button:active {
+            outline: none;
+            background-color: var(--accent-color);
             color: white;
-            display: block;
         }
+        
+        .float-menu-button i {
+            font-size: 16px;
+        }
+        
+        #float-menu-toggle.active {
+            transform: rotate(45deg);
+            background-color: var(--accent-color) !important;
+            box-shadow: none;
+            border-radius: 50%;
+        }
+
+        #float-menu-toggle:focus {
+            outline: none !important;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        
     </style>
 </head>
-
 <body>
-    <div id="loading-spinner" aria-hidden="true"></div>
-    <header id="header" aria-hidden="true">
-
-        <div id="header-buttons">
-            <button id="show-menu"></button>
+    <h1>VuLA Reading Stories</h1>
+    
+    <div class="links">
+        <div class="link-item">
+            <h2>Reading Stories 1</h2>
+            <p>Bộ sưu tập truyện đọc đầu tiên</p>
+            <a href="reading-stories-1/index.html">Xem Reading Stories 1</a>
         </div>
-        <div id="story-name">Reading Story</div>
-    </header>
-    <div id="container">
-        <input type="file" id="file-input" accept=".txt,.TXT" style="position: absolute; opacity: 0; z-index: -1;">
-        <div id="menu-overlay" aria-hidden="true"></div>
-        <div id="chapter-menu" aria-hidden="true">
-            <div id="chapter-menu-header">
-                <div class="menu-title-row">
-                    <h4 id="chapter-menu-title">Menu</h4>
-                    <button id="close-menu" class="menu-header-btn" title="Đóng">&times;</button>
-                </div>
-                <div class="menu-header-buttons">
-                    <button id="menu-upload-btn" class="menu-header-btn" title="Tải lên tệp">&#128228;</button>
-                    <button id="menu-url-btn" class="menu-header-btn" title="Lấy từ URL">&#127760;</button>
-                    <button id="menu-setting-btn" class="menu-header-btn" title="Cài đặt">&#9881;</button>
-                </div>
-            </div>
-            <ul id="menu-list">
-                <!-- Chapter links will be dynamically added here -->
-            </ul>
-        </div>
-        <div id="chapter-content">
-            <!-- Chapter content will be dynamically loaded here -->
+        
+        <div class="link-item">
+            <h2>Reading Stories 2</h2>
+            <p>Bộ sưu tập truyện đọc thứ hai</p>
+            <a href="reading-stories-2/index.html">Xem Reading Stories 2</a>
         </div>
     </div>
-
-    <div id="modal-overlay" aria-hidden="true"></div>
-    <div id="settings-modal" aria-hidden="true">
-        <button id="close-settings">&times;</button>
-        <h3>Setting</h3>
-        <div id="control-box">
-            <div id="control-box-fontSize">
-                <label for="font-size">Font Size</label>
-                <div id="font-size-controls">
-                    <button id="decrease-font-size">-</button>
-                    <span id="font-size-display">20</span>
-                    <button id="increase-font-size">+</button>
-                </div>
-            </div>
-            <div id="control-box-sentence">
-                <label for="lines-per-sentence">Group Sentence</label>
-                <div id="lines-per-sentence-controls">
-                    <button id="decrease-lines-per-sentence">-</button>
-                    <span id="lines-per-sentence-display">3</span>
-                    <button id="increase-lines-per-sentence">+</button>
-                </div>
-            </div>
+    
+    <!-- Float Menu -->
+    <div class="float-menu-container">
+        <button id="float-menu-toggle" aria-label="Menu">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="float-menu-items">
+            <button id="toggle-chapters-btn" class="float-menu-button" title="Danh sách chương">
+                <i class="fas fa-list-ul"></i>
+            </button>
+            <button id="open-settings-btn" class="float-menu-button" title="Cài đặt">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="upload-file-btn" class="float-menu-button" title="Tải lên tệp">
+                <i class="fas fa-upload"></i>
+            </button>
         </div>
-
-        <div id="font-family-controls">
-            <label for="font-family">Font Family</label>
-            <select id="font-family">
-                <option value="Palatino Linotype">Palatino Linotype</option>
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Verdana">Verdana</option>
-            </select>
-        </div>
-
-        <div id="regex-replace-section">
-            <h4>Regex Replace <span id="regex-count"
-                    style="font-size: 14px; color: #e74c3c; margin-left: 10px;">(0)</span>
-            </h4>
-            <div id="regex-settings">
-                <div id="regex-replace-controls">
-                    <input type="text" id="regex-match" placeholder="Match" />
-                    <input type="text" id="regex-replace" placeholder="Replace" />
-
-                </div>
-                <div id="regex-add-button">
-                    <button id="add-regex-replace">+</button>
-                </div>
-            </div>
-            <ul id="regex-replace-list">
-
-            </ul>
-        </div>
-
-        <button id="save-settings">Save</button>
     </div>
+    
+    <footer>
+        <p>VuLA Project - Vietnamese Language Assistant</p>
+    </footer>
 
     <script>
-        // Show and hide loading spinner functions
-        function showLoadingSpinner() {
-            const loadingSpinner = document.getElementById('loading-spinner');
-            loadingSpinner.style.display = 'block';
-        }
-
-        function hideLoadingSpinner() {
-            const loadingSpinner = document.getElementById('loading-spinner');
-            loadingSpinner.style.display = 'none';
-        }
-
-        // Wrap the chapterData processing with loading spinner
-        async function processChapterData(file) {
-            try {
-                showLoadingSpinner();
-                console.log('Starting to process file:', file);
-
-                const content = await readFileContent(file); // Read file content
-
-                const chapters = splitIntoChapters(content, 2); // Split content into chapters
-                window.chapterData = chapters; // Save chapters globally
-                console.log('window.chapterData updated:', window.chapterData);
-
-                // Update the story name based on the uploaded file name
-                const storyNameElement = document.getElementById('story-name');
-                if (storyNameElement) {
-                    storyNameElement.textContent = file.name.replace(/\.[^/.]+$/, ''); // Remove file extension
-                }
-
-                // Clear old content and initialize lazy loading
-                const container = document.getElementById('chapter-content');
-                container.innerHTML = ''; // Clear container content
-                lazyLoadData(); // Initialize lazy loading
-
-                // Populate the menu with chapter data
-                populateChapterMenu(chapters);
-
-                // Đợi cho quá trình xử lý hoàn tất rồi mới áp dụng cài đặt
-                console.log('File processing complete, now applying stored settings...');
-
-                // Áp dụng các cài đặt đã lưu cho truyện hiện tại
-                applyStoredSettings();
-
-                // Khôi phục vị trí cuộn đã lưu sau khi áp dụng cài đặt
-                
-                restoreScrollPosition();
-            } catch (error) {
-                console.error('Error processing chapter data:', error);
-            } finally {
-                hideLoadingSpinner();
-            }
-        }
-
-        // Hàm đọc nội dung từ file
-        function readFileContent(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader(); // Tạo một đối tượng FileReader để đọc file
-                reader.onload = (event) => resolve(event.target.result); // Trả về nội dung file khi đọc xong
-                reader.onerror = (error) => reject(error); // Trả về lỗi nếu có lỗi xảy ra
-                reader.readAsText(file); // Đọc file dưới dạng văn bản
-            });
-        }
-
-        // Lưu dữ liệu vào Local Storage
-        function saveToLocalStorage(key, data) {
-            const storeName = document.getElementById('story-name').textContent.toLowerCase().replace(/\s+/g, '_');
-            let dataStore = {};
-            if (!localStorage.getItem(storeName)) {
-                dataStore[key] = data;
-            } else {
-                const oldData = JSON.parse(localStorage.getItem(storeName));
-                dataStore = { ...oldData, [key]: data };
-            }
-            localStorage.setItem(storeName, JSON.stringify(dataStore));
-        }
-
-        // Tải dữ liệu từ Local Storage
-        function loadFromLocalStorage(key) {
-            const storeName = document.getElementById('story-name').textContent.toLowerCase().replace(/\s+/g, '_');
-            console.log({ storeName });
-            const data = localStorage.getItem(storeName);
-            console.log({ storeName, data });
-            if (!data) return null;
-            try {
-                const obj = JSON.parse(data);
-                return obj[key] !== undefined ? obj[key] : null;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // Lưu vị trí cuộn hiện tại
-        function saveScrollPosition() {
-            const container = document.getElementById('chapter-content');
-            const chapters = document.querySelectorAll('.chapter');
-
-            saveToLocalStorage('lastScrollPosition', container.scrollTop); // Lưu vị trí cuộn vào Local Storage
-            saveToLocalStorage('chapterNumber', getVisibleChapter(chapters)); // Lưu vị trí cuộn vào Local Storage
-        }
-
-        // Khôi phục vị trí cuộn đã lưu
-        function restoreScrollPosition() {
-            const chapterNumber = loadFromLocalStorage('chapterNumber');
-            scrollToChapter(chapterNumber ?? 1)
-
-            const container = document.getElementById('chapter-content');
-            const lastScrollPosition = loadFromLocalStorage('lastScrollPosition'); // Lấy vị trí cuộn đã lưu
-            if (lastScrollPosition !== null) {
-                container.scrollTop = lastScrollPosition; // Đặt lại vị trí cuộn
-            }
-        }
-
-        // Utility function to chunk an array into smaller arrays of a specified size
-        function chunkArray(array, size) {
-            if (!Array.isArray(array) || size <= 0) {
-                throw new Error('Invalid input: array must be an array and size must be a positive number.');
-            }
-            const result = [];
-            for (let i = 0; i < array.length; i += size) {
-                result.push(array.slice(i, i + size));
-            }
-            return result;
-        }
-
-        // Hàm tách nội dung thành các chương
-        function splitIntoChapters(content, linesPerSentence = 3) {
-            const regexSplitStory = "#Chương";
-            function isNumber(value) {
-                return /^\d+$/.test(value);
-            }
-
-            const storyEdited = content
-                .split(/\n/)
-                .filter(Boolean)
-                .map((line) => {
-                    let lineContent = line.trim();
-                    const lines = line.replace(/\t/g, "").trim().split(" ");
-                    const firstItem = lines.shift();
-                    let chapterNumber = lines.shift();
-                    const isChapterNumber =
-                        chapterNumber && isNumber(chapterNumber.replace(/\D/g, ""));
-                    if (
-                        isChapterNumber &&
-                        lines.length < 20 &&
-                        ["chương", "thứ"].includes(firstItem.toLowerCase()) === true
-                    ) {
-                        lineContent = `#Chương ${lines.join(" ")}_${chapterNumber}_`;
-                    }
-                    return lineContent;
-                })
-                .join("\n");
-
-            const chapters = storyEdited.split(regexSplitStory).filter(Boolean);
-
-            return chapters.map(chapter => {
-                let [chapterName = '', chapterNumber = '', chapterContent = ''] = ['', '', ''];
-                if (chapter.includes('_')) {
-                    [chapterName = '', chapterNumber = '', chapterContent = ''] = chapter.split('_');
-                } else {
-                    chapterContent = chapter;
-                }
-
-                chapterNumber = +chapterNumber.replace(/\D/g, '') ?? 0;
-
-                // Use chunkArray to split content into sentences
-                const contentLines = chapterContent
-                    .split('\n')
-                    .filter(Boolean)
-                    .map(line => line.trim());
-                const combinedContent = chunkArray(contentLines, linesPerSentence).map(chunk => chunk.join(''));
-                return {
-                    chapterNumber,
-                    title: `Chương ${chapterNumber} ${chapterName.trim()}`,
-                    content: combinedContent
-                };
-            });
-        }
-
-        // Rebuild content dynamically based on chapter data
-        function rebuildContentFromChapters(chapters) {
-            const container = document.getElementById('chapter-content');
-            container.innerHTML = ''; // Clear existing content
-
-            chapters.forEach((chapter, index) => {
-                const chapterDiv = document.createElement('div');
-                chapterDiv.classList.add('chapter');
-                chapterDiv.id = `chapter-${index}`; // Add ID for linking
-
-                const title = document.createElement('h5');
-                title.classList.add('chapter-title'); // Added the CSS class 'chapter-title'
-                title.textContent = chapter.title; // Set chapter title
-                chapterDiv.appendChild(title);
-
-                chapter.content.forEach(paragraph => {
-                    const p = document.createElement('p');
-                    p.textContent = paragraph; // Set paragraph content
-                    chapterDiv.appendChild(p);
-                });
-
-                container.appendChild(chapterDiv); // Add chapter to container
-            });
-        }
-
-        // Update lazy loading to ensure scrollbar reflects current DOM content
-        function lazyLoadData() {
-            const container = document.getElementById('chapter-content');
-            const batchSize = 2; // Number of chapters to load per batch
-            const maxElements = 6; // Max number of chapters in the DOM
-            let currentIndex = 1;
-
-            function loadMoreData(direction) {
-                if (!window.chapterData) return; // Exit if no data
-
-                if (direction === 'down') {
-                    const next = +(document.querySelector("#chapter-content")?.lastChild?.id?.split('-')[1] ?? 1);
-                    const nextBatch = window.chapterData
-                        .filter(chapter => chapter.chapterNumber >= next && chapter.chapterNumber < next + batchSize)
-                        .sort((a, b) => a.chapterNumber - b.chapterNumber);
-
-                    nextBatch.forEach(chapter => {
-                        if (!document.getElementById(`chapter-${chapter.chapterNumber}`)) {
-                            const chapterDiv = document.createElement('div');
-                            chapterDiv.classList.add('chapter');
-                            chapterDiv.id = `chapter-${chapter.chapterNumber}`;
-
-                            const title = document.createElement('h5');
-                            title.classList.add('chapter-title');
-                            title.textContent = chapter.title;
-                            chapterDiv.appendChild(title);
-
-                            chapter.content.forEach(paragraph => {
-                                const p = document.createElement('p');
-                                p.textContent = paragraph;
-                                chapterDiv.appendChild(p);
-                            });
-
-                            container.appendChild(chapterDiv);
-                        }
-                    });
-
-                    currentIndex += batchSize;
-
-                    while (container.children.length > maxElements) {
-                        container.removeChild(container.firstChild);
-                    }
-
-                    // Adjust container height to match current content
-                    container.style.height = `${container.scrollHeight}px`;
-                } else if (direction === 'up' && currentIndex > batchSize) {
-                    const prev = +(document.querySelector("#chapter-content").firstChild?.id?.split('-')[1] ?? 1);
-                    const previousBatch = window.chapterData
-                        .filter(chapter => chapter.chapterNumber >= prev - batchSize && chapter.chapterNumber < prev)
-                        .sort((a, b) => b.chapterNumber - a.chapterNumber);
-
-                    previousBatch.forEach(chapter => {
-                        if (!document.getElementById(`chapter-${chapter.chapterNumber}`)) {
-                            const chapterDiv = document.createElement('div');
-                            chapterDiv.classList.add('chapter');
-                            chapterDiv.id = `chapter-${chapter.chapterNumber}`;
-
-                            const title = document.createElement('h5');
-                            title.classList.add('chapter-title');
-                            title.textContent = chapter.title;
-                            chapterDiv.appendChild(title);
-
-                            chapter.content.forEach(paragraph => {
-                                const p = document.createElement('p');
-                                p.textContent = paragraph;
-                                chapterDiv.appendChild(p);
-                            });
-
-                            container.insertBefore(chapterDiv, container.firstChild);
-                        }
-                    });
-
-                    currentIndex -= batchSize;
-
-                    while (container.children.length > maxElements) {
-                        container.removeChild(container.lastChild);
-                    }
-
-                    // Adjust container height to match current content
-                    container.style.height = `${container.scrollHeight}px`;
-                }
-            }
-
-            loadMoreData('down');
-
-            container.addEventListener('scroll', () => {
-                if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-                    loadMoreData('down');
-                } else if (container.scrollTop <= 50 && currentIndex > batchSize) {
-                    loadMoreData('up');
-                }
-            });
-        }
-
-        // Ensure the chapter is loaded into the DOM before scrolling
-        function ensureChapterInDOM(index) {
-            const container = document.getElementById('chapter-content');
-            if (!document.getElementById(`chapter-${index}`)) {
-                const batchSize = 2; // Number of chapters to load per batch
-                const start = Math.max(1, index - batchSize);
-                const end = Math.min(window.chapterData.length + 1, index + batchSize);
-                currentIndex = index + batchSize;
-                // Clear the container and load the required batch
-                container.innerHTML = '';
-                window.chapterData
-                    .filter(chapter => chapter.chapterNumber >= start && chapter.chapterNumber < end)
-                    .forEach(chapter => {
-                        const chapterDiv = document.createElement('div');
-                        chapterDiv.classList.add('chapter');
-                        chapterDiv.id = `chapter-${chapter.chapterNumber}`;
-
-                        const title = document.createElement('h5');
-                        title.classList.add('chapter-title'); // Added the CSS class 'chapter-title'
-                        title.textContent = chapter.title;
-                        chapterDiv.appendChild(title);
-
-                        chapter.content.forEach(paragraph => {
-                            const p = document.createElement('p');
-                            p.textContent = paragraph;
-                            chapterDiv.appendChild(p);
-                        });
-
-                        container.appendChild(chapterDiv);
-                    });
-                // Update current index to the selected chapter
-            }
-        }
-
-        // Ensure the chapter title is always at the top when scrolling
-        function scrollToChapter(index) {
-            ensureChapterInDOM(index); // Ensure the chapter is loaded
-            const chapterElement = document.getElementById(`chapter-${index}`);
-            if (chapterElement) {
-                chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                // Cập nhật trạng thái active cho menu item tương ứng
-                // Trước tiên, xóa active của tất cả
-                const menuItems = document.querySelectorAll('#menu-list li');
-                menuItems.forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Sau đó, set active cho menu item tương ứng bằng cách sử dụng id
-                const menuItem = document.getElementById(`menu-item-${index}`);
-                if (menuItem) {
-                    menuItem.classList.add('active');
-                    console.log('Set active for scrolled chapter:', index);
-                }
-            }
-        }
-
-        function hightLightActiveChapter() {
-            const menuItems = document.querySelectorAll('#menu-list li');
-            const chapters = document.querySelectorAll('.chapter');
-            const currentChapterIndex = getVisibleChapter(chapters);
-            
-            // Xóa class active từ tất cả menu items trước
-            menuItems.forEach(item => item.classList.remove('active'));
-
-            // Nếu tìm thấy chapter hiện tại, đánh dấu menu item tương ứng
-            if (currentChapterIndex !== null && currentChapterIndex !== undefined) {
-                // Tìm menu item bằng ID thay vì dựa vào index trong mảng
-                const menuItem = document.getElementById(`menu-item-${currentChapterIndex}`);
-                
-                if (menuItem) {
-                    // Thêm class active
-                    menuItem.classList.add('active');
-                    console.log('Set active for chapter:', currentChapterIndex);
-                }
-            }
-        }
-
-        function getVisibleChapter(chapters) {
-            if (!chapters || chapters.length === 0) return null;
-            
-            const container = document.getElementById('chapter-content');
-            const scrollTop = container.scrollTop;
-            let visibleChapterIndex = null;
-
-            // Tìm chương đầu tiên có phần trên nằm trong vùng hiển thị
-            for (let i = 0; i < chapters.length; i++) {
-                const chapter = chapters[i];
-                const chapterTop = chapter.offsetTop - container.offsetTop;
-                const chapterBottom = chapterTop + chapter.offsetHeight;
-                
-                // Kiểm tra nếu chapter hiện tại đang hiển thị trong viewport
-                if ((scrollTop >= chapterTop && scrollTop < chapterBottom) || 
-                    (scrollTop < chapterTop && scrollTop + container.clientHeight > chapterTop)) {
-                    // Lấy chỉ số từ ID của chapter (ví dụ: chapter-2 => 2)
-                    visibleChapterIndex = parseInt(chapter.id.split('-')[1]);
-                    break; // Thoát vòng lặp khi tìm thấy chapter hiển thị
-                }
-            }
-            
-            // Nếu không tìm thấy chapter nào, mặc định là chapter đầu tiên (0)
-            return visibleChapterIndex !== null ? visibleChapterIndex : 0;
-        }
-
-        // Utility function to toggle menu/modal visibility
-        function toggleUIElement(element, overlay, isOpen) {
-            if (isOpen) {
-                element.classList.add('open');
-                overlay.classList.add('open');
-                overlay.style.display = 'block';
-            } else {
-                element.classList.remove('open');
-                overlay.classList.remove('open');
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 300);
-            }
-        }
-
-        // Utility function for handling modals
-        function toggleModal(modal, overlay, isOpen) {
-            if (isOpen) {
-                modal.classList.add('open');
-                overlay.classList.add('open');
-                modal.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                modal.classList.remove('open');
-                overlay.classList.remove('open');
-                modal.style.display = 'none';
-                overlay.style.display = 'none';
-            }
-        }
-
-        // Ensure the current chapter is highlighted when the menu is opened
-        document.getElementById('show-menu').addEventListener('click', () => {
-            const chapterMenu = document.getElementById('chapter-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-            const isOpen = !chapterMenu.classList.contains('open');
-            
-            toggleUIElement(chapterMenu, menuOverlay, isOpen);
-
-            if (isOpen) {
-                // Force reflow to ensure animation works properly
-                void chapterMenu.offsetWidth;
-                
-                // Highlight active chapter dựa trên vị trí cuộn hiện tại
-                hightLightActiveChapter();
-            }
+        // Float Menu Toggle Functionality
+        const floatMenuToggle = document.getElementById('float-menu-toggle');
+        const floatMenuContainer = document.querySelector('.float-menu-container');
+        const menuButtons = document.querySelectorAll('.float-menu-button');
+        
+        // Ngăn chặn hiệu ứng mặc định khi click
+        floatMenuToggle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
         });
-
-        // Close menu when clicking on close button
-        document.getElementById('close-menu').addEventListener('click', () => {
-            const chapterMenu = document.getElementById('chapter-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-            toggleUIElement(chapterMenu, menuOverlay, false);
-        });
-
-        // Close menu when clicking on overlay
-        document.getElementById('menu-overlay').addEventListener('click', () => {
-            const chapterMenu = document.getElementById('chapter-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-            toggleUIElement(chapterMenu, menuOverlay, false);
-        });
-
-        // Update chapter menu links to scroll to the correct chapter
-        function populateChapterMenu(chapters) {
-            const menuList = document.getElementById('menu-list');
-
-            // Xóa các mục menu hiện tại
-            menuList.innerHTML = '';
-            
-            // Add chapter items
-            chapters.forEach((chapter, index) => {
-                const listItem = document.createElement('li');
-                // Đặt id cho listItem để dễ dàng tìm và cập nhật trạng thái active
-                listItem.id = `menu-item-${index}`;
-                listItem.setAttribute('data-index', index.toString());
-                
-                const link = document.createElement('a');
-                // Tạo id duy nhất cho link dựa trên tên truyện và số chương
-                const storyName = document.getElementById('story-name').textContent.toLowerCase().replace(/\s+/g, '_');
-                link.id = `chapter-link-${storyName}-${index}`;
-                link.href = `#chapter-${index}`; // Link to the chapter
-                link.textContent = chapter.title; // Set chapter title as link text
-                link.dataset.chapterIndex = index.toString(); // Lưu index vào data attribute
-                
-                link.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevent default anchor behavior
-                    
-                    // Lấy index từ data attribute
-                    const chapterIndex = parseInt(event.currentTarget.dataset.chapterIndex, 10);
-                    console.log(`Clicking on chapter ${chapterIndex}: ${chapter.title}`);
-                    
-                    // Xóa tất cả các class active trước
-                    const allItems = document.querySelectorAll('#menu-list li');
-                    allItems.forEach(item => item.classList.remove('active'));
-                    
-                    // Thêm class active cho mục hiện tại
-                    listItem.classList.add('active');
-                    
-                    scrollToChapter(chapterIndex); // Scroll to the selected chapter
-
-                    const chapterMenu = document.getElementById('chapter-menu');
-                    const menuOverlay = document.getElementById('menu-overlay');
-
-                    // Close menu
-                    chapterMenu.classList.remove('open');
-                    menuOverlay.classList.remove('open');
-
-                    // Hide overlay after animation
-                    setTimeout(() => {
-                        menuOverlay.style.display = 'none';
-                    }, 300);
-                });
-
-                listItem.appendChild(link);
-                menuList.appendChild(listItem);
-            });
-        }
-
-        // Ensure the menuUploadBtn variable is declared only once
-        const menuUploadBtn = document.getElementById('menu-upload-btn');
-        if (menuUploadBtn) {
-            menuUploadBtn.addEventListener('click', function () {
-                console.log('Menu upload button clicked');
-
-                // Close chapter menu first
-                const chapterMenu = document.getElementById('chapter-menu');
-                const menuOverlay = document.getElementById('menu-overlay');
-                chapterMenu.classList.remove('open');
-                menuOverlay.classList.remove('open');
-
-                // Trigger file input after menu is closed
-                setTimeout(() => {
-                    menuOverlay.style.display = 'none';
-
-                    // Create and trigger a new click event on file input
-                    const fileInput = document.getElementById('file-input');
-                    if (fileInput) {
-                        fileInput.value = ''; // Reset value to allow selecting the same file again
-                        fileInput.click();
-                    } else {
-                        console.error('File input element not found');
-                    }
-                }, 300);
-            });
-        } else {
-            console.error('Menu upload button not found');
-        }
-
-        document.getElementById('menu-url-btn').addEventListener('click', function (event) {
-            // Close chapter menu
-            const chapterMenu = document.getElementById('chapter-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-            chapterMenu.classList.remove('open');
-            menuOverlay.classList.remove('open');
-
-            // Hide overlay after animation completes
-            setTimeout(() => {
-                menuOverlay.style.display = 'none';
-            }, 300);
-
-            // Here you can add code to open a URL input dialog or similar functionality
-            // For now, we'll just use a simple prompt
-            const url = prompt('Nhập URL để tải nội dung:', '');
-            if (url) {
-                // Add your URL fetch logic here
-                console.log('Fetching from URL:', url);
-                // Example: fetchFromUrl(url);
-            }
-        });
-
-        // Ensure the file input change event is handled correctly
-        const fileInput = document.getElementById('file-input');
-        if (fileInput) {
-            fileInput.addEventListener('change', function (event) {
-                const file = event.target.files[0];
-                if (file) {
-                    console.log('File selected:', file.name);
-                    processChapterData(file);
-                } else {
-                    console.error('No file selected');
-                }
-            });
-        } else {
-            console.error('File input element not found');
-        }
-
-        document.getElementById('menu-setting-btn').addEventListener('click', function () {
-            const settingsModal = document.getElementById('settings-modal');
-            const modalOverlay = document.getElementById('modal-overlay');
-            const chapterMenu = document.getElementById('chapter-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-
-            // Close menu first
-            if (chapterMenu && menuOverlay) {
-                toggleUIElement(chapterMenu, menuOverlay, false);
-            }
-
-            // Open settings modal
-            if (settingsModal && modalOverlay) {
-                toggleModal(settingsModal, modalOverlay, true);
-            }
-        });
-
-        document.getElementById('close-settings').addEventListener('click', function () {
-            const settingsModal = document.getElementById('settings-modal');
-            const modalOverlay = document.getElementById('modal-overlay');
-            toggleModal(settingsModal, modalOverlay, false);
-        });
-
-        document.getElementById('save-settings').addEventListener('click', function () {
-            // Collect settings
-            const settings = {
-                fontFamily: document.getElementById('font-family').value,
-                fontSize: document.getElementById('font-size-display').textContent,
-                linesPerSentence: document.getElementById('lines-per-sentence-display').textContent
-            };
-
-            // Save all settings to local storage
-            Object.entries(settings).forEach(([key, value]) => {
-                saveToLocalStorage(key, value);
-            });
-
-            // Apply settings to chapter content
-            const chapterContent = document.getElementById('chapter-content');
-            if (chapterContent) {
-                chapterContent.style.fontFamily = settings.fontFamily;
-                chapterContent.style.fontSize = settings.fontSize + 'px';
-            }
-
-            // Get regex replacements
-            const regexReplacements = Array.from(document.querySelectorAll('#regex-replace-list li')).map(item => {
-                const inputs = item.querySelectorAll('input');
-                return inputs.length >= 2 ? { match: inputs[0].value, replace: inputs[1].value } : null;
-            }).filter(Boolean);
-
-            saveToLocalStorage('regexReplacements', regexReplacements);
-            console.log('All settings saved!');
-
-            // Close the settings modal
-            const settingsModal = document.getElementById('settings-modal');
-            const modalOverlay = document.getElementById('modal-overlay');
-            toggleModal(settingsModal, modalOverlay, false);
-        });
-
-        document.getElementById('font-family').addEventListener('change', function (event) {
-            const selectedFont = event.target.value;
-            console.log('Font family changed to:', selectedFont);
-
-            // Apply the font family change to the chapter content
-            const chapterContent = document.getElementById('chapter-content');
-            if (chapterContent) {
-                chapterContent.style.fontFamily = selectedFont;
-                console.log('Applied font family:', selectedFont);
-            }
-
-            // Store the font family preference in local storage
-            saveToLocalStorage('fontFamily', selectedFont);
-        });
-
-        // Consolidated function to handle font size changes
-        function adjustFontSize(isIncrease) {
-            const fontSizeDisplay = document.getElementById('font-size-display');
-            let fontSize = parseInt(fontSizeDisplay.textContent);
-
-            if (isIncrease) {
-                fontSize += 1;
-            } else if (fontSize > 10) { // Prevent font from becoming too small
-                fontSize -= 1;
-            } else {
-                return; // Don't proceed if font would be too small
-            }
-
-            fontSizeDisplay.textContent = fontSize;
-
-            // Apply the font size change to the chapter content
-            const chapterContent = document.getElementById('chapter-content');
-            if (chapterContent) {
-                chapterContent.style.fontSize = fontSize + 'px';
-            }
-
-            console.log(`Font size ${isIncrease ? 'increased' : 'decreased'} to:`, fontSize);
-        }
-
-        // Add event listeners for font size controls
-        document.getElementById('increase-font-size').addEventListener('click', () => adjustFontSize(true));
-        document.getElementById('decrease-font-size').addEventListener('click', () => adjustFontSize(false));
-
-        // Consolidated function to handle lines per sentence changes
-        function adjustLinesPerSentence(isIncrease) {
-            const linesPerSentenceDisplay = document.getElementById('lines-per-sentence-display');
-            let linesPerSentence = parseInt(linesPerSentenceDisplay.textContent);
-
-            if (isIncrease) {
-                linesPerSentence += 1;
-            } else if (linesPerSentence > 1) { // Prevent lines from becoming less than 1
-                linesPerSentence -= 1;
-            } else {
-                return; // Don't proceed if value would be invalid
-            }
-
-            linesPerSentenceDisplay.textContent = linesPerSentence;
-            console.log(`Lines per sentence ${isIncrease ? 'increased' : 'decreased'} to:`, linesPerSentence);
-        }
-
-        // Add event listeners for lines per sentence controls
-        document.getElementById('increase-lines-per-sentence').addEventListener('click', () => adjustLinesPerSentence(true));
-        document.getElementById('decrease-lines-per-sentence').addEventListener('click', () => adjustLinesPerSentence(false));
-
-        // Add event listener for regex add button
-        document.getElementById('add-regex-replace').addEventListener('click', function () {
-            const regexMatch = document.getElementById('regex-match').value;
-            const regexReplace = document.getElementById('regex-replace').value;
-
-            if (regexMatch && regexReplace) {
-                // Create a new list item for the regex replacement
-                const regexReplaceList = document.getElementById('regex-replace-list');
-                const listItem = document.createElement('li');
-
-                // Add the regex match and replace inputs
-                const matchInput = document.createElement('input');
-                matchInput.type = 'text';
-                matchInput.value = regexMatch;
-                matchInput.readOnly = true;
-
-                const replaceInput = document.createElement('input');
-                replaceInput.type = 'text';
-                replaceInput.value = regexReplace;
-                replaceInput.readOnly = true;
-
-                // Add a delete button
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = '×';
-                deleteButton.addEventListener('click', function () {
-                    regexReplaceList.removeChild(listItem);
-                    updateRegexCount(); // Update count after removal
-                });
-
-                // Add the elements to the list item
-                listItem.appendChild(matchInput);
-                listItem.appendChild(replaceInput);
-                listItem.appendChild(deleteButton);
-
-                // Always add the list item to the TOP of the regex replace list
-                regexReplaceList.insertBefore(listItem, regexReplaceList.firstChild);
-
-                // Clear the inputs
-                document.getElementById('regex-match').value = '';
-                document.getElementById('regex-replace').value = '';
-
-                console.log('Regex replacement added:', regexMatch, '->', regexReplace);
-
-                // Update the regex count display
-                updateRegexCount();
-            }
-        });
-
-        // Function to update the regex count display
-        function updateRegexCount() {
-            const regexItems = document.querySelectorAll('#regex-replace-list li');
-            const countElement = document.getElementById('regex-count');
-            if (countElement) {
-                countElement.textContent = `(${regexItems.length})`;
-            }
-        }
-
-        // Add scroll event listener to save scroll position
-        document.getElementById('chapter-content').addEventListener('scroll', function () {
-            saveScrollPosition();
-        });
-
-        // Set up basic UI when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('Page loaded, ready for story upload');
-            
-            // Thêm scroll event listener cho chapter-content để cập nhật trạng thái active
-            const chapterContent = document.getElementById('chapter-content');
-            chapterContent.addEventListener('scroll', function() {
-                // Lưu vị trí cuộn
-                saveScrollPosition();
-                
-                // Cập nhật trạng thái active cho menu
-                hightLightActiveChapter();
+        
+        // Ngăn chặn outline khi click vào các nút menu
+        menuButtons.forEach(button => {
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
             });
         });
-
-        // Hàm áp dụng các cài đặt đã lưu cho truyện hiện tại
-        function applyStoredSettings() {
-            const storeName = document.getElementById('story-name').textContent.toLowerCase().replace(/\s+/g, '_');
-            console.log('Applying stored settings for story:', storeName);
-
-            // Áp dụng font family
-            const savedFontFamily = loadFromLocalStorage('fontFamily');
-            if (savedFontFamily) {
-                const fontFamilySelect = document.getElementById('font-family');
-                const chapterContent = document.getElementById('chapter-content');
-
-                // Cập nhật select box
-                if (fontFamilySelect) {
-                    fontFamilySelect.value = savedFontFamily;
-                }
-
-                // Áp dụng font cho nội dung
-                if (chapterContent) {
-                    chapterContent.style.fontFamily = savedFontFamily;
-                    console.log('Applied font family:', savedFontFamily);
-                }
-            }
-
-            // Áp dụng font size
-            const savedFontSize = loadFromLocalStorage('fontSize');
-            if (savedFontSize) {
-                const fontSizeDisplay = document.getElementById('font-size-display');
-                const chapterContent = document.getElementById('chapter-content');
-
-                // Cập nhật hiển thị
-                if (fontSizeDisplay) {
-                    fontSizeDisplay.textContent = savedFontSize;
-                }
-
-                // Áp dụng kích thước font cho nội dung
-                if (chapterContent) {
-                    chapterContent.style.fontSize = savedFontSize + 'px';
-                    console.log('Applied font size:', savedFontSize);
-                }
-            }
-
-            // Load regex replacements
-            const savedRegexReplacements = loadFromLocalStorage('regexReplacements');
-            const regexReplaceList = document.getElementById('regex-replace-list');
-            if (savedRegexReplacements && Array.isArray(savedRegexReplacements)) {
-                // Xóa các mục hiện tại
-                regexReplaceList.innerHTML = '';
-
-                // Thêm các regex đã lưu (đảo ngược thứ tự để duy trì thứ tự ban đầu)
-                for (let i = savedRegexReplacements.length - 1; i >= 0; i--) {
-                    const item = savedRegexReplacements[i];
-                    const listItem = document.createElement('li');
-
-                    // Tạo input match
-                    const matchInput = document.createElement('input');
-                    matchInput.type = 'text';
-                    matchInput.value = item.match;
-                    matchInput.readOnly = true;
-
-                    // Tạo input replace
-                    const replaceInput = document.createElement('input');
-                    replaceInput.type = 'text';
-                    replaceInput.value = item.replace;
-                    replaceInput.readOnly = true;
-
-                    // Tạo nút xóa
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = '×';
-                    deleteButton.addEventListener('click', function () {
-                        regexReplaceList.removeChild(listItem);
-                        updateRegexCount(); // Cập nhật số lượng sau khi xóa
-                    });
-
-                    // Thêm các phần tử vào list item
-                    listItem.appendChild(matchInput);
-                    listItem.appendChild(replaceInput);
-                    listItem.appendChild(deleteButton);
-
-                    // Luôn thêm mục vào đầu danh sách
-                    regexReplaceList.insertBefore(listItem, regexReplaceList.firstChild);
-                }
-
-                // Cập nhật số lượng regex
-                updateRegexCount();
-                console.log('Applied regex replacements:', savedRegexReplacements.length);
-            } else {
-                // Nếu không có thì clear cache trong regex-replace-list
-                regexReplaceList.innerHTML = '';
-                updateRegexCount();
-            }
-        }
-
-        // Call applyStoredSettings on page load
-        applyStoredSettings();
+        
+        floatMenuToggle.addEventListener('click', () => {
+            floatMenuContainer.classList.toggle('active');
+            floatMenuToggle.classList.toggle('active');
+        });
+        
+        // Button click handlers
+        document.getElementById('toggle-chapters-btn').addEventListener('click', () => {
+            console.log('Toggle chapters menu');
+            // Add your code to toggle chapters menu
+            // Menu sẽ không đóng khi nhấn vào nút này
+        });
+        
+        document.getElementById('open-settings-btn').addEventListener('click', () => {
+            console.log('Open settings');
+            // Add your code to open settings modal
+            // Menu sẽ không đóng khi nhấn vào nút này
+        });
+        
+        document.getElementById('upload-file-btn').addEventListener('click', () => {
+            console.log('Upload file');
+            // Add your code to trigger file upload
+            // Menu sẽ không đóng khi nhấn vào nút này
+        });
     </script>
 </body>
-
 </html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Viewer</title>
+    <link rel="stylesheet" href="../reading-stories-2/style.css">
+</head>
+<body>
+    <div id="loading-spinner" aria-hidden="true"></div>
+    <header id="header" aria-hidden="true">
+       
+        <div id="story-name">Reading Story</div>
+    </header>
+    <div id="container">
+        <input type="file" id="file-input" accept=".txt,.TXT" style="display: none;">
+        <div id="menu-overlay" aria-hidden="true"></div>
+        <div id="chapter-menu" aria-hidden="true">
+            <div id="chapter-menu-header">
+                <div class="menu-title-row">
+                    <h4 id="chapter-menu-title">Menu</h4>
+                    <button id="close-menu" class="menu-header-btn" title="Đóng">&times;</button>
+                </div>
+                <div class="menu-header-buttons">
+                    <button id="menu-upload-btn" class="menu-header-btn" title="Tải lên tệp">&#128228;</button>
+                    <button id="menu-url-btn" class="menu-header-btn" title="Lấy từ URL">&#127760;</button>
+                    <button id="menu-setting-btn" class="menu-header-btn" title="Cài đặt">&#9881;</button>
+                </div>
+            </div>
+            <ul id="menu-list">
+                <!-- Chapter links will be dynamically added here -->
+            </ul>
+        </div>
+        <div id="chapter-content">
+            <!-- Chapter content will be dynamically loaded here -->
+        </div>
+    </div>
+
+            <div id="modal-overlay" aria-hidden="true"></div>
+    <div id="settings-modal" aria-hidden="true">
+        <button id="close-settings">&times;</button>
+        <h3>Setting</h3>
+        <div id="control-box">
+            <div id="control-box-fontSize">
+                <label for="font-size">Font Size</label>
+                <div id="font-size-controls">
+                    <button id="decrease-font-size">-</button>
+                    <span id="font-size-display">20</span>
+                    <button id="increase-font-size">+</button>
+                </div>
+            </div>
+            <div id="control-box-sentence">
+                <label for="lines-per-sentence">Group Sentence</label>
+                <div id="lines-per-sentence-controls">
+                    <button id="decrease-lines-per-sentence">-</button>
+                    <span id="lines-per-sentence-display">3</span>
+                    <button id="increase-lines-per-sentence">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="font-family-controls">
+            <label for="font-family">Font Family</label>
+            <select id="font-family">
+                <option value="Palatino Linotype">Palatino Linotype</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+        </div>
+
+
+        <div id="regex-replace-section">
+            <h4>Regex Replace <span id="regex-count">(0)</span>
+            </h4>
+            <div id="regex-settings">
+                <div id="regex-replace-controls">
+                    <input type="text" id="regex-match" placeholder="Match" />
+                    <input type="text" id="regex-replace" placeholder="Replace" />
+
+                </div>
+                <div id="regex-add-button">
+                    <button id="add-regex-replace">+</button>
+                </div>
+            </div>
+            <ul id="regex-replace-list">
+                <!-- Regex replacements will be dynamically added here -->
+            </ul>
+        </div>
+
+        <button id="save-settings">Save</button>
+    </div>
+
+    <div id="floating-menu-backdrop"></div>
+    <div id="floating-menu-list">
+        <div class="menu-item">
+            <div class="menu-label">Tải lên tệp</div>
+            <button>
+                <i class="menu-icon">&#128228;</i>
+            </button>
+        </div>
+        <div class="menu-item">
+            <div class="menu-label">Cài đặt</div>
+            <button>
+                <i class="menu-icon">&#9881;</i>
+            </button>
+        </div>
+        <div class="menu-item">
+            <div class="menu-label">DS Chương</div>
+            <button id="show-chapter-list">
+                <i class="menu-icon">📖</i>
+            </button>
+        </div>
+    </div>
+    <button id="floating-menu-button" title="Menu - Mở/đóng menu tùy chọn">
+        <span class="menu-icon">☰</span>
+        <span class="close-icon">✕</span>
+    </button>
+    <script src="../reading-stories-2/script.js"></script>
+</body>
+
+</html>

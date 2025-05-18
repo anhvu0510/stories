@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Viewer</title>
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../reading-stories-1/style.css">
+    <link rel="stylesheet" href="../reading-stories-1/float-menu.css">
+</head>
+
+<body>
+    <div id="loading-spinner" aria-hidden="true"></div>
+   
+    <div id="container">
+        <div id="story-name">Reading Story</div>
+        <input type="file" id="file-input" accept=".txt,.TXT" style="position: absolute; opacity: 0; z-index: -1;">
+        <div id="menu-overlay" aria-hidden="true"></div>
+        <div id="chapter-menu" aria-hidden="true">
+            
+            <ul id="menu-list">
+                <!-- Chapter links will be dynamically added here -->
+            </ul>
+        </div>
+        <div id="chapter-content">
+            <!-- Chapter content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <div id="modal-overlay" aria-hidden="true"></div>
+    <div id="settings-modal" aria-hidden="true">
+        <button id="close-settings">&times;</button>
+        <h3>Setting</h3>
+        <div id="control-box">
+            <div id="control-box-fontSize">
+                <label for="font-size">Font Size</label>
+                <div id="font-size-controls">
+                    <button id="decrease-font-size">-</button>
+                    <span id="font-size-display">20</span>
+                    <button id="increase-font-size">+</button>
+                </div>
+            </div>
+            <div id="control-box-sentence">
+                <label for="lines-per-sentence">Group Sentence</label>
+                <div id="lines-per-sentence-controls">
+                    <button id="decrease-lines-per-sentence">-</button>
+                    <span id="lines-per-sentence-display">3</span>
+                    <button id="increase-lines-per-sentence">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="font-family-controls">
+            <label for="font-family">Font Family</label>
+            <select id="font-family">
+                <option value="Palatino Linotype">Palatino Linotype</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+        </div>
+
+        <div id="regex-replace-section">
+            <h4>Regex Replace <span id="regex-count"
+                    style="font-size: 14px; color: #e74c3c; margin-left: 10px;">(0)</span>
+            </h4>
+            <div id="regex-settings">
+                <div id="regex-replace-controls">
+                    <input type="text" id="regex-match" placeholder="Match" />
+                    <input type="text" id="regex-replace" placeholder="Replace" />
+
+                </div>
+                <div id="regex-add-button">
+                    <button id="add-regex-replace">+</button>
+                </div>
+            </div>
+            <ul id="regex-replace-list">
+
+            </ul>
+        </div>
+
+        <button id="save-settings">Save</button>
+    </div>
+
+    <div class="float-menu-container">
+        <button id="float-menu-toggle" type="button" aria-label="Menu">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="float-menu-items">
+            <button id="toggle-chapters-btn" class="float-menu-button" type="button" title="Danh sách chương">
+                <i class="fas fa-list-ul"></i>
+            </button>
+            <button id="open-settings-btn" class="float-menu-button" type="button" title="Cài đặt">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="text-to-speech-btn" class="float-menu-button" type="button" title="Cuộn đến từ được đánh dấu">
+                <i class="fas fa-deaf"></i>
+            </button>
+            <button id="upload-file-btn" class="float-menu-button" type="button" title="Tải lên tệp">
+                <i class="fas fa-upload"></i>
+            </button>
+        </div>
+    </div>
+    
+
+    <script src="../reading-stories-1/script.js"></script>
+    <script src="../reading-stories-1/float-menu.js"></script>
+    <script src="../reading-stories-1/speech.js"></script>
+    <script>
+        // Đảm bảo menu float luôn hoạt động
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatMenuToggle = document.getElementById('float-menu-toggle');
+            const floatMenuContainer = document.querySelector('.float-menu-container');
+            
+            if (floatMenuToggle && floatMenuContainer) {
+                // Đặt trình xử lý sự kiện trực tiếp
+                floatMenuToggle.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    floatMenuContainer.classList.toggle('active');
+                    floatMenuToggle.classList.toggle('active');
+                    console.log('Menu toggle clicked (inline handler)');
+                    return false;
+                };
+            }
+            
+            // Đảm bảo nút toggle-chapters-btn đóng/mở menu chương
+            const toggleChaptersBtn = document.getElementById('toggle-chapters-btn');
+            if (toggleChaptersBtn) {
+                toggleChaptersBtn.onclick = function(e) {
+                    e.preventDefault();
+                    const chapterMenu = document.getElementById('chapter-menu');
+                    const menuOverlay = document.getElementById('menu-overlay');
+                    
+                    if (chapterMenu && menuOverlay) {
+                        const isCurrentlyOpen = chapterMenu.classList.contains('open');
+                        
+                        if (isCurrentlyOpen) {
+                            // Đóng menu
+                            chapterMenu.classList.remove('open');
+                            menuOverlay.classList.remove('open');
+                            setTimeout(() => {
+                                menuOverlay.style.display = 'none';
+                            }, 300);
+                        } else {
+                            // Mở menu
+                            chapterMenu.classList.add('open');
+                            menuOverlay.classList.add('open');
+                            menuOverlay.style.display = 'block';
+                            
+                            // Highlight active chapter nếu hàm tồn tại
+                            if (typeof hightLightActiveChapter === 'function') {
+                                hightLightActiveChapter();
+                            }
+                        }
+                    }
+                    return false;
+                };
+            }
+            
+            // Đảm bảo nút upload-file-btn chỉ kích hoạt một lần
+            const uploadFileBtn = document.getElementById('upload-file-btn');
+            if (uploadFileBtn) {
+                // Xóa tất cả các event listener đã gắn trước đó
+                uploadFileBtn.replaceWith(uploadFileBtn.cloneNode(true));
+                
+                // Lấy lại tham chiếu sau khi đã clone
+                const newUploadFileBtn = document.getElementById('upload-file-btn');
+                
+                // Gắn event listener mới
+                newUploadFileBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Upload file button clicked (inline handler)');
+                    
+                    // Trigger file input
+                    const fileInput = document.getElementById('file-input');
+                    if (fileInput) {
+                        fileInput.value = ''; // Reset value
+                        fileInput.click();
+                    }
+                    
+                    return false;
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>
