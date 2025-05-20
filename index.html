@@ -214,81 +214,34 @@
     
     <div class="links">
         <div class="link-item">
-            <h2>Reading Stories 1</h2>
-            <p>Bộ sưu tập truyện đọc đầu tiên</p>
-            <a href="reading-stories-1/index.html">Xem Reading Stories 1</a>
+            <h2>Reading Stories Template 1</h2>
+            <a href="reading-stories-1/index.html">Review</a>
         </div>
         
         <div class="link-item">
-            <h2>Reading Stories 2</h2>
+            <h2>Reading Story Template 2</h2>
+            <a href="reading-stories-2/index.html">Review</a>
+        </div>
+         <div class="link-item">
+            <h2>Reading Story Template 3</h2>
             <p>Bộ sưu tập truyện đọc thứ hai</p>
-            <a href="reading-stories-2/index.html">Xem Reading Stories 2</a>
+            <a href="mobile-reader/index.html">Review</a>
+        </div>
+          <div class="link-item">
+            <h2>Reading Story Template 4</h2>
+            <p>Bộ sưu tập truyện đọc thứ hai</p>
+            <a href="modernized-reader/index.html">Review</a>
         </div>
     </div>
     
-    <!-- Float Menu -->
-    <div class="float-menu-container">
-        <button id="float-menu-toggle" aria-label="Menu">
-            <i class="fas fa-plus"></i>
-        </button>
-        <div class="float-menu-items">
-            <button id="toggle-chapters-btn" class="float-menu-button" title="Danh sách chương">
-                <i class="fas fa-list-ul"></i>
-            </button>
-            <button id="open-settings-btn" class="float-menu-button" title="Cài đặt">
-                <i class="fas fa-cog"></i>
-            </button>
-            <button id="upload-file-btn" class="float-menu-button" title="Tải lên tệp">
-                <i class="fas fa-upload"></i>
-            </button>
-        </div>
-    </div>
+   
     
     <footer>
         <p>VuLA Project - Vietnamese Language Assistant</p>
     </footer>
 
     <script>
-        // Float Menu Toggle Functionality
-        const floatMenuToggle = document.getElementById('float-menu-toggle');
-        const floatMenuContainer = document.querySelector('.float-menu-container');
-        const menuButtons = document.querySelectorAll('.float-menu-button');
-        
-        // Ngăn chặn hiệu ứng mặc định khi click
-        floatMenuToggle.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-        });
-        
-        // Ngăn chặn outline khi click vào các nút menu
-        menuButtons.forEach(button => {
-            button.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-            });
-        });
-        
-        floatMenuToggle.addEventListener('click', () => {
-            floatMenuContainer.classList.toggle('active');
-            floatMenuToggle.classList.toggle('active');
-        });
-        
-        // Button click handlers
-        document.getElementById('toggle-chapters-btn').addEventListener('click', () => {
-            console.log('Toggle chapters menu');
-            // Add your code to toggle chapters menu
-            // Menu sẽ không đóng khi nhấn vào nút này
-        });
-        
-        document.getElementById('open-settings-btn').addEventListener('click', () => {
-            console.log('Open settings');
-            // Add your code to open settings modal
-            // Menu sẽ không đóng khi nhấn vào nút này
-        });
-        
-        document.getElementById('upload-file-btn').addEventListener('click', () => {
-            console.log('Upload file');
-            // Add your code to trigger file upload
-            // Menu sẽ không đóng khi nhấn vào nút này
-        });
+       
     </script>
 </body>
 </html>

@@ -1,0 +1,298 @@
+/* Main CSS - Core styles and layout */
+
+:root {
+  /* Light Theme Colors */
+  --bg-primary-light: #f8f9fa;
+  --bg-secondary-light: #ffffff;
+  --bg-tertiary-light: #f0f2f5;
+  --text-primary-light: #333333;
+  --text-secondary-light: #666666;
+  --accent-light: #fffc4aa4;
+  --border-light: #e0e0e0;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  
+  /* Dark Theme Colors - Eye-friendly */
+  --bg-primary-dark: #121212;
+  --bg-secondary-dark: #1e1e1e;
+  --bg-tertiary-dark: #252525;
+  --text-primary-dark: #e0e0e0;
+  --text-secondary-dark: #b0b0b0;
+  --accent-dark: #c4831a;
+  --border-dark: #333333;
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  
+  /* Common Colors */
+  --success: #4caf50;
+  --warning: #ff9800;
+  --error: #f44336;
+  --info: #2196f3;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Font Sizes */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+}
+
+/* Base Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito', 'Roboto', sans-serif;
+  line-height: 1.6;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-color: var(--bg-primary-light);
+  color: var(--text-primary-light);
+  transition: 
+    background-color var(--transition-medium),
+    color var(--transition-medium);
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: var(--bg-primary-dark);
+  color: var(--text-primary-dark);
+}
+
+/* App Container */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Story Header */
+#story-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-md);
+  position: relative;
+  z-index: 10;
+  background-color: var(--bg-secondary-light);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 2px 4px var(--shadow-light);
+  transition: 
+    background-color var(--transition-medium),
+    border-color var(--transition-medium),
+    box-shadow var(--transition-medium);
+}
+
+body.dark-mode #story-header {
+  background-color: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+  box-shadow: 0 2px 4px var(--shadow-dark);
+}
+
+#story-name {
+  color: var(--accent-dark);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  text-align: center;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+  padding: 0 var(--spacing-md);
+}
+
+#regex-replace-btn {
+  position: absolute;
+  right: var(--spacing-md);
+}
+
+/* Content Container */
+#content-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  /* width: 100%; */
+  height: calc(100% - 60px); /* Trừ đi chiều cao của header */
+}
+
+/* Chapter Content Main Area */
+#chapter-content {
+  flex: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary-light);
+  transition: background-color var(--transition-medium);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  height: 100% !important;
+  width: 100%;
+  overscroll-behavior: contain;
+  z-index: 5;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: auto;   
+  max-height: calc(100vh - var(--header-height) - var(--spacing-lg) * 2);
+}
+
+body.dark-mode #chapter-content {
+  background-color: var(--bg-primary-dark);
+}
+
+/* Chapter styling */
+.chapter {
+  margin-bottom: var(--spacing-xl);
+}
+
+.chapter-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  color: var(--accent-light);
+  position: sticky;
+  top: -25px;
+  left: 0;
+  background-color: var(--bg-primary-light);
+  padding: 10px 0px;
+  z-index: 11;
+  transition: 
+    background-color var(--transition-medium),
+    color var(--transition-medium);
+}
+
+body.dark-mode .chapter-title {
+  color: var(--accent-dark);
+  background-color: var(--bg-primary-dark);
+}
+
+.chapter p {
+  margin-bottom: var(--spacing-md);
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: justify;
+  word-spacing: 4px;
+  list-style: 1.52rem;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.welcome-icon {
+  font-size: 64px;
+  color: var(--accent-light);
+  margin-bottom: var(--spacing-xl);
+  opacity: 0.8;
+}
+
+body.dark-mode .welcome-icon {
+  color: var(--accent-dark);
+}
+
+.welcome-screen h2 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.welcome-screen p {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-secondary-light);
+}
+
+body.dark-mode .welcome-screen p {
+  color: var(--text-secondary-dark);
+}
+
+/* Loading Spinner */
+#loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner-inner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: var(--accent-light);
+  animation: spin 1s linear infinite;
+}
+
+body.dark-mode .spinner-inner {
+  border-top-color: var(--accent-dark);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  #story-header {
+    padding: var(--spacing-sm);
+  }
+  
+  #chapter-content {
+    padding: var(--spacing-md);
+  }
+  
+  .chapter-title {
+    font-size: var(--text-lg);
+  }
+  
+  .chapter p {
+    font-size: 16px;
+    line-height: 1.7;
+    height: auto;
+  }
+}

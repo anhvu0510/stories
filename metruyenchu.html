@@ -70,7 +70,7 @@
             height: 40px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
         }
 
@@ -124,45 +124,28 @@
 
         /* Style cho nút thay đổi kích thước */
         .text-size-controls {
+            display: block;
             position: fixed;
-            /* Cố định trên top */
-            top: 0;
-            right: 0;
-            /* width: 100%; */
-            height: 30px;
-            background: rgba(255, 255, 255, 0.9);
-            /* Nền trắng mờ */
-            /* padding: 10px; */
+            bottom: 10px;
+            right: 10px;
             display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            /* Hiệu ứng đổ bóng */
-            z-index: 1000;
-            /* Đảm bảo luôn hiển thị trên nội dung */
-        }
-
-        .text-size-controls h2 {
-            margin: 0;
-            font-size: 20px;
-            /* color: #dfbf0a; */
+            gap: 10px;
         }
 
         .text-size-controls button {
-            /* background: #e77206ae; */
-            color: white;
+            background: #ff9800;
+            color: #121212;
             border: none;
-            /* padding: 8px 12px; */
-            font-size: 18px;
-            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 16px;
             cursor: pointer;
-            margin: 0px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
         }
 
         .text-size-controls button:hover {
-            background: #0056b3;
+            background: #ffa726;
         }
-
 
 
 
@@ -196,12 +179,13 @@
 <body>
 
     <!-- NÚT MENU -->
-    <!-- <button class="menu-button" onclick="toggleMenu()">☰</button> -->
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
 
     <!-- DANH SÁCH CHƯƠNG -->
     <article class="menu" aria-hidden="true">
         <div class="menu-list">
             <ul id="chapter-list">
+                <!-- Danh sách chương sẽ được thêm bằng JS -->
             </ul>
         </div>
 
@@ -213,26 +197,25 @@
     </article>
 
     <!-- NỘI DUNG ĐỌC -->
-    <main class="reading" role="document" style="font-family: Piazzolla; line-height: 25px;">
+    <main class="reading" role="document" style="font-family: Piazzolla;line-height: 30px;">
         <article>
-            <!-- <center class="chapter-title">Chương 1:: Biểu tỷ</center>
+            <center class="chapter-title">Chương 1:: Biểu tỷ</center>
             <section>
                 <p>Ngày mùa hè, bầu trời sáng sủa, nhàn nhạt gió nhẹ quất vào mặt. Trung Hải huyện, thịnh điền khu, tứ
                     trung
                     phòng học nội.</p>
 
-            </section> -->
+            </section>
         </article>
 
     </main>
 
-
-
-
     <script>
-
-
-
+        // Hiển thị / Ẩn danh sách chương
+        function toggleMenu() {
+            const menu = document.querySelector('.menu');
+            menu.classList.toggle('open');
+        }
 
 
 
@@ -291,65 +274,32 @@
 
         async function fetchChapter(url) {
             try {
-                const proxyUrl = 'https://api.allorigins.win/get?url=';
-                const fetchUrl = proxyUrl + encodeURIComponent(url)
-                const result = await fetch(fetchUrl);
-                return result.json()
+                const url = "https://metruyencv.app/truyen/the-tu-cua-ta-la-dai-thua-ky-dai-lao/chuong-2228";
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+                fetch(proxyUrl + url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(data.contents, "text/html");
+                        console.log({doc1111: data.contents});
+                        const chapterContent = doc.querySelector("#chapter-content");
+                        document.querySelector(".reading").innerHTML = data.contents;
+
+
+
+
+                        // if (chapterContent) {
+                        //     document.querySelector(".reading").innerHTML = chapterContent.innerHTML;
+                        // } else {
+                        //     console.error("Không tìm thấy nội dung.");
+                        // }
+                    })
+                    .catch(error => console.error("Lỗi fetch:", error));
+
             } catch (error) {
-                console.error("FetchError", error);
-            }
-            return false
-        }
-
-        function gotoChapter(url) {
-            if (!url) return; // Nếu URL không tồn tại thì không làm gì
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.delete("url"); // Xóa tham số 'url'
-            const hostUrl = currentUrl.origin + currentUrl.pathname + "?url=";
-
-
-            // Điều hướng trong cùng tab
-            // window.location.href = hostUrl + url;
-
-
-            let newTab = window.open(hostUrl + url, '_blank');
-            if (newTab) {
-                newTab.blur(); // Làm mờ tab mới
-                window.focus(); // Giữ tab hiện tại
-            } else {
-                alert("Trình duyệt chặn pop-up, hãy bật cho phép!");
-            }
-        }
-
-        function htmlControl(chapterTitle, preChapterUrl, nextChapterUrl) {
-            try {
-                console.log({ chapterTitle });
-
-                // Tạo div chứa các nút điều khiển
-                const container = document.createElement("div");
-                container.classList.add("text-size-controls");
-
-                // Tạo nút Previous
-                const prevButton = document.createElement("button");
-                prevButton.ariaHidden = true;
-                prevButton.innerText = "⬅";
-                prevButton.onclick = () => gotoChapter(preChapterUrl);
-
-
-
-                // Tạo nút Next
-                const nextButton = document.createElement("button");
-                nextButton.innerText = "➡";
-                nextButton.ariaHidden = true;
-                nextButton.onclick = () => gotoChapter(nextChapterUrl);
-
-                // Thêm tất cả vào container
-                container.appendChild(prevButton);
-                container.appendChild(nextButton);
-
-                return container;
-            } catch (error) {
-                console.log("getControlError >>>>>>>>>>>>", error);
+                console.error("Lỗi:", error);
+                document.querySelector(".reading").innerHTML = `<p style="color:red;">❌ Lỗi khi tải nội dung.</p>`;
             }
         }
 
@@ -357,80 +307,32 @@
 
         (async function () {
             const params = new URLSearchParams(window.location.search);
-            const url = decodeURIComponent(params.get("url"));
+            const url = params.get("url");
             console.log({ url });
-
 
             if (!url) {
                 document.querySelector(".reading").innerHTML = `<p style="text-align:center; color:red;">❌ Lỗi: Không có URL nào được cung cấp.</p>`;
-                return false;
+            } else {
+                const readingElement = document.querySelector(".reading");
+
+                // Hiển thị hiệu ứng loading
+                readingElement.innerHTML = `<p style="text-align:center; font-size:18px; color: #ff9800;">⏳ Đang tải...</p>`;
+
+                const data = await fetchChapter(url);
+
+                if (!data) return false
+
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, "text/html");
+                console.log({ doc });
+                const chapterContent = doc.querySelector("#chapter-content"); // Cập nhật nếu ID khác
+                if (chapterContent) {
+                    readingElement.innerHTML = chapterContent.innerHTML;
+                } else {
+                    readingElement.innerHTML = `<p style="text-align:center; color:red;">⚠ Lỗi: Không tìm thấy nội dung.</p>`;
+                }
             }
-
-            const readingElement = document.querySelector(".reading");
-            // return false;
-
-            const queryStoryContent = '#chapter-content';
-            readingElement.innerHTML = `<p style="text-align:center; font-size:18px; color: #ff9800;">⏳ Đang tải...</p>`;
-
-            const data = await fetchChapter(url);
-            document.querySelector(".reading").innerHTML = `<p style="color:red;">❌ Lỗi khi tải nội dung.</p>`;
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(data.contents, "text/html");
-            const playerElement = doc.querySelector('.slide');
-            if (playerElement) {
-                playerElement.remove();
-            }
-            // doc.querySelectorAll("#chapter-content br").forEach(br => br.remove());
-
-            const mainStory = doc.querySelector(queryStoryContent)
-            if (!mainStory) {
-                readingElement.innerHTML = `<p style="text-align:center; color:red;">⚠ Lỗi: Không tìm thấy nội dung.</p>`;
-                return false;
-            }
-
-
-
-            const paragraphs = mainStory.querySelectorAll('p');
-            // Danh sách các cặp regex và chuỗi thay thế
-            const replacements = [
-                { search: /\·/g, replace: '' },
-                { search: /\!/g, replace: '.' },
-                { search: /tr.a/g, replace: 'tra' },
-                { search: /ɭϊếʍƈ/g, replace: 'liếm' },
-                { search: /hϊế͙p͙/g, replace: 'hiếp' },
-                { search: /(\p{L})\.(?=\p{L}(?![\s.!?])(?<![A-Z]))/gu, replace: '$1' }
-            ];
-
-            // Lặp qua từng thẻ <p> và áp dụng thay thế
-            paragraphs.forEach((p) => {
-                let text = p.textContent; // Lấy nội dung hiện tại
-                replacements.forEach(({ search, replace }) => {
-                    text = text.replace(search, replace);
-                });
-                p.innerHTML = wrappedSentences;
-            });
-
-            readingElement.innerHTML = mainStory.innerHTML;
-
-
-            const chapterTitle = doc.querySelector('center>h1');
-
-            // Tạo tiêu đề
-            const title = document.createElement("h4");
-            title.innerText = chapterTitle.textContent.trim();
-            readingElement.prepend(title);
-
-            const prevElement = doc.querySelector('.prev');
-            const prevHref = prevElement.getAttribute('href');
-
-            const nextElement = doc.querySelector('.next');
-            const nextHref = nextElement.getAttribute('href');
-
-            console.log({ prevHref, nextHref });
-            const htmlChapterHandler = htmlControl("", prevHref, nextHref)
-            readingElement.prepend(htmlChapterHandler);
-
 
         })()
 

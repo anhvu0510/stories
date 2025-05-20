@@ -1,0 +1,172 @@
+/* Responsive Styles */
+
+/* Mobile Styles (Small Screens) */
+@media (max-width: 576px) {
+  body {
+    font-size: 14px;
+  }
+  
+  #chapter-menu {
+    width: 260px;
+    left: -260px;
+  }
+  
+  #chapter-menu.open {
+    left: 0;
+  }
+  
+  .chapter-title {
+    font-size: 18px;
+  }
+  
+  .chapter p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  
+  /* #settings-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    top: 0;
+    left: 0;
+    transform: translate(0, 100%);
+    border-radius: 0;
+    width: 100%;
+    max-height: none;
+    padding: 0 10px
+  }
+  
+  #settings-modal.open {
+    transform: translate(0, 0);
+  }
+  
+  .settings-content {
+    padding: 12px;
+  }
+   */
+  .modal-header, .modal-footer {
+    padding: 12px;
+  }
+  
+  .float-menu-container {
+    bottom: 40px;
+    right: 10px;
+  }
+
+  #float-menu-toggle {
+    width: 30px;
+    height: 30px;
+    font-size: medium;
+  }
+
+
+  .setting-control {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .float-menu-button {
+      width: 30px;
+    height: 30px;
+    font-size: 12px;
+
+  }
+    
+  .float-menu-items {
+    gap: 16px;
+    right: 0;
+  }
+
+}
+
+/* Tablet Styles (Medium Screens) */
+/* @media (min-width: 577px) and (max-width: 768px) {
+  .chapter p {
+    font-size: 16px;
+  }
+  
+  #settings-modal {
+    width: 90%;
+    max-height: 80vh;
+  }
+} */
+
+/* Landscape Mode */
+/* @media (max-height: 500px) and (orientation: landscape) {
+  #story-header {
+    padding: 8px;
+  }
+  
+  #chapter-content {
+    padding: 12px;
+  }
+  
+  #settings-modal {
+    width: 90%;
+    height: 90%;
+    overflow-y: auto;
+  }
+  
+  .settings-section {
+    margin-bottom: 16px;
+  }
+  
+  .modal-header, .modal-footer {
+    padding: 12px;
+  }
+  
+  .float-menu-container {
+    bottom: 8px;
+    right: 8px;
+  }
+} */
+
+/* High DPI Screens */
+@media (min-resolution: 192dpi) {
+  .icon-btn, .float-menu-button, #float-menu-toggle {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Touch Device Specific */
+/* @media (hover: none) {
+  .icon-btn:hover,
+  .primary-btn:hover,
+  .secondary-btn:hover,
+  #menu-list li:hover a,
+  .float-menu-button:hover,
+  #float-menu-toggle:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .icon-btn,
+  .float-menu-button,
+  #menu-list li a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+} */
+
+/* Print Styles */
+/* @media print {
+  #story-header,
+  #chapter-menu,
+  .float-menu-container,
+  #menu-overlay,
+  #modal-overlay,
+  #settings-modal {
+    display: none !important;
+  }
+  
+  #chapter-content {
+    overflow: visible;
+    height: auto;
+    padding: 0;
+  }
+  
+  .chapter {
+    page-break-after: always;
+  }
+} */

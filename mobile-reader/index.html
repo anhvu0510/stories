@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile Reading Experience</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" aria-hidden="true"></div>
+    
+    <!-- Main Container -->
+    <div id="container">
+        <!-- Chapter Content Area -->
+        <div id="chapter-content"></div>
+        
+        <!-- Chapter Count Indicator -->
+        <div id="chapter-count-indicator">
+            <i class="fas fa-bookmark"></i>
+            <span id="current-chapter-display">0</span> / <span id="total-chapters-display">0</span>
+        </div>
+    </div>
+    
+    <!-- Bottom App Bar -->
+    <div id="bottom-app-bar">
+        <button id="toggle-chapters-btn" aria-label="Chapters">
+            <i class="fas fa-list-ul"></i>
+        </button>
+        <button id="regex-settings-btn" aria-label="Regex Settings">
+            <i class="fas fa-code"></i>
+        </button>
+        <button id="theme-settings-btn" aria-label="Theme">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button id="tts-btn" aria-label="Text to Speech">
+            <i class="fas fa-headphones"></i>
+        </button>
+        <button id="more-options-btn" aria-label="More Options">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+    </div>
+    
+    <!-- Chapters Sidebar -->
+    <div id="chapter-menu">
+        <div id="chapter-menu-header">
+            <h2 id="story-name">Reading Story</h2>
+            <button id="close-chapters" aria-label="Close Chapter Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <input type="file" id="file-input" accept=".txt,.TXT">
+        <label for="file-input" id="file-upload-btn">
+            <i class="fas fa-file-upload"></i> Choose File
+        </label>
+        <div id="search-box">
+            <input type="text" id="chapter-search" placeholder="Tìm kiếm chương...">
+            <i class="fas fa-search"></i>
+        </div>
+        <div id="chapter-info">
+            <div class="chapter-stat">
+                <span id="total-chapters">0</span>
+                <label>Chương</label>
+            </div>
+            <div class="chapter-stat">
+                <span id="current-progress">0%</span>
+                <label>Đã đọc</label>
+            </div>
+        </div>
+        <ul id="menu-list">
+            <!-- Chapter links will be dynamically added here -->
+        </ul>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div id="settings-panel">
+        <div id="settings-header">
+            <h3>Reading Settings</h3>
+            <button id="close-settings">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Text Size</h4>
+            <div class="slider-control">
+                <button id="decrease-font-size" aria-label="Decrease Font Size">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <input type="range" id="font-size-slider" min="14" max="30" value="18">
+                <button id="increase-font-size" aria-label="Increase Font Size">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <span id="font-size-display">18px</span>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Line Height</h4>
+            <div class="slider-control">
+                <button id="decrease-line-height" aria-label="Decrease Line Height">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <input type="range" id="line-height-slider" min="1.4" max="2.2" step="0.1" value="1.8">
+                <button id="increase-line-height" aria-label="Increase Line Height">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <span id="line-height-display">1.8</span>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Font Family</h4>
+            <div class="font-selector">
+                <button class="font-option selected" data-font="'Crimson Pro', serif">Crimson Pro</button>
+                <button class="font-option" data-font="'Nunito', sans-serif">Nunito</button>
+                <button class="font-option" data-font="'Palatino Linotype', serif">Palatino</button>
+                <button class="font-option" data-font="'Noto Serif', serif">Noto Serif</button>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Group Sentences</h4>
+            <div class="number-control">
+                <button id="decrease-sentence-group" aria-label="Decrease Group Size">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <span id="sentence-group-display">3</span>
+                <button id="increase-sentence-group" aria-label="Increase Group Size">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Reading Theme</h4>
+            <div class="theme-selector">
+                <button class="theme-option selected" data-theme="dark">
+                    <div class="theme-preview dark"></div>
+                    <span>Dark</span>
+                </button>
+                <button class="theme-option" data-theme="black">
+                    <div class="theme-preview black"></div>
+                    <span>Black</span>
+                </button>
+                <button class="theme-option" data-theme="sepia">
+                    <div class="theme-preview sepia"></div>
+                    <span>Sepia</span>
+                </button>
+            </div>
+        </div>
+        
+        <button id="save-settings">Save Settings</button>
+    </div>
+    
+    <!-- Advanced Settings Panel -->
+    <div id="advanced-settings">
+        <div id="advanced-settings-header">
+            <h3>Advanced Settings</h3>
+            <button id="close-advanced-settings">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Regex Replace <span id="regex-count">(0)</span></h4>
+            <p class="settings-description">Replace text patterns in your content using regular expressions.</p>
+            <div id="regex-settings">
+                <input type="text" id="regex-match" placeholder="Pattern to match" title="Enter a regular expression pattern">
+                <input type="text" id="regex-replace" placeholder="Replace with" title="Enter replacement text">
+                <button id="add-regex-replace" title="Add regex rule">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <ul id="regex-replace-list">
+                <!-- Regex patterns will be added here -->
+            </ul>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Text-to-Speech Settings</h4>
+            <div class="slider-control">
+                <label for="tts-speed">Speech Rate</label>
+                <input type="range" id="tts-speed" min="0.5" max="2" step="0.1" value="1">
+                <span id="tts-speed-display">1x</span>
+            </div>
+            <div class="checkbox-control">
+                <input type="checkbox" id="tts-highlight" checked>
+                <label for="tts-highlight">Highlight text during speech</label>
+            </div>
+        </div>
+        
+        <button id="save-advanced-settings">Save Settings</button>
+    </div>
+    
+    <!-- Regex Settings Panel -->
+    <div id="regex-modal">
+        <div id="regex-modal-header">
+            <h3>Regex Replacement Settings</h3>
+            <button id="close-regex-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Regex Replace <span id="regex-count-display">(0)</span></h4>
+            <div id="regex-settings-controls">
+                <input type="text" id="regex-match-input" placeholder="Match pattern">
+                <input type="text" id="regex-replace-input" placeholder="Replace with">
+                <button id="add-regex-rule">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <ul id="regex-rules-list">
+                <!-- Regex patterns will be added here -->
+            </ul>
+        </div>
+        
+        <button id="save-regex-settings">Save Regex Settings</button>
+    </div>
+    
+    <!-- Overlay for background dimming -->
+    <div id="overlay"></div>
+    
+    <!-- Script Files -->
+    <script src="fakeData.js"></script>
+    <script src="script.js"></script>
+    <script src="tts.js"></script>
+</body>
+</html>

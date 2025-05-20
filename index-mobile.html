@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VuLA Reading Stories</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --content-bg: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-color: #7367f0;
+            --border-color: #333;
+            --menu-bg: #1d1d1d;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+        
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            background-color: var(--accent-color);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 50px;
+            color: #fff;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-button {
+            display: block;
+            background-color: var(--accent-color);
+            color: #fff;
+            text-decoration: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .cta-button:hover, .cta-button:active {
+            background-color: #5d52d3;
+            transform: translateY(-2px);
+        }
+        
+        .secondary-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        .features {
+            margin: 40px 0;
+            text-align: left;
+        }
+        
+        .feature-item {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .feature-icon {
+            color: var(--accent-color);
+            font-size: 24px;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .feature-text h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .feature-text p {
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        footer {
+            margin-top: 40px;
+            color: #777;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+            
+            .app-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+            
+            .cta-button {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-icon">
+            <i class="fas fa-book-open"></i>
+        </div>
+        
+        <h1>VuLA Reading Stories</h1>
+        <p>Trải nghiệm đọc truyện tối ưu cho thiết bị di động với giao diện thân thiện, tối ưu hóa cho mắt và tiện lợi cho người dùng.</p>
+        
+        <a href="mobile-reader/index.html" class="cta-button">
+            <i class="fas fa-mobile-alt"></i> Mở Ứng Dụng Đọc Truyện
+        </a>
+        
+        <div>
+            <a href="reading-stories-1/index.html" class="secondary-link">Phiên Bản Gốc</a>
+            <a href="reading-stories-2/index.html" class="secondary-link">Phiên Bản 2</a>
+        </div>
+        
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="feature-text">
+                    <h3>Chế độ đọc tối ưu</h3>
+                    <p>Giao diện tối, tối ưu hóa cho mắt, giảm mỏi mắt khi đọc lâu</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="feature-text">
+                    <h3>Tương thích hoàn hảo với di động</h3>
+                    <p>Thiết kế phản hồi, tối ưu hóa cho Samsung S25 và iPhone 16 Pro</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-font"></i>
+                </div>
+                <div class="feature-text">
+                    <h3>Tùy chỉnh phông chữ và định dạng</h3>
+                    <p>Dễ dàng thay đổi kích thước, kiểu chữ và khoảng cách dòng</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <div class="feature-text">
+                    <h3>Chuyển văn bản thành giọng nói</h3>
+                    <p>Nghe truyện với tính năng đọc văn bản thành giọng nói tiên tiến</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2025 VuLA Reading Stories
+        </footer>
+    </div>
+</body>
+</html>

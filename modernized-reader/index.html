@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Story Reader</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/scroll-fix.css">
+</head>
+<body class="dark-mode">
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" aria-hidden="true">
+        <div class="spinner-inner"></div>
+    </div>
+    
+    <!-- App Container -->
+    <div id="app-container">
+        <!-- Header -->
+        <header id="story-header">
+            <div id="story-name">Story Reader</div>
+            <button id="regex-replace-btn" class="icon-btn" title="Regex Replace">
+                <i class="fa-solid fa-code"></i>
+            </button>
+        </header>
+
+        <!-- Content Area -->
+        <div id="content-container">
+            <!-- Menu Overlay -->
+            <div id="menu-overlay" aria-hidden="true"></div>
+            
+            <!-- Chapter Menu -->
+            <aside id="chapter-menu" aria-hidden="true">
+                <div class="menu-header">
+                    <h2>Chapters</h2>
+                    <button id="close-menu" class="icon-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="menu-search">
+                    <input type="text" id="chapter-search" placeholder="Search chapters...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <ul id="menu-list">
+                    <!-- Chapter links will be dynamically added here -->
+                </ul>
+            </aside>
+            
+            <!-- Story Content -->
+            <main id="chapter-content">
+                <!-- Chapter content will be dynamically loaded here -->
+                <div class="welcome-screen">
+                    <div class="welcome-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h2>Welcome to Story Reader</h2>
+                    <p>Upload a text file to start reading</p>
+                    <button id="welcome-upload-btn" class="primary-btn">
+                        <i class="fas fa-upload"></i> Upload Story
+                    </button>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Hidden File Input -->
+        <input type="file" id="file-input" accept=".txt,.TXT" style="position: absolute; opacity: 0; z-index: -1;">
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="modal-overlay" aria-hidden="true"></div>
+    <div id="settings-modal"  style="display: none;" aria-hidden="true">
+        <div class="modal-header">
+            <h3>Settings</h3>
+            <button id="close-settings" class="icon-btn"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Typography Settings -->
+            <div class="settings-section">
+                <h4>Typography</h4>
+                
+                <div class="setting-control">
+                    <label for="font-size">Font Size</label>
+                    <div class="slider-control">
+                        <button id="decrease-font-size" class="icon-btn small"><i class="fas fa-minus"></i></button>
+                        <div class="slider-container">
+                            <input type="range" id="font-size-slider" min="12" max="32" value="18" class="slider">
+                        </div>
+                        <button id="increase-font-size" class="icon-btn small"><i class="fas fa-plus"></i></button>
+                        <span id="font-size-display">18</span>
+                    </div>
+                </div>
+                
+                <div class="setting-control">
+                    <label for="lines-per-sentence">Group Sentences</label>
+                    <div class="slider-control">
+                        <button id="decrease-lines-per-sentence" class="icon-btn small"><i class="fas fa-minus"></i></button>
+                        <div class="slider-container">
+                            <input type="range" id="lines-per-sentence-slider" min="1" max="10" value="3" class="slider">
+                        </div>
+                        <button id="increase-lines-per-sentence" class="icon-btn small"><i class="fas fa-plus"></i></button>
+                        <span id="lines-per-sentence-display">3</span>
+                    </div>
+                </div>
+                
+                <div class="setting-control">
+                    <label for="font-family">Font Family</label>
+                    <select id="font-family" class="select-control">
+                        <option value="Nunito">Nunito</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Palatino Linotype">Palatino Linotype</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <!-- <button id="reset-settings" class="secondary-btn">Reset</button> -->
+            <button id="save-settings" class="primary-btn">Save</button>
+        </div>
+    </div>
+
+
+     <div id="settings-regex-modal" style="display: none;" aria-hidden="true">
+        <div class="modal-header">
+            <h3>Regex Replacement</h3>
+            <button id="close-settings-regex" class="icon-btn"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Typography Settings -->
+            
+            
+            <!-- Regex Replace Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h4>Regex Replace</h4>
+                    <span id="regex-count" class="badge">(0)</span>
+                </div>
+                
+                <div id="regex-settings">
+                    <div class="regex-inputs">
+                        <input type="text" id="regex-match" placeholder="Match pattern" class="input-control">
+                        <input type="text" id="regex-replace" placeholder="Replace with" class="input-control">
+                        <button id="add-regex-replace" class="icon-btn"><i class="fas fa-plus"></i></button>
+                    </div>
+                    
+                    <ul id="regex-replace-list">
+                        <!-- Regex items will be added here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <!-- <button id="reset-settings" class="secondary-btn">Reset</button> -->
+            <button id="save-settings-regex" class="primary-btn">Save</button>
+        </div>
+    </div>
+
+    <!-- Floating Action Menu -->
+    <div class="float-menu-container">
+        <button id="float-menu-toggle" type="button" aria-label="Menu">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="float-menu-items">
+            <button id="toggle-chapters-btn" class="float-menu-button" type="button" title="Chapters">
+                <i class="fas fa-list-ul"></i>
+            </button>
+            
+            <button id="open-settings-btn" class="float-menu-button" type="button" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="text-to-speech-btn" class="float-menu-button" type="button" title="Find highlighted text">
+                <i class="fas fa-search"></i>
+            </button>
+            <button id="upload-file-btn" class="float-menu-button" type="button" title="Upload file">
+                <i class="fas fa-upload"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/chapters.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/reader.js"></script>
+    <script src="js/float-menu.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
