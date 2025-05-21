@@ -16,6 +16,7 @@ class ChaptersManager {
         this.batchSize = CONFIG.ui.batchSize;
         this.maxElements = CONFIG.ui.maxChaptersInDom;
         this.lastScrollPosition = 0;
+        this.scrollDirection = '';
     }
 
     /**
@@ -226,37 +227,46 @@ class ChaptersManager {
 
         // Clear container
         container.innerHTML = '';
-
         // Load initial batch of chapters
         this.loadMoreData('down');
-
-        // Make sure container is properly initialized for scrolling
-        container.style.overflowY = 'auto';
 
         // Add scroll event listener
         container.addEventListener('scroll', Utils.throttle(() => {
             // Load more chapters when scrolling down
-            const currentScrollTop = container.scrollTop;
-            let scrollDirection = '';
+            const chapterContent = document.getElementById('chapter-content');
+            const currentChapterIndex = Utils.getVisibleChapter(chapterContent.childNodes);
 
-            if (currentScrollTop > this.lastScrollPosition) {
-                scrollDirection = 'down';
-            } else if (currentScrollTop < this.lastScrollPosition) {
+            const currentScrollTop = chapterContent.scrollTop;
+
+
+            let scrollDirection = '';
+            const firstChapter = +(chapterContent.firstChild.id.split('-')[1] ?? 0);
+            const lastChapter = +(chapterContent.lastChild.id.split('-')[1] ?? 0);
+
+
+            if (firstChapter === currentChapterIndex && currentScrollTop < this.lastScrollPosition) {
                 scrollDirection = 'up';
             }
 
-            if(scrollDirection) {
-                this.loadMoreData(scrollDirection);
+            else if (lastChapter === currentChapterIndex && currentScrollTop > this.lastScrollPosition) {
+                scrollDirection = 'down'
             }
+
+
+            if (scrollDirection) {
+                this.scrollDirection = scrollDirection;
+                this.loadMoreData(scrollDirection)
+            }
+
             // Save current scroll position
             this.saveScrollPosition();
-        }, 200));
+        }, 500));
 
         // Fix for mouse wheel scroll on desktop
-        container.addEventListener('wheel', (event) => {
-            // Allow default wheel behavior
-            event.stopPropagation();
-        }, { passive: true });
+        // container.addEventListener('wheel', (event) => {
+        //     // Allow default wheel behavior
+        //     event.stopPropagation();
+        // }, { passive: true });
 
         Utils.log('Lazy loading initialized');
     }
@@ -273,8 +283,7 @@ class ChaptersManager {
             // Get the last chapter ID in the DOM
             const next = +(
                 document.querySelector('#chapter-content')?.lastChild?.id?.split('-')[1] ?? 1
-            );
-            console.log({ next, currentIndex: this.currentIndex });
+            ) + 1;
 
             // Get the next batch of chapters
             const nextBatch = this.chapterData
@@ -293,7 +302,6 @@ class ChaptersManager {
                 }
             });
 
-            this.currentIndex += this.batchSize;
 
             // Remove excess chapters from the top
             while (container.children.length > this.maxElements) {
@@ -303,14 +311,11 @@ class ChaptersManager {
             // Adjust container height to match current content - this is key for lazy loading
             container.style.height = `${container.scrollHeight}px`;
         }
-        else if (direction === 'up' && this.currentIndex > this.batchSize) {
+        else if (direction === 'up') {
             // Get the first chapter ID in the DOM
             const prev = +(
                 document.querySelector('#chapter-content').firstChild?.id?.split('-')[1] ?? 1
             );
-
-            console.log({ prev, currentIndex: this.currentIndex });
-
             // Get the previous batch of chapters
             const previousBatch = this.chapterData
                 .filter(
@@ -320,7 +325,6 @@ class ChaptersManager {
                 )
                 .sort((a, b) => b.chapterNumber - a.chapterNumber);
 
-            // Prepend new chapters
             previousBatch.forEach((chapter) => {
                 if (!document.getElementById(`chapter-${chapter.chapterNumber}`)) {
                     const chapterDiv = this.createChapterElement(chapter);
@@ -328,7 +332,6 @@ class ChaptersManager {
                 }
             });
 
-            this.currentIndex -= this.batchSize;
 
             // Remove excess chapters from the bottom
             while (container.children.length > this.maxElements) {
@@ -353,15 +356,33 @@ class ChaptersManager {
         chapterDiv.classList.add('chapter');
         chapterDiv.id = `chapter-${chapter.chapterNumber}`;
 
-        const title = document.createElement('h3');
+        const title = document.createElement('div');
         title.classList.add('chapter-title');
         title.textContent = chapter.title;
         chapterDiv.appendChild(title);
 
+
+        const chapterContent = document.createElement('div');
+        chapterContent.classList.add('chapter-story');
+        chapterDiv.appendChild(chapterContent);
+
+        const storedReplacements = storageManager.load('regexReplacements') ?? [];
         chapter.content.forEach((paragraph) => {
+            storedReplacements.forEach(({ match, replace }) => {
+                const mathItem = match;
+                const replaceItem = replace;
+                if (mathItem.startsWith('/' && mathItem.endsWith('/'))) {
+                    paragraph = paragraph.replace(mathItem, replaceItem);
+                }
+                else {
+                    const regex = new RegExp(mathItem, 'gi');
+                    paragraph = paragraph.replace(regex, replaceItem);
+                }
+            });
+
             const p = document.createElement('p');
-            p.textContent = paragraph;
-            chapterDiv.appendChild(p);
+            p.textContent = paragraph
+            chapterContent.appendChild(p);
         });
 
         return chapterDiv;
@@ -383,7 +404,6 @@ class ChaptersManager {
                 index + this.batchSize
             );
 
-            this.currentIndex = index + this.batchSize;
 
             // Clear container and load the required batch
             container.innerHTML = '';
@@ -489,7 +509,7 @@ class ChaptersManager {
     restoreScrollPosition() {
         if (!storageManager) return;
 
-        const chapterNumber = storageManager.loadChapterNumber();
+        const chapterNumber = storageManager.loadChapterNumber() ?? 0;
         if (chapterNumber !== null) {
             this.scrollToChapter(chapterNumber);
         }
@@ -497,7 +517,7 @@ class ChaptersManager {
         const container = document.getElementById('chapter-content');
         if (!container) return;
 
-        const lastScrollPosition = storageManager.loadScrollPosition();
+        const lastScrollPosition = storageManager.loadScrollPosition() ?? 0;
         if (lastScrollPosition !== null) {
             // Use setTimeout to ensure scroll position is set after rendering
             setTimeout(() => {
@@ -513,7 +533,8 @@ class ChaptersManager {
      * Apply regex replacements to chapter content
      * @param {Array} regexReplacements - Array of regex replacement objects
      */
-    applyRegexReplacements(regexReplacements) {
+    applyRegexReplacements(regexReplacements, isRevert = false) {
+        console.log('Replacement', regexReplacements);
         if (!regexReplacements || !Array.isArray(regexReplacements) || regexReplacements.length === 0) {
             return;
         }
@@ -524,10 +545,21 @@ class ChaptersManager {
         // Apply each regex replacement
         regexReplacements.forEach(({ match, replace }) => {
             try {
-                const regex = new RegExp(match, 'g');
-
+                let mathItem = match;
+                let replaceItem = replace;
+                if (isRevert) {
+                    mathItem = replace;
+                    replaceItem = match
+                }
                 paragraphs.forEach(p => {
-                    p.textContent = p.textContent.replace(regex, replace);
+
+                    if (mathItem.startsWith('/' && mathItem.endsWith('/'))) {
+                        p.textContent = p.textContent.replace(mathItem, replaceItem);
+                    } else {
+                        const regex = new RegExp(mathItem, 'gi');
+                        p.textContent = p.textContent.replace(regex, replaceItem);
+                    }
+
                 });
             } catch (error) {
                 Utils.log('Error applying regex', { match, replace, error });

@@ -1,4 +1,4 @@
-// Storage functionality for persisting data
+// Storage functionality for persisting data - using reading-stories-1 style
 
 /**
  * StorageManager handles all data persistence for the application
@@ -8,7 +8,6 @@ class StorageManager {
    * Initializes the storage manager
    */
   constructor() {
-    this.prefix = CONFIG.storage.prefix;
     this.keys = CONFIG.storage.keys;
     this.currentStoryName = '';
   }
@@ -18,34 +17,16 @@ class StorageManager {
    * @param {string} storyName - Name of the current story
    */
   setCurrentStory(storyName) {
-    this.currentStoryName = Utils.sanitizeStoryName(storyName);
+    this.currentStoryName = storyName.toLowerCase().replace(/\s+/g, '_');
     
-    // Save last opened story
+    // Save last opened story in the global config
     this.saveGlobal(this.keys.lastStory, this.currentStoryName);
     
     Utils.log('Current story set', this.currentStoryName);
   }
   
   /**
-   * Creates a storage key prefixed with story name
-   * @param {string} key - The key to store
-   * @returns {string} - Prefixed storage key
-   */
-  getStoryKey(key) {
-    return `${this.prefix}${this.currentStoryName}_${key}`;
-  }
-  
-  /**
-   * Creates a global storage key (not specific to any story)
-   * @param {string} key - The key to store
-   * @returns {string} - Prefixed global key
-   */
-  getGlobalKey(key) {
-    return `${this.prefix}${key}`;
-  }
-  
-  /**
-   * Saves data for the current story
+   * Saves data for the current story using reading-stories-1 style
    * @param {string} key - Storage key
    * @param {*} data - Data to store
    */
@@ -55,17 +36,27 @@ class StorageManager {
       return;
     }
     
-    const storageKey = this.getStoryKey(key);
     try {
-      localStorage.setItem(storageKey, JSON.stringify(data));
-      Utils.log('Saved to storage', { key: storageKey, data });
+      let dataStore = {};
+      // Get existing data for this story
+      const existingData = localStorage.getItem(this.currentStoryName);
+      
+      if (!existingData) {
+        dataStore[key] = data;
+      } else {
+        const oldData = JSON.parse(existingData);
+        dataStore = { ...oldData, [key]: data };
+      }
+      
+      localStorage.setItem(this.currentStoryName, JSON.stringify(dataStore));
+      Utils.log('Saved to storage', { story: this.currentStoryName, key, data });
     } catch (error) {
       Utils.log('Error saving to storage', error);
     }
   }
   
   /**
-   * Loads data for the current story
+   * Loads data for the current story using reading-stories-1 style
    * @param {string} key - Storage key
    * @returns {*} - Stored data or null
    */
@@ -75,14 +66,15 @@ class StorageManager {
       return null;
     }
     
-    const storageKey = this.getStoryKey(key);
     try {
-      const data = localStorage.getItem(storageKey);
-      if (data === null) return null;
+      const data = localStorage.getItem(this.currentStoryName);
+      if (!data) return null;
       
       const parsedData = JSON.parse(data);
-      Utils.log('Loaded from storage', { key: storageKey, data: parsedData });
-      return parsedData;
+      const result = parsedData[key] !== undefined ? parsedData[key] : null;
+      
+      Utils.log('Loaded from storage', { story: this.currentStoryName, key, data: result });
+      return result;
     } catch (error) {
       Utils.log('Error loading from storage', error);
       return null;
@@ -95,10 +87,20 @@ class StorageManager {
    * @param {*} data - Data to store
    */
   saveGlobal(key, data) {
-    const storageKey = this.getGlobalKey(key);
     try {
-      localStorage.setItem(storageKey, JSON.stringify(data));
-      Utils.log('Saved global data', { key: storageKey, data });
+      // Using _global_ as the key for global settings
+      let globalData = {};
+      const existingData = localStorage.getItem('_global_');
+      
+      if (!existingData) {
+        globalData[key] = data;
+      } else {
+        const oldData = JSON.parse(existingData);
+        globalData = { ...oldData, [key]: data };
+      }
+      
+      localStorage.setItem('_global_', JSON.stringify(globalData));
+      Utils.log('Saved global data', { key, data });
     } catch (error) {
       Utils.log('Error saving global data', error);
     }
@@ -110,14 +112,15 @@ class StorageManager {
    * @returns {*} - Stored data or null
    */
   loadGlobal(key) {
-    const storageKey = this.getGlobalKey(key);
     try {
-      const data = localStorage.getItem(storageKey);
-      if (data === null) return null;
+      const data = localStorage.getItem('_global_');
+      if (!data) return null;
       
       const parsedData = JSON.parse(data);
-      Utils.log('Loaded global data', { key: storageKey, data: parsedData });
-      return parsedData;
+      const result = parsedData[key] !== undefined ? parsedData[key] : null;
+      
+      Utils.log('Loaded global data', { key, data: result });
+      return result;
     } catch (error) {
       Utils.log('Error loading global data', error);
       return null;
@@ -174,17 +177,20 @@ class StorageManager {
   }
   
   /**
+   * Gets the last opened story
+   * @returns {string} - Name of the last story or empty string
+   */
+  getLastStory() {
+    return this.loadGlobal(this.keys.lastStory) || '';
+  }
+  
+  /**
    * Clears all data for the current story
    */
   clearCurrentStoryData() {
     if (!this.currentStoryName) return;
     
-    // Get all keys for the current story
-    Object.values(this.keys).forEach(keyName => {
-      const fullKey = this.getStoryKey(keyName);
-      localStorage.removeItem(fullKey);
-    });
-    
+    localStorage.removeItem(this.currentStoryName);
     Utils.log('Cleared all data for current story', this.currentStoryName);
   }
   
@@ -192,14 +198,19 @@ class StorageManager {
    * Clears all story reader data
    */
   clearAllData() {
-    // Get all keys starting with our prefix
+    localStorage.removeItem('_global_');
+    
+    // Find all story entries and remove them
+    const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key.startsWith(this.prefix)) {
-        localStorage.removeItem(key);
+      // Skip non-story keys (those that have our old prefix)
+      if (!key.startsWith(this.prefix)) {
+        keysToRemove.push(key);
       }
     }
     
+    keysToRemove.forEach(key => localStorage.removeItem(key));
     Utils.log('Cleared all story reader data');
   }
 }

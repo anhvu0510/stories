@@ -2,9 +2,9 @@
 const CONFIG = {
   // Default settings
   defaults: {
-    fontFamily: 'Nunito',
-    fontSize: 18,
-    linesPerSentence: 3,
+    fontFamily: 'Palatino Linotype',
+    fontSize: 20,
+    linesPerSentence: 2,
     theme: 'dark', // 'light' or 'dark'
     autoScroll: false,
     scrollSpeed: 5,
@@ -19,7 +19,7 @@ const CONFIG = {
   // UI settings
   ui: {
     transitionSpeed: 300, // in ms
-    maxChaptersInDom: 6,
+    maxChaptersInDom: 4,
     batchSize: 2,
     menuWidth: 300, // in px
   },

@@ -217,7 +217,7 @@ class SettingsManager {
     
     // Update count display
     this.updateRegexCount();
-    
+    storageManager.save('regexReplacements', this.regexReplacements);
     Utils.log('Added regex replacement', replacement);
   }
   
@@ -261,8 +261,9 @@ class SettingsManager {
       );
       
       // Update count
-      this.updateRegexCount();
-      
+      chaptersManager.applyRegexReplacements([replacement], true);
+      storageManager.save('regexReplacements', this.regexReplacements);
+      this.updateRegexCount();      
       Utils.log('Removed regex replacement', replacement);
     });
     
@@ -273,6 +274,7 @@ class SettingsManager {
     
     // Add to list (at the top)
     regexReplaceList.insertBefore(listItem, regexReplaceList.firstChild);
+    chaptersManager.applyRegexReplacements([replacement]);
   }
   
   /**
@@ -281,7 +283,7 @@ class SettingsManager {
   updateRegexCount() {
     const countElement = document.getElementById('regex-count');
     if (countElement) {
-      countElement.textContent = `${this.regexReplacements.length}`;
+      countElement.textContent = `[ ${this.regexReplacements.length} ]`;
     }
   }
   
@@ -330,15 +332,12 @@ class SettingsManager {
     // Save settings to storage
     if (storageManager) {
       storageManager.saveSettings(this.settings);
-      
-      // Save regex replacements separately
-      storageManager.save('regexReplacements', this.regexReplacements);
     }
     
     // Apply regex replacements to current content
-    if (chaptersManager) {
-      chaptersManager.applyRegexReplacements(this.regexReplacements);
-    }
+    // if (chaptersManager) {
+    //   chaptersManager.applyRegexReplacements(this.regexReplacements);
+    // }
     
     // Close settings modal
     if (uiManager) {
@@ -396,9 +395,6 @@ class SettingsManager {
       
       // Apply default settings
       this.applySettings();
-      
-      Utils.showToast('Settings reset to defaults', 'info');
-      Utils.log('Settings reset to defaults');
     }
   }
   
@@ -435,29 +431,6 @@ class SettingsManager {
     if (fontFamilySelect) {
       fontFamilySelect.value = this.settings.fontFamily;
     }
-    
-    // Auto-scroll
-    const autoScrollToggle = document.getElementById('auto-scroll');
-    const scrollSpeedSlider = document.getElementById('scroll-speed-slider');
-    
-    if (autoScrollToggle) {
-      autoScrollToggle.checked = this.settings.autoScroll;
-    }
-    
-    if (scrollSpeedSlider) {
-      scrollSpeedSlider.disabled = !this.settings.autoScroll;
-      scrollSpeedSlider.value = this.settings.scrollSpeed;
-    }
-    
-    const scrollSpeedDisplay = document.getElementById('scroll-speed-display');
-    if (scrollSpeedDisplay) {
-      scrollSpeedDisplay.textContent = this.settings.scrollSpeed;
-    }
-    
-    // Regex replacements
-    this.regexReplacements.forEach(replacement => {
-      this.addRegexReplacementToUI(replacement);
-    });
   }
   
   /**
@@ -495,11 +468,15 @@ class SettingsManager {
     // Load settings
     const storedSettings = storageManager.loadSettings();
     this.settings = { ...this.settings, ...storedSettings };
-    
     // Load regex replacements
     const storedReplacements = storageManager.load('regexReplacements');
     if (storedReplacements && Array.isArray(storedReplacements)) {
       this.regexReplacements = storedReplacements;
+       const regexReplaceList = document.getElementById('regex-replace-list');
+       regexReplaceList.innerHTML = '';
+        this.regexReplacements.forEach(replacement => {
+          this.addRegexReplacementToUI(replacement);
+        });
     }
     
     // Update UI

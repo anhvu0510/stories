@@ -12,12 +12,12 @@ function initApp() {
   ensureComponentsInitialized();
   
   // Load application state
-  restoreAppState();
+  // restoreAppState();
   
   // Register service worker for offline support (if in production)
-  if (!CONFIG.debug) {
-    registerServiceWorker();
-  }
+  // if (!CONFIG.debug) {
+  //   registerServiceWorker();
+  // }
   
   Utils.log('App initialization complete');
 }
@@ -90,7 +90,6 @@ function setupErrorHandling() {
 function restoreAppState() {
   // Check if we have a previously loaded story
   const lastStory = storageManager.loadGlobal(CONFIG.storage.keys.lastStory);
-  
   if (lastStory) {
     storageManager.setCurrentStory(lastStory);
     

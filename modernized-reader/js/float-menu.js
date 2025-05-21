@@ -70,3 +70,4 @@ class FloatMenuManager {
   }
 }
 
+// Create an instance when the DOM is loaded

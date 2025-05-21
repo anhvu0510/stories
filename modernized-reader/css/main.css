@@ -101,7 +101,7 @@ body.dark-mode {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   position: relative;
   z-index: 10;
   background-color: var(--bg-secondary-light);
@@ -144,6 +144,7 @@ body.dark-mode #story-header {
   position: relative;
   overflow: hidden;
   /* width: 100%; */
+  padding: 0px var(--spacing-md);
   height: calc(100% - 60px); /* Trừ đi chiều cao của header */
 }
 
@@ -152,7 +153,7 @@ body.dark-mode #story-header {
   flex: 1;
   overflow-y: auto !important;
   overflow-x: hidden;
-  padding: var(--spacing-lg);
+  /* padding: var(--spacing-lg); */
   background-color: var(--bg-primary-light);
   transition: background-color var(--transition-medium);
   scroll-behavior: smooth;
@@ -175,19 +176,22 @@ body.dark-mode #chapter-content {
 /* Chapter styling */
 .chapter {
   margin-bottom: var(--spacing-xl);
+  /* padding: var(--spacing-sm); ; */
 }
 
 .chapter-title {
-  font-size: var(--text-xl);
+  font-size: var(--text-md);
   font-weight: 700;
+  text-align: center;
+  width: 100%;
   margin-bottom: var(--spacing-lg);
   color: var(--accent-light);
   position: sticky;
-  top: -25px;
+  top: -5px;
   left: 0;
   background-color: var(--bg-primary-light);
-  padding: 10px 0px;
-  z-index: 11;
+  padding-top: 8px;
+  z-index: 15;
   transition: 
     background-color var(--transition-medium),
     color var(--transition-medium);
@@ -200,11 +204,15 @@ body.dark-mode .chapter-title {
 
 .chapter p {
   margin-bottom: var(--spacing-md);
-  font-size: 18px;
-  line-height: 1.8;
+  padding: var(--spacing-sm);
   text-align: justify;
-  word-spacing: 4px;
-  list-style: 1.52rem;
+  text-rendering: optimizelegibility;
+  font-weight: normal;
+  white-space: break-spaces;
+  word-spacing: 2px;
+  /* font-size: 18px; */
+  line-height: 1.8;
+  word-break: keep-all
 }
 
 /* Welcome Screen */
@@ -221,7 +229,7 @@ body.dark-mode .chapter-title {
 .welcome-icon {
   font-size: 64px;
   color: var(--accent-light);
-  margin-bottom: var(--spacing-xl);
+  /* margin-bottom: var(--spacing-xl); */
   opacity: 0.8;
 }
 
@@ -231,7 +239,7 @@ body.dark-mode .welcome-icon {
 
 .welcome-screen h2 {
   font-size: var(--text-2xl);
-  margin-bottom: var(--spacing-md);
+  /* margin-bottom: var(--spacing-md); */
 }
 
 .welcome-screen p {
@@ -276,23 +284,6 @@ body.dark-mode .spinner-inner {
   100% { transform: rotate(360deg); }
 }
 
-/* Mobile Optimization */
-@media (max-width: 768px) {
-  #story-header {
-    padding: var(--spacing-sm);
-  }
-  
-  #chapter-content {
-    padding: var(--spacing-md);
-  }
-  
-  .chapter-title {
-    font-size: var(--text-lg);
-  }
-  
-  .chapter p {
-    font-size: 16px;
-    line-height: 1.7;
-    height: auto;
-  }
+.msreadout-word-highlight {
+  padding: 0 0px !important;
 }

@@ -30,7 +30,7 @@ class UIManager {
     const toggleChaptersBtn = document.getElementById('toggle-chapters-btn');
     if (toggleChaptersBtn) {
       // Utils.addClickEvent( toggleChaptersBtn,this.toggleChapterMenu.bind(this));
-      Utils.addClickEvent(toggleChaptersBtn, this.toggleChapterMenu.bind(this));
+      Utils.addClickEvent(toggleChaptersBtn, this.toggleChapterMenu.bind(this, toggleChaptersBtn));
     }
 
     // Close menu when clicking overlay
@@ -231,6 +231,7 @@ class UIManager {
 
     const chapterMenu = document.getElementById('chapter-menu');
     const menuOverlay = document.getElementById('menu-overlay');
+    
 
     if (!chapterMenu || !menuOverlay) {
       Utils.log('Menu elements not found');
@@ -255,6 +256,7 @@ class UIManager {
 
     const chapterMenu = document.getElementById('chapter-menu');
     const menuOverlay = document.getElementById('menu-overlay');
+    const icon = document.querySelector('#toggle-chapters-btn i');
 
     if (!chapterMenu || !menuOverlay) {
       console.error('Menu elements not found!');
@@ -273,6 +275,7 @@ class UIManager {
 
     // Update accessibility attribute
     chapterMenu.setAttribute('aria-hidden', 'false');
+    icon.className = "fa-regular fa-circle-xmark";
 
     // Highlight active chapter
     if (window.chaptersManager) {
@@ -288,6 +291,7 @@ class UIManager {
   closeChapterMenu() {
     const chapterMenu = document.getElementById('chapter-menu');
     const menuOverlay = document.getElementById('menu-overlay');
+     const icon = document.querySelector('#toggle-chapters-btn i');
 
     if (!chapterMenu || !menuOverlay) {
       console.error('Menu elements not found!');
@@ -297,6 +301,7 @@ class UIManager {
     // Close menu with animation
     chapterMenu.classList.remove('open');
     menuOverlay.classList.remove('open');
+     icon.className = "fas fa-list-ul";
 
     // Update accessibility attribute
     chapterMenu.setAttribute('aria-hidden', 'true');

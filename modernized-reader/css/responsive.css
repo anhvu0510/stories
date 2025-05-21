@@ -7,8 +7,8 @@
   }
   
   #chapter-menu {
-    width: 260px;
-    left: -260px;
+    width: 85%;
+    left: -85%;
   }
   
   #chapter-menu.open {
@@ -19,10 +19,6 @@
     font-size: 18px;
   }
   
-  .chapter p {
-    font-size: 15px;
-    line-height: 1.6;
-  }
   
   /* #settings-modal {
     width: 100%;
@@ -79,6 +75,24 @@
   }
 
 }
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  #story-header {
+    /* padding: var(--spacing-sm); */
+  }
+  
+  #chapter-content {
+    /* padding: var(--spacing-md); */
+  }
+  
+  .chapter-title {
+    font-size: var(--text-lg);
+  }
+
+}
+
+
 
 /* Tablet Styles (Medium Screens) */
 /* @media (min-width: 577px) and (max-width: 768px) {

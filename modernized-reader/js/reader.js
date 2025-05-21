@@ -36,7 +36,7 @@ class ReaderManager {
     }
     
     // Text-to-speech button
-    const textToSpeechBtn = document.getElementById('text-to-speech-btn');
+    const textToSpeechBtn = document.getElementById('scroll-to-current-read');
     if (textToSpeechBtn) {
       Utils.addClickEvent(textToSpeechBtn, this.scrollToHighlightedWord.bind(this));
     }
@@ -209,33 +209,17 @@ class ReaderManager {
    * Scroll to a highlighted word in the document
    */
   scrollToHighlightedWord() {
-    const highlightedElements = document.querySelectorAll('.msreadout-word-highlight');
+    const highlightedElements = document.querySelector('.msreadout-word-highlight');
     
-    if (highlightedElements.length > 0) {
-      // Find the first highlighted element
-      const firstHighlighted = highlightedElements[0];
+    if (highlightedElements) {
       
       // Scroll to the element with smooth animation
-      firstHighlighted.scrollIntoView({
+      highlightedElements.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
-      
-      // Add extra highlighting temporarily
-      firstHighlighted.classList.add('extra-highlight');
-      setTimeout(() => {
-        firstHighlighted.classList.remove('extra-highlight');
-      }, 2500);
-      
       Utils.log('Scrolled to highlighted word');
       return true;
-    } else {
-      Utils.log('No highlighted elements found');
-      Utils.showToast('No highlighted text found', 'info');
-      
-      // Create a sample highlight for testing
-      this.createSampleHighlight();
-      return false;
     }
   }
   
