@@ -62,11 +62,16 @@ class ReaderManager {
     if (!file) return;
     
     try {
-      // Validate file type
-      const fileExt = file.name.split('.').pop().toLowerCase();
-      if (!CONFIG.file.acceptedTypes.includes(`.${fileExt}`)) {
-        Utils.showToast('Please select a valid text file (.txt)', 'error');
-        return;
+      // Check if this is a compressed story file
+      const isCompressedStory = Utils.isCompressedStoryFile(file);
+      
+      // For non-compressed files, validate file type
+      if (!isCompressedStory) {
+        const fileExt = file.name.split('.').pop().toLowerCase();
+        if (!CONFIG.file.acceptedTypes.includes(`.${fileExt}`)) {
+          Utils.showToast('Please select a valid text file (.txt) or story file (.story.bin)', 'error');
+          return;
+        }
       }
       
       // Validate file size
@@ -77,7 +82,19 @@ class ReaderManager {
       
       // Process file with chapters manager
       if (chaptersManager) {
-        await chaptersManager.processFile(file);
+        if (isCompressedStory) {
+          // Handle compressed story file
+          Utils.log('Loading compressed story file', file.name);
+          try {
+            await chaptersManager.loadCompressedStory(file);
+          } catch (err) {
+            Utils.log('Error loading compressed story file', err);
+            Utils.showToast('Failed to load compressed story. File may be corrupted.', 'error');
+          }
+        } else {
+          // Process regular text file
+          await chaptersManager.processFile(file);
+        }
       }
       
     } catch (error) {

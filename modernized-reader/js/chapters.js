@@ -26,10 +26,22 @@ class ChaptersManager {
      */
     async processFile(file) {
         try {
-
             uiManager.showLoading();
             Utils.log('Processing file', file.name);
 
+            // Get story name from file name
+            // const storyName = file.name.replace(/\.[^/.]+$/, '');
+            
+            // Check if we already have a compressed version of this story
+            // if (this.checkAndLoadCompressedStory(storyName)) {
+            //     Utils.log('Loaded compressed version of story', storyName);
+            //     uiManager.hideLoading();
+            //     return this.chapterData;
+            // }
+            
+            // If no compressed version exists, process the file normally
+            Utils.log('No compressed version found, processing file');
+            
             // Read file content
             const content = await this.readFileContent(file);
 
@@ -70,6 +82,24 @@ class ChaptersManager {
 
             Utils.log('File processing complete', chapters.length + ' chapters');
             Utils.showToast(`"${storyName}" loaded with ${chapters.length} chapters`, 'success');
+            
+            // Compress and save chapters if there are enough chapters
+            // Skip compression if the story was loaded from a compressed file
+            // const wasLoadedFromCompressedFile = file.name.toLowerCase().endsWith('.story.bin');
+            // if (chapters.length > 5 && !wasLoadedFromCompressedFile) {
+            //     // Use setTimeout to avoid blocking the UI
+            //     setTimeout(() => {
+            //         this.compressAndSaveChapters(chapters, storyName)
+            //             .then(success => {
+            //                 if (success) {
+            //                     Utils.log('Story compressed and saved to storage successfully');
+            //                 }
+            //             })
+            //             .catch(err => {
+            //                 Utils.log('Error in background compression process', err);
+            //             });
+            //     }, 1000);
+            // }
 
             return chapters;
         } catch (error) {
@@ -567,5 +597,400 @@ class ChaptersManager {
         });
 
         Utils.log('Applied regex replacements', regexReplacements.length);
+    }
+
+    /**
+     * Checks if the browser supports the compression features needed
+     * @returns {boolean} - Whether compression is supported
+     */
+    checkCompressionSupport() {
+        const hasCompressionStream = typeof CompressionStream !== 'undefined';
+        const hasDecompressionStream = typeof DecompressionStream !== 'undefined';
+        
+        if (!hasCompressionStream || !hasDecompressionStream) {
+            Utils.log('Compression features not supported in this browser', { 
+                compression: hasCompressionStream, 
+                decompression: hasDecompressionStream 
+            });
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Compresses and saves chapters data to localStorage
+     * @param {Array} chapters - Array of chapter objects from splitIntoChapters
+     * @param {string} storyName - Name of the story
+     * @returns {Promise<boolean>} - True if compression and saving succeeded
+     */
+    async compressAndSaveChapters(chapters, storyName) {
+        if (!chapters || chapters.length === 0) {
+            Utils.log('No chapters to compress');
+            return false;
+        }
+        
+        // Check browser compatibility for compression features
+        if (!this.checkCompressionSupport()) {
+            Utils.showToast('Story compression not supported in this browser', 'warning');
+            return false;
+        }
+
+        try {
+            Utils.log('Starting compression of', chapters.length, 'chapters');
+            
+            // Step 1: Build a global dictionary of words
+            const allWords = new Set();
+            const allTitles = [];
+            
+            // Extract all words from all chapters and collect titles
+            chapters.forEach(chapter => {
+                // Add title words to dictionary
+                allTitles.push(chapter.title);
+                
+                // Process content
+                if (Array.isArray(chapter.content)) {
+                    chapter.content.forEach(text => {
+                        const words = text.split(/\s+/);
+                        words.forEach(word => allWords.add(word));
+                    });
+                }
+            });
+            
+            // Convert set to array
+            const dictionary = Array.from(allWords);
+            Utils.log('Dictionary built with', dictionary.length, 'unique words');
+            
+            // Step 2: Replace words with dictionary indices
+            const compressedChapters = chapters.map(chapter => {
+                // Keep chapter number as is
+                const compressedChapter = {
+                    chapterNumber: chapter.chapterNumber,
+                    title: chapter.title // Keep title for now, we'll compress titles separately
+                };
+                
+                // Compress content by replacing words with indices
+                if (Array.isArray(chapter.content)) {
+                    compressedChapter.content = chapter.content.map(text => {
+                        const words = text.split(/\s+/);
+                        return words.map(word => {
+                            const index = dictionary.indexOf(word);
+                            return index;
+                        });
+                    });
+                }
+                
+                return compressedChapter;
+            });
+            
+            // Step 3: Process titles using a separate technique
+            
+            // Step 4: Structure the data for maximum compression
+            const compressedData = {
+                storyName,
+                dictionary, // Global word dictionary
+                titles: allTitles, // Array of all titles
+                chapters: compressedChapters.map(chapter => ({
+                    num: chapter.chapterNumber, // Use shorter key name
+                    tidx: allTitles.indexOf(chapter.title), // Index to titles array
+                    cont: chapter.content // Already compressed content
+                }))
+            };
+            
+            // Step 5: Serialize the data
+            const jsonString = JSON.stringify(compressedData);
+            
+            // Step 6: Apply GZIP compression using CompressionStream
+            const compressedBlob = await this._compressWithGzip(jsonString);
+            
+            // Step 7: Save the compressed file
+            const fileName = `${storyName.toLowerCase().replace(/\s+/g, '_')}.story.bin`;
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(compressedBlob);
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            const compressionStats = {
+                storyName,
+                fileName,
+                size: Utils.formatFileSize(compressedBlob.size),
+                originalSize: Utils.formatFileSize(jsonString.length),
+                compressionRatio: `${(jsonString.length / compressedBlob.size).toFixed(2)}x`
+            };
+
+            Utils.log('Story compressed and saved', compressionStats);
+            
+            // Show more detailed success message
+            Utils.showToast(`"${storyName}" compressed and saved successfully. Size: ${compressionStats.size} (${compressionStats.compressionRatio}x compression)`, 'success');
+            
+            // Show additional info about what to do with the file
+            setTimeout(() => {
+                Utils.showToast('You can reload this compressed story file later for faster loading', 'info');
+            }, 3000);
+            
+            return true;
+        } catch (error) {
+            Utils.log('Error compressing chapters', error);
+            Utils.showToast('Error compressing story data', 'error');
+            return false;
+        }
+    }
+    
+    /**
+     * Helper method to compress data with GZIP
+     * @private
+     * @param {string} data - Data to compress
+     * @returns {Promise<Blob>} - Compressed data as Blob
+     */
+    async _compressWithGzip(data) {
+        try {
+            // Check for CompressionStream support
+            if (typeof CompressionStream === 'undefined') {
+                Utils.log('CompressionStream not supported, using fallback compression');
+                return new Blob([data], { type: 'application/octet-stream' });
+            }
+            
+            // Convert string to Uint8Array
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(data);
+            
+            // Create a compression stream
+            const cs = new CompressionStream('gzip');
+            const writer = cs.writable.getWriter();
+            writer.write(bytes);
+            writer.close();
+            
+            // Return compressed data as blob
+            return new Response(cs.readable).blob();
+        } catch (error) {
+            Utils.log('Compression error, using uncompressed data', error);
+            return new Blob([data], { type: 'application/octet-stream' });
+        }
+    }
+    
+    /**
+     * Loads compressed story data from a file
+     * @param {File} file - Compressed story file
+     * @returns {Promise<Array>} - Decompressed chapters array
+     */
+    async loadCompressedStory(file) {
+        try {
+            Utils.log('Loading compressed story file', file.name);
+            
+            // Read the file content
+            const compressedData = await this._readCompressedFile(file);
+            
+            // Parse the JSON
+            const parsedData = JSON.parse(compressedData);
+            const { dictionary, titles, chapters, storyName } = parsedData;
+            
+            if (!dictionary || !chapters || !Array.isArray(chapters)) {
+                throw new Error('Invalid compressed story format');
+            }
+            
+            Utils.log('Decompressing story', storyName, 'with', chapters.length, 'chapters');
+            
+            // Rebuild chapters from compressed format
+            const decompressedChapters = chapters.map(chapter => {
+                // Get chapter title from titles array
+                const title = titles[chapter.tidx] || `Chapter ${chapter.num}`;
+                
+                // Decompress content
+                const content = chapter.cont.map(sentenceIndices => {
+                    // Convert indices back to words
+                    return sentenceIndices.map(index => dictionary[index] || '').join(' ');
+                });
+                
+                return {
+                    chapterNumber: chapter.num,
+                    title,
+                    content
+                };
+            });
+            
+            // Update UI with story name
+            if (window.uiManager) {
+                window.uiManager.updateStoryTitle(storyName);
+            }
+            
+            Utils.log('Story decompression complete', decompressedChapters.length, 'chapters');
+            Utils.showToast(`"${storyName}" loaded with ${decompressedChapters.length} chapters (compressed file)`, 'success');
+            
+            // Since this is a faster loading method, let's inform the user
+            if (storyName && decompressedChapters.length > 10) {
+                setTimeout(() => {
+                    Utils.showToast('Using compressed file format for faster loading', 'info');
+                }, 2000);
+            }
+            
+            return decompressedChapters;
+        } catch (error) {
+            Utils.log('Error decompressing story file', error);
+            
+            // Provide more specific error messages based on the error type
+            if (error.name === 'SyntaxError') {
+                Utils.showToast('Error: The compressed story file is corrupted or invalid', 'error');
+            } else if (error.message && error.message.includes('Invalid compressed story format')) {
+                Utils.showToast('Error: The story file format is not compatible', 'error');
+            } else {
+                Utils.showToast('Error loading compressed story file', 'error');
+            }
+            
+            throw error;
+        }
+    }
+    
+    /**
+     * Helper to read and decompress file content
+     * @private
+     * @param {File} file - Compressed file
+     * @returns {Promise<string>} - Decompressed string data
+     */
+    async _readCompressedFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            
+            reader.onload = async (event) => {
+                try {
+                    const arrayBuffer = event.target.result;
+                    
+                    // Check if we need to decompress (look for gzip magic number)
+                    const firstBytes = new Uint8Array(arrayBuffer.slice(0, 2));
+                    const isGzipped = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
+                    
+                    if (isGzipped && typeof DecompressionStream !== 'undefined') {
+                        // Decompress using DecompressionStream
+                        const ds = new DecompressionStream('gzip');
+                        const writer = ds.writable.getWriter();
+                        writer.write(new Uint8Array(arrayBuffer));
+                        writer.close();
+                        
+                        // Read decompressed data
+                        const decompressedResponse = new Response(ds.readable);
+                        const decompressedText = await decompressedResponse.text();
+                        resolve(decompressedText);
+                    } else {
+                        // Not compressed or DecompressionStream not available
+                        const text = new TextDecoder().decode(arrayBuffer);
+                        resolve(text);
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            
+            reader.onerror = (error) => reject(error);
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    /**
+     * Check if a compressed version of the story exists and load it
+     * @param {string} storyName - Name of the story to check for
+     * @returns {boolean} - True if compressed story was found and loaded
+     */
+    checkAndLoadCompressedStory(storyName) {
+        if (!storyName) return false;
+        
+        const storageKey = `compressed_${storyName.toLowerCase().replace(/\s+/g, '_')}`;
+        
+        try {
+            // Try to get from localStorage first
+            let compressedData = localStorage.getItem(storageKey);
+            
+            // If not in localStorage, check sessionStorage
+            if (!compressedData) {
+                compressedData = sessionStorage.getItem(storageKey);
+            }
+            
+            // If still not found, return false
+            if (!compressedData) {
+                return false;
+            }
+            
+            // Parse the compressed data
+            const parsedData = JSON.parse(compressedData);
+            
+            // Validate data structure
+            if (!parsedData.dictionary || !parsedData.chapters || !Array.isArray(parsedData.chapters)) {
+                Utils.log('Invalid compressed story format');
+                return false;
+            }
+            
+            // Decompress and load the story
+            this.loadDecompressedStory(parsedData);
+            
+            Utils.log('Loaded compressed story from storage', {
+                storyName,
+                chaptersCount: parsedData.chapters.length
+            });
+            
+            return true;
+        } catch (error) {
+            Utils.log('Error loading compressed story', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Load a story from decompressed data
+     * @param {Object} decompressedData - The decompressed story data
+     */
+    loadDecompressedStory(decompressedData) {
+        const { dictionary, titles, chapters, storyName } = decompressedData;
+        
+        // Rebuild chapters from compressed format
+        this.chapterData = chapters.map(chapter => {
+            // Get chapter title from titles array
+            const title = titles[chapter.tidx] || `Chapter ${chapter.num}`;
+            
+            // Decompress content
+            let content;
+            
+            // Check if content is array of arrays (sentence arrays)
+            if (Array.isArray(chapter.cont) && Array.isArray(chapter.cont[0])) {
+                content = chapter.cont.map(sentenceIndices => {
+                    // Convert indices back to words
+                    return sentenceIndices.map(index => dictionary[index] || '').join(' ');
+                });
+            } else {
+                // Fallback if content format is different
+                content = [`[Content for chapter ${chapter.num}]`];
+            }
+            
+            return {
+                chapterNumber: chapter.num,
+                title,
+                content
+            };
+        });
+        
+        // Update UI with story name
+        if (window.uiManager) {
+            window.uiManager.updateStoryTitle(storyName);
+        }
+        
+        // Set story context for storage
+        if (window.storageManager) {
+            window.storageManager.setCurrentStory(storyName);
+        }
+        
+        // Populate the chapter menu
+        this.populateChapterMenu(this.chapterData);
+        
+        // Initialize lazy loading of chapter content
+        this.initLazyLoading();
+        
+        // Apply stored settings
+        if (window.settingsManager) {
+            window.settingsManager.applyStoredSettings();
+        }
+        
+        // Restore saved scroll position
+        this.restoreScrollPosition();
+        
+        Utils.log('Story decompression complete', this.chapterData.length, 'chapters');
+        Utils.showToast(`"${storyName}" loaded with ${this.chapterData.length} chapters`, 'success');
     }
 }

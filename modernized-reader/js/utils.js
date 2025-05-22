@@ -256,4 +256,25 @@ static addClickEventWithDebounce = function (element, handler, delay = 1000) {
       }, delay);
     });
   };
+
+  /**
+   * Check if a file is a compressed story file
+   * @param {File} file - File to check
+   * @returns {boolean} - True if file is a compressed story file
+   */
+  static isCompressedStoryFile(file) {
+    if (!file) return false;
+    return file.name.toLowerCase().endsWith('.story.bin');
+  }
+  
+  /**
+   * Format file size into a human-readable string
+   * @param {number} bytes - File size in bytes
+   * @returns {string} - Formatted file size
+   */
+  static formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+    else return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
 }
