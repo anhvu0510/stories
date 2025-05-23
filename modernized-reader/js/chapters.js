@@ -1,5 +1,6 @@
 // Chapters management functionality
 
+
 /**
  * ChaptersManager handles chapter loading, parsing, and display
  */
@@ -52,12 +53,10 @@ class ChaptersManager {
             const content = await this.readFileContent(file);
 
             // Get lines per sentence setting
-            const linesPerSentence = settingsManager ?
-                settingsManager.getSettingValue('linesPerSentence') :
-                CONFIG.defaults.linesPerSentence;
+            
 
             // Split content into chapters
-            const chapters = this.splitIntoChapters(content, linesPerSentence);
+            const chapters = this.splitIntoChapters(content);
             this.chapterData = chapters;
 
             // Update the story name based on the file name
@@ -189,14 +188,11 @@ class ChaptersManager {
                 .filter(Boolean)
                 .map((line) => line.trim());
 
-            const combinedContent = Utils.chunkArray(contentLines, linesPerSentence).map(
-                (chunk) => chunk.join("")
-            );
-
+            // const combinedContent = Utils.chunkArray(contentLines, linesPerSentence).map((chunk) => chunk.join(""));
             return {
                 chapterNumber,
                 title: `Chương ${chapterNumber} ${chapterName.trim()}`,
-                content: combinedContent,
+                content: contentLines,
             };
         });
     }
@@ -398,7 +394,7 @@ class ChaptersManager {
      * @param {Object} chapter - Chapter data
      * @returns {HTMLElement} - Chapter div element
      */
-    createChapterElement(chapter, direction) {
+    createChapterElement(chapter) {
 
         const chapterDiv = document.createElement('div');
         chapterDiv.classList.add('chapter');
@@ -414,23 +410,33 @@ class ChaptersManager {
         chapterContent.classList.add('chapter-story');
         chapterDiv.appendChild(chapterContent);
 
-        const storedReplacements = storageManager.load('regexReplacements') ?? [];
-        chapter.content.forEach((paragraph, index) => {
-            storedReplacements.forEach(({ match, replace }) => {
+        const storedReplacements = [
+            ...storageManager.load('regexReplacements') ?? [],
+            ...(CONFIG.defaults.regexReplacements ?? [])
+        ];
+
+        const linesPerSentence = settingsManager ? settingsManager.getSettingValue('linesPerSentence') :CONFIG.defaults.linesPerSentence;
+
+        const paragraphs =  Utils.chunkArray(chapter.content, linesPerSentence);
+        paragraphs.forEach((paragraph, index) => {
+            let sentences = paragraph.join(' ').trim();
+            storedReplacements.forEach(({ match, replace, isPattern }) => {
                 const mathItem = match;
                 const replaceItem = replace;
-                if (mathItem.startsWith('/' && mathItem.endsWith('/'))) {
-                    paragraph = paragraph.replace(mathItem, replaceItem);
+                console.log('match', mathItem, 'replace', replaceItem);
+                if (isPattern) {
+                    sentences = sentences.replace(mathItem, replaceItem);
+                    console.log('sentences', sentences);
                 }
                 else {
                     const regex = new RegExp(mathItem, 'gi');
-                    paragraph = paragraph.replace(regex, replaceItem);
+                    sentences = sentences.replace(regex, replaceItem);
                 }
             });
 
             const p = document.createElement('p');
             p.id = `items-${chapter.chapterNumber}-${index}`;
-            p.textContent = paragraph
+            p.textContent = sentences;      
             chapterContent.appendChild(p);
         });
         return chapterDiv;

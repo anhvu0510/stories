@@ -2,20 +2,28 @@
 const CONFIG = {
   // Default settings
   defaults: {
-    fontFamily: 'Palatino Linotype',
+    fontFamily: "Palatino Linotype",
     fontSize: 20,
     linesPerSentence: 2,
-    theme: 'dark', // 'light' or 'dark'
+    theme: "dark", // 'light' or 'dark'
     autoScroll: false,
     scrollSpeed: 5,
+    regexReplacements: [
+      { match: /\!/g, replace: "." },
+      { match: /\·/g, replace: "" },
+      { match: /\?/g, replace: "." },
+      { match: /\s+/g, replace: " " },
+      { match: /^\s+|\s+$/g, replace: " " },
+      { match: /(?:\s*\.\s*){2,}/g, replace: "." },
+    ],
   },
-  
+
   // File settings
   file: {
     maxSize: 10 * 1024 * 1024, // 10MB
-    acceptedTypes: ['.txt', '.TXT'],
+    acceptedTypes: [".txt", ".TXT"],
   },
-  
+
   // UI settings
   ui: {
     transitionSpeed: 300, // in ms
@@ -23,26 +31,26 @@ const CONFIG = {
     batchSize: 2,
     menuWidth: 300, // in px
   },
-  
+
   // Local storage keys
   storage: {
-    prefix: 'story_reader_',
+    prefix: "story_reader_",
     keys: {
-      settings: 'settings',
-      position: 'position',
-      lastStory: 'last_story',
-      chapterNumber: 'chapter_number',
+      settings: "settings",
+      position: "position",
+      lastStory: "last_story",
+      chapterNumber: "chapter_number",
     },
   },
-  
+
   // Debug mode (set to false in production)
   debug: true,
-  
+
   // Version
-  version: '1.0.0',
+  version: "1.0.0",
 };
 
 // Export CONFIG object
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = CONFIG;
 }

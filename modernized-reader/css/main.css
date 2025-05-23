@@ -170,8 +170,8 @@ body.dark-mode #story-header {
 }
 
 .chapter-story {
-  padding: 0px 8px;
-  margin: 0 auto;
+  /* padding: 0px 8px; */
+  margin: 0 10px;
 }
 
 
@@ -192,7 +192,7 @@ body.dark-mode #chapter-content {
   width: 100%;
   margin-bottom: var(--spacing-lg);
   color: var(--accent-light);
-  position: sticky;
+  /* position: sticky; */
   top: -5px;
   left: 0;
   background-color: var(--bg-primary-light);
@@ -208,14 +208,14 @@ body.dark-mode .chapter-title {
   background-color: var(--bg-primary-dark);
 }
 
-.chapter p {
+.chapter-story p {
   margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
+  /* padding: var(--spacing-sm); */
   text-align: justify;
   text-rendering: optimizelegibility;
   font-weight: normal;
   white-space: break-spaces;
-  word-spacing: 2px;
+  word-spacing: 4px;
   /* font-size: 18px; */
   line-height: 1.8;
   word-break: keep-all
