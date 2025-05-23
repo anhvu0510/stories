@@ -137,7 +137,7 @@ body.dark-mode .secondary-btn:hover {
 }
 
 body.dark-mode #chapter-menu {
-  background-color: var(--bg-secondary-dark);
+  background-color: var(--bg-primary-dark);
   box-shadow: 2px 0 8px var(--shadow-dark);
 }
 
@@ -222,7 +222,7 @@ body.dark-mode .menu-search i {
 
 body.dark-mode #menu-list li a {
   color: var(--text-primary-dark);
-  background-color: var(--bg-tertiary-dark);
+  background-color: var(--bg-secondary-dark);
 }
 
 #menu-list li:hover a {
