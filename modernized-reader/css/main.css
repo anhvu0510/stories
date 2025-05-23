@@ -144,7 +144,7 @@ body.dark-mode #story-header {
   position: relative;
   overflow: hidden;
   /* width: 100%; */
-  padding: 0px var(--spacing-md);
+  /* padding: 0px var(--spacing-md); */
   height: calc(100% - 60px); /* Trừ đi chiều cao của header */
 }
 
@@ -168,6 +168,12 @@ body.dark-mode #story-header {
   scrollbar-width: auto;   
   max-height: calc(100vh - var(--header-height) - var(--spacing-lg) * 2);
 }
+
+.chapter-story {
+  padding: 0px 8px;
+  margin: 0 auto;
+}
+
 
 body.dark-mode #chapter-content {
   background-color: var(--bg-primary-dark);

@@ -454,9 +454,9 @@ class SettingsManager {
     }
     
     // Apply regex replacements
-    if (chaptersManager) {
-      chaptersManager.applyRegexReplacements(this.regexReplacements);
-    }
+    // if (chaptersManager) {
+    //   chaptersManager.applyRegexReplacements(this.regexReplacements);
+    // }
   }
   
   /**

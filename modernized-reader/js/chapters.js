@@ -17,6 +17,12 @@ class ChaptersManager {
         this.maxElements = CONFIG.ui.maxChaptersInDom;
         this.lastScrollPosition = 0;
         this.scrollDirection = '';
+        this.currentReadAloud = '';
+        this.currentReadAloudChapter = ''
+        this.lazyLoad = { next: 0, prev: 0 };
+
+        // Initialize Edge Read Aloud tracking
+        this.initMutationObserver();
     }
 
     /**
@@ -31,17 +37,17 @@ class ChaptersManager {
 
             // Get story name from file name
             // const storyName = file.name.replace(/\.[^/.]+$/, '');
-            
+
             // Check if we already have a compressed version of this story
             // if (this.checkAndLoadCompressedStory(storyName)) {
             //     Utils.log('Loaded compressed version of story', storyName);
             //     uiManager.hideLoading();
             //     return this.chapterData;
             // }
-            
+
             // If no compressed version exists, process the file normally
             Utils.log('No compressed version found, processing file');
-            
+
             // Read file content
             const content = await this.readFileContent(file);
 
@@ -80,9 +86,10 @@ class ChaptersManager {
             // Restore saved scroll position
             this.restoreScrollPosition();
 
+
             Utils.log('File processing complete', chapters.length + ' chapters');
             Utils.showToast(`"${storyName}" loaded with ${chapters.length} chapters`, 'success');
-            
+
             // Compress and save chapters if there are enough chapters
             // Skip compression if the story was loaded from a compressed file
             // const wasLoadedFromCompressedFile = file.name.toLowerCase().endsWith('.story.bin');
@@ -270,7 +277,13 @@ class ChaptersManager {
 
 
             let scrollDirection = '';
-            const firstChapter = +(chapterContent.firstChild.id.split('-')[1] ?? 0);
+            let firstChild = chapterContent.firstChild
+            if (firstChild.classList.contains('current-reading')) {
+                firstChild = container.childNodes[1];
+            }
+
+
+            const firstChapter = +(firstChild.id.split('-')[1] ?? 0);
             const lastChapter = +(chapterContent.lastChild.id.split('-')[1] ?? 0);
 
 
@@ -288,8 +301,10 @@ class ChaptersManager {
                 this.loadMoreData(scrollDirection)
             }
 
+            this.lastScrollPosition = chapterContent.scrollTop;
+
             // Save current scroll position
-            this.saveScrollPosition();
+            // this.saveScrollPosition();
         }, 500));
 
         // Fix for mouse wheel scroll on desktop
@@ -305,14 +320,14 @@ class ChaptersManager {
      * Load more chapter data based on scroll direction
      * @param {string} direction - 'up' or 'down'
      */
-    loadMoreData(direction) {
+    loadMoreData(direction, chapter = null) {
         const container = document.getElementById('chapter-content');
         if (!container || !this.chapterData || this.chapterData.length === 0) return;
 
         if (direction === 'down') {
             // Get the last chapter ID in the DOM
-            const next = +(
-                document.querySelector('#chapter-content')?.lastChild?.id?.split('-')[1] ?? 1
+            const next = chapter ?? +(
+                document.querySelector('#chapter-content')?.lastChild?.id?.split('-')[1] ?? 0
             ) + 1;
 
             // Get the next batch of chapters
@@ -327,26 +342,30 @@ class ChaptersManager {
             // Append new chapters
             nextBatch.forEach((chapter) => {
                 if (!document.getElementById(`chapter-${chapter.chapterNumber}`)) {
-                    const chapterDiv = this.createChapterElement(chapter);
+                    const chapterDiv = this.createChapterElement(chapter, direction);
                     container.appendChild(chapterDiv);
+                    if (container.children.length > this.maxElements) {
+                        const isReading = container.firstChild.classList.contains('current-reading')
+                        if (isReading === false) {
+                            container.removeChild(container.firstChild);
+                        } else {
+                            const secondChild = container.children[1]
+                            container.removeChild(secondChild);
+                        }
+                    }
                 }
+
             });
-
-
-            // Remove excess chapters from the top
-            while (container.children.length > this.maxElements) {
-                container.removeChild(container.firstChild);
-            }
-
-            // Adjust container height to match current content - this is key for lazy loading
             container.style.height = `${container.scrollHeight}px`;
         }
         else if (direction === 'up') {
             // Get the first chapter ID in the DOM
-            const prev = +(
-                document.querySelector('#chapter-content').firstChild?.id?.split('-')[1] ?? 1
-            );
-            // Get the previous batch of chapters
+            const isReading = container.firstChild.classList.contains('current-reading')
+            let childNode = container.firstChild;
+            if (isReading) {
+                childNode = container.childNodes[1];
+            }
+            const prev = +(childNode?.id?.split('-')[1] ?? 0)
             const previousBatch = this.chapterData
                 .filter(
                     (chapter) =>
@@ -357,17 +376,15 @@ class ChaptersManager {
 
             previousBatch.forEach((chapter) => {
                 if (!document.getElementById(`chapter-${chapter.chapterNumber}`)) {
-                    const chapterDiv = this.createChapterElement(chapter);
-                    container.insertBefore(chapterDiv, container.firstChild);
+                    const chapterDiv = this.createChapterElement(chapter, direction);
+                    const beforeNode = document.getElementById(`chapter-${chapter.chapterNumber + 1}`)
+                    container.insertBefore(chapterDiv, beforeNode);
+                    if (container.children.length > this.maxElements) {
+                        const isReadingChapter = container.lastChild.classList.contains('current-reading')
+                        container.removeChild(container.lastChild);
+                    }
                 }
             });
-
-
-            // Remove excess chapters from the bottom
-            while (container.children.length > this.maxElements) {
-                container.removeChild(container.lastChild);
-            }
-
             // Adjust container height to match current content - this is key for lazy loading
             container.style.height = `${container.scrollHeight}px`;
         }
@@ -381,7 +398,8 @@ class ChaptersManager {
      * @param {Object} chapter - Chapter data
      * @returns {HTMLElement} - Chapter div element
      */
-    createChapterElement(chapter) {
+    createChapterElement(chapter, direction) {
+
         const chapterDiv = document.createElement('div');
         chapterDiv.classList.add('chapter');
         chapterDiv.id = `chapter-${chapter.chapterNumber}`;
@@ -397,7 +415,7 @@ class ChaptersManager {
         chapterDiv.appendChild(chapterContent);
 
         const storedReplacements = storageManager.load('regexReplacements') ?? [];
-        chapter.content.forEach((paragraph) => {
+        chapter.content.forEach((paragraph, index) => {
             storedReplacements.forEach(({ match, replace }) => {
                 const mathItem = match;
                 const replaceItem = replace;
@@ -411,10 +429,10 @@ class ChaptersManager {
             });
 
             const p = document.createElement('p');
+            p.id = `items-${chapter.chapterNumber}-${index}`;
             p.textContent = paragraph
             chapterContent.appendChild(p);
         });
-
         return chapterDiv;
     }
 
@@ -443,7 +461,7 @@ class ChaptersManager {
                         chapter.chapterNumber >= start &&
                         chapter.chapterNumber < end
                 )
-                .forEach((chapter) => {
+                .forEach((chapter, index) => {
                     const chapterDiv = this.createChapterElement(chapter);
                     container.appendChild(chapterDiv);
                 });
@@ -454,24 +472,26 @@ class ChaptersManager {
      * Scroll to a specific chapter
      * @param {number} index - Chapter index
      */
-    scrollToChapter(index) {
+    scrollToChapter(index, chapterItem) {
         this.ensureChapterInDOM(index);
 
-        const chapterElement = document.getElementById(`chapter-${index}`);
+        let chapterElement = document.getElementById(`chapter-${index}`);
+        if (chapterItem) {
+            chapterElement = document.getElementById(chapterItem)
+        }
         if (chapterElement) {
             // Sử dụng try-catch để xử lý lỗi có thể xảy ra khi scroll
             try {
                 // Thử phương pháp 1: scrollIntoView
-                chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                // Phương pháp dự phòng: sử dụng scrollTop trực tiếp
+                if (!chapterItem) {
+                    chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
+                chapterElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                chapterElement.style.color = '#c4831a';
                 setTimeout(() => {
-                    const container = document.getElementById('chapter-content');
-                    if (container) {
-                        const offsetTop = chapterElement.offsetTop - container.offsetTop;
-                        container.scrollTop = offsetTop;
-                    }
-                }, 100);
+                    chapterElement.style = '';
+                }, 3000);
             } catch (error) {
                 // Nếu có lỗi, sử dụng phương pháp 2
                 const container = document.getElementById('chapter-content');
@@ -539,24 +559,19 @@ class ChaptersManager {
     restoreScrollPosition() {
         if (!storageManager) return;
 
-        const chapterNumber = storageManager.loadChapterNumber() ?? 0;
-        if (chapterNumber !== null) {
-            this.scrollToChapter(chapterNumber);
+        const chapterNumber = storageManager.loadChapterNumber() ?? 1;
+        if (chapterNumber === 1) {
+            this.scrollToChapter(1);
+            return;
         }
 
-        const container = document.getElementById('chapter-content');
-        if (!container) return;
-
-        const lastScrollPosition = storageManager.loadScrollPosition() ?? 0;
-        if (lastScrollPosition !== null) {
-            // Use setTimeout to ensure scroll position is set after rendering
-            setTimeout(() => {
-                container.scrollTop = lastScrollPosition;
-                Utils.log('Restored scroll position delayed', { position: lastScrollPosition });
-            }, 100);
+        const [, numberChapter, indexItem] = chapterNumber.split('-');
+        if (numberChapter && indexItem) {
+            this.scrollToChapter(+numberChapter, chapterNumber);
+            Utils.log('Restored scroll position', { chapter: chapterNumber });
+            return
         }
-
-        Utils.log('Restored scroll position', { chapter: chapterNumber, position: lastScrollPosition });
+        this.scrollToChapter(1);
     }
 
     /**
@@ -606,15 +621,15 @@ class ChaptersManager {
     checkCompressionSupport() {
         const hasCompressionStream = typeof CompressionStream !== 'undefined';
         const hasDecompressionStream = typeof DecompressionStream !== 'undefined';
-        
+
         if (!hasCompressionStream || !hasDecompressionStream) {
-            Utils.log('Compression features not supported in this browser', { 
-                compression: hasCompressionStream, 
-                decompression: hasDecompressionStream 
+            Utils.log('Compression features not supported in this browser', {
+                compression: hasCompressionStream,
+                decompression: hasDecompressionStream
             });
             return false;
         }
-        
+
         return true;
     }
 
@@ -629,7 +644,7 @@ class ChaptersManager {
             Utils.log('No chapters to compress');
             return false;
         }
-        
+
         // Check browser compatibility for compression features
         if (!this.checkCompressionSupport()) {
             Utils.showToast('Story compression not supported in this browser', 'warning');
@@ -638,16 +653,16 @@ class ChaptersManager {
 
         try {
             Utils.log('Starting compression of', chapters.length, 'chapters');
-            
+
             // Step 1: Build a global dictionary of words
             const allWords = new Set();
             const allTitles = [];
-            
+
             // Extract all words from all chapters and collect titles
             chapters.forEach(chapter => {
                 // Add title words to dictionary
                 allTitles.push(chapter.title);
-                
+
                 // Process content
                 if (Array.isArray(chapter.content)) {
                     chapter.content.forEach(text => {
@@ -656,11 +671,11 @@ class ChaptersManager {
                     });
                 }
             });
-            
+
             // Convert set to array
             const dictionary = Array.from(allWords);
             Utils.log('Dictionary built with', dictionary.length, 'unique words');
-            
+
             // Step 2: Replace words with dictionary indices
             const compressedChapters = chapters.map(chapter => {
                 // Keep chapter number as is
@@ -668,7 +683,7 @@ class ChaptersManager {
                     chapterNumber: chapter.chapterNumber,
                     title: chapter.title // Keep title for now, we'll compress titles separately
                 };
-                
+
                 // Compress content by replacing words with indices
                 if (Array.isArray(chapter.content)) {
                     compressedChapter.content = chapter.content.map(text => {
@@ -679,12 +694,12 @@ class ChaptersManager {
                         });
                     });
                 }
-                
+
                 return compressedChapter;
             });
-            
+
             // Step 3: Process titles using a separate technique
-            
+
             // Step 4: Structure the data for maximum compression
             const compressedData = {
                 storyName,
@@ -696,13 +711,13 @@ class ChaptersManager {
                     cont: chapter.content // Already compressed content
                 }))
             };
-            
+
             // Step 5: Serialize the data
             const jsonString = JSON.stringify(compressedData);
-            
+
             // Step 6: Apply GZIP compression using CompressionStream
             const compressedBlob = await this._compressWithGzip(jsonString);
-            
+
             // Step 7: Save the compressed file
             const fileName = `${storyName.toLowerCase().replace(/\s+/g, '_')}.story.bin`;
             const link = document.createElement('a');
@@ -720,15 +735,15 @@ class ChaptersManager {
             };
 
             Utils.log('Story compressed and saved', compressionStats);
-            
+
             // Show more detailed success message
             Utils.showToast(`"${storyName}" compressed and saved successfully. Size: ${compressionStats.size} (${compressionStats.compressionRatio}x compression)`, 'success');
-            
+
             // Show additional info about what to do with the file
             setTimeout(() => {
                 Utils.showToast('You can reload this compressed story file later for faster loading', 'info');
             }, 3000);
-            
+
             return true;
         } catch (error) {
             Utils.log('Error compressing chapters', error);
@@ -736,7 +751,7 @@ class ChaptersManager {
             return false;
         }
     }
-    
+
     /**
      * Helper method to compress data with GZIP
      * @private
@@ -750,17 +765,17 @@ class ChaptersManager {
                 Utils.log('CompressionStream not supported, using fallback compression');
                 return new Blob([data], { type: 'application/octet-stream' });
             }
-            
+
             // Convert string to Uint8Array
             const encoder = new TextEncoder();
             const bytes = encoder.encode(data);
-            
+
             // Create a compression stream
             const cs = new CompressionStream('gzip');
             const writer = cs.writable.getWriter();
             writer.write(bytes);
             writer.close();
-            
+
             // Return compressed data as blob
             return new Response(cs.readable).blob();
         } catch (error) {
@@ -768,7 +783,7 @@ class ChaptersManager {
             return new Blob([data], { type: 'application/octet-stream' });
         }
     }
-    
+
     /**
      * Loads compressed story data from a file
      * @param {File} file - Compressed story file
@@ -777,57 +792,57 @@ class ChaptersManager {
     async loadCompressedStory(file) {
         try {
             Utils.log('Loading compressed story file', file.name);
-            
+
             // Read the file content
             const compressedData = await this._readCompressedFile(file);
-            
+
             // Parse the JSON
             const parsedData = JSON.parse(compressedData);
             const { dictionary, titles, chapters, storyName } = parsedData;
-            
+
             if (!dictionary || !chapters || !Array.isArray(chapters)) {
                 throw new Error('Invalid compressed story format');
             }
-            
+
             Utils.log('Decompressing story', storyName, 'with', chapters.length, 'chapters');
-            
+
             // Rebuild chapters from compressed format
             const decompressedChapters = chapters.map(chapter => {
                 // Get chapter title from titles array
                 const title = titles[chapter.tidx] || `Chapter ${chapter.num}`;
-                
+
                 // Decompress content
                 const content = chapter.cont.map(sentenceIndices => {
                     // Convert indices back to words
                     return sentenceIndices.map(index => dictionary[index] || '').join(' ');
                 });
-                
+
                 return {
                     chapterNumber: chapter.num,
                     title,
                     content
                 };
             });
-            
+
             // Update UI with story name
             if (window.uiManager) {
                 window.uiManager.updateStoryTitle(storyName);
             }
-            
+
             Utils.log('Story decompression complete', decompressedChapters.length, 'chapters');
             Utils.showToast(`"${storyName}" loaded with ${decompressedChapters.length} chapters (compressed file)`, 'success');
-            
+
             // Since this is a faster loading method, let's inform the user
             if (storyName && decompressedChapters.length > 10) {
                 setTimeout(() => {
                     Utils.showToast('Using compressed file format for faster loading', 'info');
                 }, 2000);
             }
-            
+
             return decompressedChapters;
         } catch (error) {
             Utils.log('Error decompressing story file', error);
-            
+
             // Provide more specific error messages based on the error type
             if (error.name === 'SyntaxError') {
                 Utils.showToast('Error: The compressed story file is corrupted or invalid', 'error');
@@ -836,11 +851,11 @@ class ChaptersManager {
             } else {
                 Utils.showToast('Error loading compressed story file', 'error');
             }
-            
+
             throw error;
         }
     }
-    
+
     /**
      * Helper to read and decompress file content
      * @private
@@ -850,22 +865,22 @@ class ChaptersManager {
     async _readCompressedFile(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            
+
             reader.onload = async (event) => {
                 try {
                     const arrayBuffer = event.target.result;
-                    
+
                     // Check if we need to decompress (look for gzip magic number)
                     const firstBytes = new Uint8Array(arrayBuffer.slice(0, 2));
                     const isGzipped = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
-                    
+
                     if (isGzipped && typeof DecompressionStream !== 'undefined') {
                         // Decompress using DecompressionStream
                         const ds = new DecompressionStream('gzip');
                         const writer = ds.writable.getWriter();
                         writer.write(new Uint8Array(arrayBuffer));
                         writer.close();
-                        
+
                         // Read decompressed data
                         const decompressedResponse = new Response(ds.readable);
                         const decompressedText = await decompressedResponse.text();
@@ -879,7 +894,7 @@ class ChaptersManager {
                     reject(error);
                 }
             };
-            
+
             reader.onerror = (error) => reject(error);
             reader.readAsArrayBuffer(file);
         });
@@ -892,62 +907,62 @@ class ChaptersManager {
      */
     checkAndLoadCompressedStory(storyName) {
         if (!storyName) return false;
-        
+
         const storageKey = `compressed_${storyName.toLowerCase().replace(/\s+/g, '_')}`;
-        
+
         try {
             // Try to get from localStorage first
             let compressedData = localStorage.getItem(storageKey);
-            
+
             // If not in localStorage, check sessionStorage
             if (!compressedData) {
                 compressedData = sessionStorage.getItem(storageKey);
             }
-            
+
             // If still not found, return false
             if (!compressedData) {
                 return false;
             }
-            
+
             // Parse the compressed data
             const parsedData = JSON.parse(compressedData);
-            
+
             // Validate data structure
             if (!parsedData.dictionary || !parsedData.chapters || !Array.isArray(parsedData.chapters)) {
                 Utils.log('Invalid compressed story format');
                 return false;
             }
-            
+
             // Decompress and load the story
             this.loadDecompressedStory(parsedData);
-            
+
             Utils.log('Loaded compressed story from storage', {
                 storyName,
                 chaptersCount: parsedData.chapters.length
             });
-            
+
             return true;
         } catch (error) {
             Utils.log('Error loading compressed story', error);
             return false;
         }
     }
-    
+
     /**
      * Load a story from decompressed data
      * @param {Object} decompressedData - The decompressed story data
      */
     loadDecompressedStory(decompressedData) {
         const { dictionary, titles, chapters, storyName } = decompressedData;
-        
+
         // Rebuild chapters from compressed format
         this.chapterData = chapters.map(chapter => {
             // Get chapter title from titles array
             const title = titles[chapter.tidx] || `Chapter ${chapter.num}`;
-            
+
             // Decompress content
             let content;
-            
+
             // Check if content is array of arrays (sentence arrays)
             if (Array.isArray(chapter.cont) && Array.isArray(chapter.cont[0])) {
                 content = chapter.cont.map(sentenceIndices => {
@@ -958,39 +973,88 @@ class ChaptersManager {
                 // Fallback if content format is different
                 content = [`[Content for chapter ${chapter.num}]`];
             }
-            
+
             return {
                 chapterNumber: chapter.num,
                 title,
                 content
             };
         });
-        
+
         // Update UI with story name
         if (window.uiManager) {
             window.uiManager.updateStoryTitle(storyName);
         }
-        
+
         // Set story context for storage
         if (window.storageManager) {
             window.storageManager.setCurrentStory(storyName);
         }
-        
+
         // Populate the chapter menu
         this.populateChapterMenu(this.chapterData);
-        
+
         // Initialize lazy loading of chapter content
         this.initLazyLoading();
-        
+
         // Apply stored settings
         if (window.settingsManager) {
             window.settingsManager.applyStoredSettings();
         }
-        
+
         // Restore saved scroll position
         this.restoreScrollPosition();
-        
+
+
         Utils.log('Story decompression complete', this.chapterData.length, 'chapters');
         Utils.showToast(`"${storyName}" loaded with ${this.chapterData.length} chapters`, 'success');
     }
+
+    /**
+     * Khởi tạo theo dõi thẻ msreadoutspan của Microsoft Edge Read Aloud
+     * Được gọi trong constructor
+     */
+    initMutationObserver() {
+        // Kiểm tra xem trình duyệt có phải là Edge không
+        const isEdgeBrowser = navigator.userAgent.includes("Edg");
+        if (!isEdgeBrowser) return;
+        Utils.log('Microsoft Edge detected, initializing Read Aloud tracking');
+
+        // Tạo MutationObserver để theo dõi khi thẻ msreadoutspan được thêm vào DOM
+        const isReadAloud = (node) => node.nodeName === 'MSREADOUTSPAN' && node.classList.contains('msreadout-line-highlight');
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    for (const node of mutation.addedNodes) {
+                        if (!isReadAloud(node)) break;
+                        const nodeId = node.parentElement?.id || false;
+                        if (nodeId === false || this.currentReadAloud === nodeId) break;
+                        const items = node.parentElement;
+                        const currentRead = items.parentElement.parentElement;
+
+                        this.currentReadAloud = nodeId
+                        this.currentReadAloudChapter = currentRead.id;
+                        storageManager.saveChapterNumber(nodeId);
+
+                        if (!currentRead.classList.contains('current-reading')) {
+                            document.querySelector('.current-reading')?.classList?.remove('current-reading')
+                            currentRead.classList.add('current-reading')
+                        }
+                    }
+                }
+            }
+        });
+
+        // Theo dõi các thay đổi trong chapter-content
+        const contentElement = document.getElementById('chapter-content');
+        if (contentElement) {
+            observer.observe(contentElement, {
+                childList: true,
+                subtree: true
+            });
+
+            Utils.log('Read Aloud tracking observer started');
+        }
+    }
+
 }

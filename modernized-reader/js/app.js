@@ -127,7 +127,7 @@ function registerServiceWorker() {
  */
 function saveAppState() {
   if (chaptersManager) {
-    chaptersManager.saveScrollPosition();
+    // chaptersManager.saveScrollPosition();
   }
   
   Utils.log('App state saved');
