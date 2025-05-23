@@ -137,7 +137,7 @@ function saveAppState() {
 document.addEventListener('DOMContentLoaded', initApp);
 
 // Save state before leaving
-window.addEventListener('beforeunload', function(){
-  console.log('Saving app state before unload');
-  initApp();
-});
+// window.addEventListener('beforeunload', function(){
+//   console.log('Saving app state before unload');
+//   initApp();
+// });
