@@ -423,10 +423,8 @@ class ChaptersManager {
             storedReplacements.forEach(({ match, replace, isPattern }) => {
                 const mathItem = match;
                 const replaceItem = replace;
-                console.log('match', mathItem, 'replace', replaceItem);
                 if (isPattern) {
                     sentences = sentences.replace(mathItem, replaceItem);
-                    console.log('sentences', sentences);
                 }
                 else {
                     const regex = new RegExp(mathItem, 'gi');
@@ -585,7 +583,6 @@ class ChaptersManager {
      * @param {Array} regexReplacements - Array of regex replacement objects
      */
     applyRegexReplacements(regexReplacements, isRevert = false) {
-        console.log('Replacement', regexReplacements);
         if (!regexReplacements || !Array.isArray(regexReplacements) || regexReplacements.length === 0) {
             return;
         }
@@ -1063,4 +1060,13 @@ class ChaptersManager {
         }
     }
 
+
+    reloadChapterContent() {
+        const chapterContent = document.getElementById("chapter-content");
+          const currentChapterIndex = Utils.getVisibleChapter(chapterContent.childNodes);
+          if (currentChapterIndex) {
+            chapterContent.innerHTML = "";
+            this.loadMoreData("down", currentChapterIndex);
+          }
+    }
 }

@@ -287,7 +287,7 @@ body.dark-mode #menu-list li.active a {
   transform: translate(-50%, -50%) scale(0.9);
   width: 90%;
   max-width: 500px;
-  max-height: 90vh;
+  max-height: 95vh;
   background-color: var(--bg-secondary-light);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 20px var(--shadow-light);
@@ -462,6 +462,63 @@ body.dark-mode .select-control {
   border-color: var(--border-dark);
   background-color: var(--bg-tertiary-dark);
   color: var(--text-primary-dark);
+}
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+body.dark-mode .font-option {
+  border-color: var(--border-dark);
+  background-color: var(--bg-tertiary-dark);
+}
+
+.font-option .font-preview {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--text-primary-light);
+}
+
+body.dark-mode .font-option .font-preview {
+  color: var(--text-primary-dark);
+}
+
+.font-option .font-name {
+  font-size: 12px;
+  color: var(--text-secondary-light);
+}
+
+body.dark-mode .font-option .font-name {
+  color: var(--text-secondary-dark);
+}
+
+.font-option.selected {
+  border-color: var(--accent-light);
+  background-color: rgba(255, 252, 74, 0.05);
+}
+
+body.dark-mode .font-option.selected {
+  border-color: var(--accent-dark);
+  background-color: rgba(196, 131, 26, 0.05);
+}
+
+.font-option.selected .font-preview {
+  color: var(--accent-light);
+}
+
+body.dark-mode .font-option.selected .font-preview {
+  color: var(--accent-dark);
+}
+
+.font-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-light);
+}
+
+body.dark-mode .font-option:hover {
+  box-shadow: 0 4px 8px var(--shadow-dark);
 }
 
 .input-control {

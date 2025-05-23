@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
     <title>Story Reader</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/palatino" rel="stylesheet">
+    <!-- Google Fonts for Vietnamese text -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&family=Patrick+Hand&display=swap&subset=vietnamese" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS Files -->
@@ -15,6 +18,7 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/scroll-fix.css">
+    <link rel="stylesheet" href="css/font-selector.css">
 </head>
 <body class="dark-mode">
     <!-- Loading Spinner -->
@@ -110,17 +114,75 @@
                         <span id="lines-per-sentence-display">3</span>
                     </div>
                 </div>
-                
+
+                <div class="setting-control">
+                    <label for="line-height">Line Height</label>
+                    <div class="slider-control">
+                        <button id="decrease-line-height" class="icon-btn small"><i class="fas fa-minus"></i></button>
+                        <div class="slider-container">
+                            <input type="range" id="line-height-slider" min="1" max="3" value="1.2" step="0.1" class="slider">
+                        </div>
+                        <button id="increase-line-height" class="icon-btn small"><i class="fas fa-plus"></i></button>
+                        <span id="line-height-display">1.2</span>
+                    </div>
+                </div>
+
+
+                <div class="setting-control">
+                    <label for="word-spacing">Word Spacing</label>
+                    <div class="slider-control">
+                        <button id="decrease-word-spacing" class="icon-btn small"><i class="fas fa-minus"></i></button>
+                        <div class="slider-container">
+                            <input type="range" id="word-spacing-slider" min="1" max="10" value="1" class="slider">
+                        </div>
+                        <button id="increase-word-spacing" class="icon-btn small"><i class="fas fa-plus"></i></button>
+                        <span id="word-spacing-display">1</span>
+                    </div>
+                </div>
+               
+
                 <div class="setting-control">
                     <label for="font-family">Font Family</label>
-                    <select id="font-family" class="select-control">
-                        <option value="Nunito">Nunito</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="Poppins">Poppins</option>
-                        <option value="Palatino Linotype">Palatino Linotype</option>
-                        <option value="Arial">Arial</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                    </select>
+                    <div class="font-selector" id="font-family-selector">
+                        <button class="font-option" data-font="'Palatino Linotype', serif">
+                            <span class="font-preview" style="font-family: 'Palatino Linotype', serif;">Aa</span>
+                            <span class="font-name">Palatino</span>
+                        </button>
+                        
+                        <button class="font-option" data-font="'Nunito', sans-serif">
+                            <span class="font-preview" style="font-family: 'Nunito', sans-serif;">Aa</span>
+                            <span class="font-name">Nunito</span>
+                        </button>
+                        <button class="font-option" data-font="'Roboto', sans-serif">
+                            <span class="font-preview" style="font-family: 'Roboto', sans-serif;">Aa</span>
+                            <span class="font-name">Roboto</span>
+                        </button>
+                        <button class="font-option" data-font="'Noto Serif', serif">
+                            <span class="font-preview" style="font-family: 'Noto Serif', serif;">Aa</span>
+                            <span class="font-name">Noto Serif</span>
+                        </button>
+                        
+                        <button class="font-option" data-font="'Source Sans Pro', sans-serif">
+                            <span class="font-preview" style="font-family: 'Source Sans Pro', sans-serif;">Aa</span>
+                            <span class="font-name">Source Sans</span>
+                        </button>
+                        <button class="font-option" data-font="'Montserrat', sans-serif">
+                            <span class="font-preview" style="font-family: 'Montserrat', sans-serif;">Aa</span>
+                            <span class="font-name">Montserrat</span>
+                        </button>
+                        <button class="font-option" data-font="'Patrick Hand', sans-serif">
+                            <span class="font-preview" style="font-family: 'Patrick Hand', sans-serif;">Aa</span>
+                            <span class="font-name">Patrick Hand</span>
+                        </button>
+                        <button class="font-option" data-font="'Times New Roman', serif">
+                            <span class="font-preview" style="font-family: 'Times New Roman', serif;">Aa</span>
+                            <span class="font-name">Times New Roman</span>
+                        </button>
+                        <button class="font-option" data-font="'Charter', sans-serif">
+                            <span class="font-preview" style="font-family: 'Charter', sans-serif;">Aa</span>
+                            <span class="font-name">Charter</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

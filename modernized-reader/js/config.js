@@ -10,9 +10,8 @@ const CONFIG = {
     scrollSpeed: 5,
     regexReplacements: [
       { match: /\!/g, replace: "." },
-      { match: /\·/g, replace: "" },
       { match: /\?/g, replace: "." },
-      { match: /\s+/g, replace: " " },
+      // { match: /\./g, replace: ". " },      // { match: /\s+/g, replace: " " },
       { match: /^\s+|\s+$/g, replace: " " },
       { match: /(?:\s*\.\s*){2,}/g, replace: "." },
     ],
@@ -20,7 +19,7 @@ const CONFIG = {
 
   // File settings
   file: {
-    maxSize: 10 * 1024 * 1024, // 10MB
+    maxSize: 50 * 1024 * 1024, // 10MB
     acceptedTypes: [".txt", ".TXT"],
   },
 

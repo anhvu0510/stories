@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Function tạo hiệu ứng ripple khi click
-    window.createRippleEffect = function(event) {
+    function createRippleEffect(event) {
         const button = event.currentTarget;
         
         // Xóa các hiệu ứng ripple cũ nếu có

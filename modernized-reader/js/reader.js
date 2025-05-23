@@ -63,6 +63,7 @@ class ReaderManager {
 
     try {
       // Check if this is a compressed story file
+      
       const isCompressedStory = Utils.isCompressedStoryFile(file);
 
       // For non-compressed files, validate file type

@@ -15,11 +15,13 @@ function scrollToHighlightedWord() {
             behavior: 'smooth',
             block: 'center',
             inline: 'center'
-        });            // Add additional highlighting effect temporarily
+        });
+        
+        // Add additional highlighting effect temporarily
         firstHighlighted.classList.add('extra-highlight');
         setTimeout(() => {
             firstHighlighted.classList.remove('extra-highlight');
-        }, 2500);
+        }, 2000);
         
         return true;
     } else {
@@ -34,12 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (scrollToHighlightBtn) {
         scrollToHighlightBtn.addEventListener('click', function(e) {
             console.log("Scroll to highlight button clicked");
-            
-            // Add ripple effect to match other float menu buttons
-            if (typeof createRippleEffect === 'function') {
-                createRippleEffect(e);
-            }
-            
             const success = scrollToHighlightedWord();
             
             // Show visual feedback on the button
