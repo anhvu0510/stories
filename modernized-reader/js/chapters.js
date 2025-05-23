@@ -261,7 +261,7 @@ class ChaptersManager {
         // Clear container
         container.innerHTML = '';
         // Load initial batch of chapters
-        this.loadMoreData('down');
+        this.loadMoreData('down', 0);
 
         // Add scroll event listener
         container.addEventListener('scroll', Utils.throttle(() => {
