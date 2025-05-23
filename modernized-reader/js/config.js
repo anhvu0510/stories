@@ -19,6 +19,17 @@ const CONFIG = {
     ],
   },
 
+  // Search configuration
+  search: {
+    minSearchLength: 2, // Minimum characters for real-time search
+    highlightClassName: 'search-highlight',
+    currentClassName: 'current',
+    caseSensitive: false,
+    animationDuration: 300,
+    scrollBehavior: 'smooth',
+    scrollBlock: 'center'
+  },
+
   // File settings
   file: {
     maxSize: 50 * 1024 * 1024, // 10MB

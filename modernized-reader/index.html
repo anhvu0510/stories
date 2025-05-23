@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
     <title>Story Reader</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/palatino" rel="stylesheet">
     <!-- Google Fonts for Vietnamese text -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&family=Patrick+Hand&display=swap&subset=vietnamese" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Nunito:wght@300;400;600;700&family=Noto+Serif:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Montserrat:wght@400;500;600&family=Patrick+Hand&display=swap&subset=vietnamese"
+        rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS Files -->
@@ -20,27 +25,33 @@
     <link rel="stylesheet" href="css/scroll-fix.css">
     <link rel="stylesheet" href="css/font-selector.css">
 </head>
+
 <body class="dark-mode">
     <!-- Loading Spinner -->
     <div id="loading-spinner" aria-hidden="true">
         <div class="spinner-inner"></div>
     </div>
-    
+
     <!-- App Container -->
     <div id="app-container">
         <!-- Header -->
         <header id="story-header">
             <div id="story-name">Story Reader</div>
-            <button id="regex-replace-btn" class="icon-btn" title="Regex Replace">
-                <i class="fa-solid fa-code"></i>
-            </button>
+            <div class="story-action">
+                <button id="regex-replace-btn" class="icon-btn" title="Regex Replace">
+                    <i class="fa-solid fa-code"></i>
+                </button>
+                <button id="search-text" class="icon-btn" title="Search Text">
+                    <i class="fa-solid fa-search"></i>
+                </button>
+            </div>
         </header>
 
         <!-- Content Area -->
         <div id="content-container">
             <!-- Menu Overlay -->
             <div id="menu-overlay" aria-hidden="true"></div>
-            
+
             <!-- Chapter Menu -->
             <aside id="chapter-menu" aria-hidden="true">
                 <div class="menu-header">
@@ -57,7 +68,7 @@
                     <!-- Chapter links will be dynamically added here -->
                 </ul>
             </aside>
-            
+
             <!-- Story Content -->
             <main id="chapter-content">
                 <!-- Chapter content will be dynamically loaded here -->
@@ -73,24 +84,24 @@
                 </div>
             </main>
         </div>
-        
+
         <!-- Hidden File Input -->
         <input type="file" id="file-input" accept=".txt,.TXT" style="position: absolute; opacity: 0; z-index: -1;">
     </div>
 
     <!-- Settings Modal -->
     <div id="modal-overlay" aria-hidden="true"></div>
-    <div id="settings-modal"  style="display: none;" aria-hidden="true">
+    <div id="settings-modal" style="display: none;" aria-hidden="true">
         <div class="modal-header">
             <h3>Settings</h3>
             <button id="close-settings" class="icon-btn"><i class="fas fa-times"></i></button>
         </div>
-        
+
         <div class="settings-content">
             <!-- Typography Settings -->
             <div class="settings-section">
                 <h4>Typography</h4>
-                
+
                 <div class="setting-control">
                     <label for="font-size">Font Size</label>
                     <div class="slider-control">
@@ -102,15 +113,18 @@
                         <span id="font-size-display">18</span>
                     </div>
                 </div>
-                
+
                 <div class="setting-control">
                     <label for="lines-per-sentence">Group Sentences</label>
                     <div class="slider-control">
-                        <button id="decrease-lines-per-sentence" class="icon-btn small"><i class="fas fa-minus"></i></button>
+                        <button id="decrease-lines-per-sentence" class="icon-btn small"><i
+                                class="fas fa-minus"></i></button>
                         <div class="slider-container">
-                            <input type="range" id="lines-per-sentence-slider" min="1" max="10" value="3" class="slider">
+                            <input type="range" id="lines-per-sentence-slider" min="1" max="10" value="3"
+                                class="slider">
                         </div>
-                        <button id="increase-lines-per-sentence" class="icon-btn small"><i class="fas fa-plus"></i></button>
+                        <button id="increase-lines-per-sentence" class="icon-btn small"><i
+                                class="fas fa-plus"></i></button>
                         <span id="lines-per-sentence-display">3</span>
                     </div>
                 </div>
@@ -120,7 +134,8 @@
                     <div class="slider-control">
                         <button id="decrease-line-height" class="icon-btn small"><i class="fas fa-minus"></i></button>
                         <div class="slider-container">
-                            <input type="range" id="line-height-slider" min="1" max="3" value="1.2" step="0.1" class="slider">
+                            <input type="range" id="line-height-slider" min="1" max="3" value="1.2" step="0.1"
+                                class="slider">
                         </div>
                         <button id="increase-line-height" class="icon-btn small"><i class="fas fa-plus"></i></button>
                         <span id="line-height-display">1.2</span>
@@ -139,7 +154,7 @@
                         <span id="word-spacing-display">1</span>
                     </div>
                 </div>
-               
+
 
                 <div class="setting-control">
                     <label for="font-family">Font Family</label>
@@ -148,7 +163,7 @@
                             <span class="font-preview" style="font-family: 'Palatino Linotype', serif;">Aa</span>
                             <span class="font-name">Palatino</span>
                         </button>
-                        
+
                         <button class="font-option" data-font="'Nunito', sans-serif">
                             <span class="font-preview" style="font-family: 'Nunito', sans-serif;">Aa</span>
                             <span class="font-name">Nunito</span>
@@ -161,7 +176,7 @@
                             <span class="font-preview" style="font-family: 'Noto Serif', serif;">Aa</span>
                             <span class="font-name">Noto Serif</span>
                         </button>
-                        
+
                         <button class="font-option" data-font="'Source Sans Pro', sans-serif">
                             <span class="font-preview" style="font-family: 'Source Sans Pro', sans-serif;">Aa</span>
                             <span class="font-name">Source Sans</span>
@@ -186,47 +201,82 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="modal-footer">
             <button id="save-settings" class="primary-btn">Save</button>
         </div>
     </div>
 
 
-     <div id="settings-regex-modal" style="display: none;" aria-hidden="true">
+    <div id="settings-regex-modal" style="display: none;" aria-hidden="true">
         <div class="modal-header">
             <h3>Regex Replacement</h3>
             <button id="close-settings-regex" class="icon-btn"><i class="fas fa-times"></i></button>
         </div>
-        
+
         <div class="settings-content">
             <!-- Typography Settings -->
-            
-            
+
+
             <!-- Regex Replace Section -->
             <div class="settings-section">
                 <div class="section-header">
                     <h4>Regex Replace</h4>
                     <span id="regex-count" class="badge">[ 0 ]</span>
                 </div>
-                
+
                 <div id="regex-settings">
                     <div class="regex-inputs">
                         <input type="text" id="regex-match" placeholder="Match pattern" class="input-control">
                         <input type="text" id="regex-replace" placeholder="Replace with" class="input-control">
                         <button id="add-regex-replace" class="icon-btn"><i class="fas fa-plus"></i></button>
                     </div>
-                    
+
                     <ul id="regex-replace-list">
                         <!-- Regex items will be added here -->
                     </ul>
                 </div>
             </div>
         </div>
-<!--         
+        <!--         
         <div class="modal-footer">
             <button id="save-settings-regex" class="primary-btn">Save</button>
         </div> -->
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" style="display: none;" aria-hidden="true">
+        <div class="search-modal-content">
+            <!-- <div class="search-header">
+                <h3>Tìm kiếm văn bản</h3>
+                <button id="close-search" class="icon-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div> -->
+
+            <div class="search-input-container">
+                <input type="text" id="search-input" placeholder="Nhập từ khóa cần tìm..." autocomplete="off">
+                <!-- <button id="search-btn" class="primary-btn">
+                    <i class="fas fa-search"></i>
+                </button> -->
+
+                <button id="close-search" class="icon-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="search-controls">
+                <div class="search-nav-controls">
+                    <button id="search-prev" class="icon-btn" title="Kết quả trước" disabled>
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                    <span id="search-counter">0/0</span>
+                    <button id="search-next" class="icon-btn" title="Kết quả tiếp" disabled>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Floating Action Menu -->
@@ -238,7 +288,7 @@
             <button id="toggle-chapters-btn" class="float-menu-button" type="button" title="Chapters">
                 <i class="fas fa-list-ul"></i>
             </button>
-            
+
             <button id="open-settings-btn" class="float-menu-button" type="button" title="Settings">
                 <i class="fas fa-cog"></i>
             </button>
@@ -258,8 +308,10 @@
     <script src="js/ui.js"></script>
     <script src="js/chapters.js"></script>
     <script src="js/settings.js"></script>
+    <script src="js/search.js"></script>
     <script src="js/reader.js"></script>
     <script src="js/float-menu.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>

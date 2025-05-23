@@ -50,6 +50,10 @@ function ensureComponentsInitialized() {
   if (!window.floatMenuManager) {
     window.floatMenuManager = new FloatMenuManager();
   }
+  
+  if (!window.searchManager) {
+    window.searchManager = new SearchManager();
+  }
 }
 
 /**
@@ -137,7 +141,7 @@ function saveAppState() {
 document.addEventListener('DOMContentLoaded', initApp);
 
 // Save state before leaving
-// window.addEventListener('beforeunload', function(){
-//   console.log('Saving app state before unload');
-//   initApp();
-// });
+window.addEventListener('beforeunload', function(){
+  console.log('Saving app state before unload');
+  initApp();
+});
