@@ -12,11 +12,11 @@
   --shadow-light: rgba(0, 0, 0, 0.1);
   
   /* Dark Theme Colors - Eye-friendly */
-  --bg-primary-dark: #142245;
+  --bg-primary-dark: #121a26; /* Adjusted to a softer, darker blue-gray for better night readability */
   --bg-secondary-dark: #1e1e1e;
   --bg-tertiary-dark: #252525;
   --text-primary-dark: #e0e0e0;
-  --text-secondary-dark: #b0b0b0;
+  --text-secondary-dark: #a0aab8; /* Adjusted to a softer, muted gray for better night readability */
   --accent-dark: #c4831a;
   --border-dark: #333333;
   --shadow-dark: rgba(0, 0, 0, 0.3);

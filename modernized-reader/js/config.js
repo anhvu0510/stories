@@ -4,6 +4,8 @@ const CONFIG = {
   defaults: {
     fontFamily: "Palatino Linotype",
     fontSize: 20,
+    lineHeight: 1.5,
+    wordSpacing: 2,
     linesPerSentence: 2,
     theme: "dark", // 'light' or 'dark'
     autoScroll: false,
