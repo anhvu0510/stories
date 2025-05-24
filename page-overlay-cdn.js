@@ -26,7 +26,6 @@
             this.version = VERSION;
             this.overlay = null;
             this.isLoaded = false;
-            this.autoRefreshInterval = null;
             console.log(`📄 PageOverlayCDN v${VERSION} loaded`);
         }
 
@@ -330,15 +329,6 @@
                             Content Extractor v${VERSION}
                         </h3>
                         <div class="cdn-controls">
-                            <button class="cdn-btn" id="cdn-auto-refresh" title="Toggle auto-refresh">
-                                🔄 Auto
-                            </button>
-                            <button class="cdn-btn" id="cdn-refresh" title="Refresh content">
-                                ↻ Refresh
-                            </button>
-                            <button class="cdn-btn" id="cdn-new-window" title="Open in new window">
-                                🗗 New
-                            </button>
                             <button class="cdn-btn danger" id="cdn-close" title="Close overlay">
                                 ✕ Close
                             </button>
@@ -368,15 +358,9 @@
         bindEvents() {
             const floatingBtn = document.getElementById('cdn-floating-btn');
             const closeBtn = document.getElementById('cdn-close');
-            const refreshBtn = document.getElementById('cdn-refresh');
-            const newWindowBtn = document.getElementById('cdn-new-window');
-            const autoRefreshBtn = document.getElementById('cdn-auto-refresh');
 
             floatingBtn?.addEventListener('click', () => this.clonePage());
             closeBtn?.addEventListener('click', () => this.close());
-            refreshBtn?.addEventListener('click', () => this.refresh());
-            newWindowBtn?.addEventListener('click', () => this.openNewWindow());
-            autoRefreshBtn?.addEventListener('click', () => this.toggleAutoRefresh());
 
             // Close on overlay click
             this.overlay.addEventListener('click', (e) => {
@@ -458,21 +442,7 @@
         extractMainContent() {
             // Try to find main content using common selectors
             const contentSelectors = [
-                'main',
-                '[role="main"]',
-                '.main-content',
-                '.content',
-                '.post-content',
-                '.entry-content',
-                '.article-content',
-                '.page-content',
-                '.story-content',
-                '.chapter-content',
-                'article',
-                '.container .content',
-                '#content',
-                '#main',
-                '.main'
+                '#chapter-content'
             ];
 
             let mainContent = null;
@@ -811,7 +781,6 @@
                 document.body.style.overflow = 'auto';
                 
                 // Cleanup
-                this.clearAutoRefresh();
                 const iframe = document.getElementById('cdn-iframe');
                 if (iframe?.dataset.blobUrl) {
                     URL.revokeObjectURL(iframe.dataset.blobUrl);
@@ -819,48 +788,6 @@
                     delete iframe.dataset.blobUrl;
                 }
             }, 300);
-        }
-
-        refresh() {
-            this.clonePage();
-        }
-
-        openNewWindow() {
-            const newWindow = window.open(window.location.href, '_blank');
-            if (newWindow) {
-                newWindow.focus();
-                this.showStatus('🗗 New window opened', 'success');
-            } else {
-                this.showStatus('❌ Popup blocked', 'error');
-            }
-        }
-
-        toggleAutoRefresh() {
-            const btn = document.getElementById('cdn-auto-refresh');
-            
-            if (this.autoRefreshInterval) {
-                this.clearAutoRefresh();
-                btn.classList.remove('active');
-                btn.textContent = '🔄 Auto';
-                this.showStatus('Auto-refresh disabled', 'success');
-            } else {
-                this.autoRefreshInterval = setInterval(() => {
-                    if (this.overlay.classList.contains('active')) {
-                        this.refresh();
-                    }
-                }, 5000); // Refresh every 5 seconds
-                
-                btn.classList.add('active');
-                btn.textContent = '⏹ Stop';
-                this.showStatus('Auto-refresh enabled (5s)', 'success');
-            }
-        }
-
-        clearAutoRefresh() {
-            if (this.autoRefreshInterval) {
-                clearInterval(this.autoRefreshInterval);
-                this.autoRefreshInterval = null;
-            }
         }
 
         showLoading() {
