@@ -326,8 +326,8 @@
                 <div class="cdn-modal">
                     <div class="cdn-header">
                         <h3 class="cdn-title">
-                            <span>🌐</span>
-                            Page Clone CDN v${VERSION}
+                            <span>📖</span>
+                            Content Extractor v${VERSION}
                         </h3>
                         <div class="cdn-controls">
                             <button class="cdn-btn" id="cdn-auto-refresh" title="Toggle auto-refresh">
@@ -347,7 +347,7 @@
                     <div class="cdn-content">
                         <div class="cdn-loading" id="cdn-loading">
                             <div class="cdn-spinner"></div>
-                            Loading content...
+                            Extracting main content...
                         </div>
                         <div class="cdn-status" id="cdn-status" style="display: none;">Ready</div>
                         <iframe class="cdn-iframe" id="cdn-iframe"></iframe>
@@ -359,8 +359,8 @@
             // Create floating button
             const floatingBtn = document.createElement('button');
             floatingBtn.className = 'cdn-floating-btn';
-            floatingBtn.innerHTML = '🌐';
-            floatingBtn.title = 'CDN Page Overlay - Click to clone current page';
+            floatingBtn.innerHTML = '📖';
+            floatingBtn.title = 'Content Extractor - Extract main content from current page';
             floatingBtn.id = 'cdn-floating-btn';
             document.body.appendChild(floatingBtn);
         }
@@ -417,28 +417,13 @@
                 this.show();
                 
                 const iframe = document.getElementById('cdn-iframe');
-                const status = document.getElementById('cdn-status');
                 
-                // Create clean version of current page
-                const clonedDoc = document.cloneNode(true);
+                // Extract main content from current page
+                const mainContent = this.extractMainContent();
                 
-                // Remove scripts and CDN elements for security
-                const scripts = clonedDoc.querySelectorAll('script');
-                scripts.forEach(s => s.remove());
-                
-                const cdnElements = clonedDoc.querySelectorAll('[class*="cdn-"], [id*="cdn-"]');
-                cdnElements.forEach(el => el.remove());
-                
-                // Remove event listeners by cloning elements
-                const interactiveElements = clonedDoc.querySelectorAll('button, a, input, select, textarea');
-                interactiveElements.forEach(el => {
-                    const clone = el.cloneNode(true);
-                    el.parentNode?.replaceChild(clone, el);
-                });
-                
-                // Create safe HTML
-                const safeHTML = this.createSafeHTML(clonedDoc);
-                const blob = new Blob([safeHTML], { type: 'text/html' });
+                // Create simple HTML with extracted content
+                const contentHTML = this.createContentHTML(mainContent);
+                const blob = new Blob([contentHTML], { type: 'text/html' });
                 const blobURL = URL.createObjectURL(blob);
                 
                 iframe.src = blobURL;
@@ -449,18 +434,18 @@
                 // Handle iframe load
                 iframe.onload = () => {
                     this.hideLoading();
-                    this.showStatus('✅ Clone successful', 'success');
+                    this.showStatus('✅ Content extracted', 'success');
                 };
                 
                 iframe.onerror = () => {
                     this.hideLoading();
-                    this.showStatus('❌ Clone failed', 'error');
+                    this.showStatus('❌ Extract failed', 'error');
                     // Fallback to current URL
                     iframe.src = window.location.href;
                 };
                 
             } catch (error) {
-                console.error('CDN Clone failed:', error);
+                console.error('CDN Content extraction failed:', error);
                 this.hideLoading();
                 this.showStatus('❌ Error occurred', 'error');
                 
@@ -470,99 +455,341 @@
             }
         }
 
-        createSafeHTML(clonedDoc) {
+        extractMainContent() {
+            // Try to find main content using common selectors
+            const contentSelectors = [
+                'main',
+                '[role="main"]',
+                '.main-content',
+                '.content',
+                '.post-content',
+                '.entry-content',
+                '.article-content',
+                '.page-content',
+                '.story-content',
+                '.chapter-content',
+                'article',
+                '.container .content',
+                '#content',
+                '#main',
+                '.main'
+            ];
+
+            let mainContent = null;
+            
+            // Try each selector until we find content
+            for (const selector of contentSelectors) {
+                const element = document.querySelector(selector);
+                if (element && element.textContent.trim().length > 200) {
+                    mainContent = element;
+                    break;
+                }
+            }
+
+            // If no main content found, try to get the largest text block
+            if (!mainContent) {
+                const allDivs = document.querySelectorAll('div, section, article');
+                let largestElement = null;
+                let maxTextLength = 0;
+
+                allDivs.forEach(div => {
+                    // Skip navigation, header, footer, sidebar elements
+                    if (div.matches('nav, header, footer, aside, .nav, .header, .footer, .sidebar, .menu')) {
+                        return;
+                    }
+                    
+                    const textLength = div.textContent.trim().length;
+                    if (textLength > maxTextLength && textLength > 200) {
+                        maxTextLength = textLength;
+                        largestElement = div;
+                    }
+                });
+
+                mainContent = largestElement;
+            }
+
+            // If still no content, fallback to body
+            if (!mainContent) {
+                mainContent = document.body;
+            }
+
+            return mainContent;
+        }
+
+        createContentHTML(contentElement) {
+            if (!contentElement) {
+                return `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>No Content Found</title>
+                    </head>
+                    <body>
+                        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+                            <h2>⚠️ No main content found</h2>
+                            <p>Could not extract main content from this page.</p>
+                        </div>
+                    </body>
+                    </html>
+                `;
+            }
+
+            // Clean the content by removing unwanted elements
+            const cleanContent = contentElement.cloneNode(true);
+            
+            // Remove scripts, ads, navigation elements
+            const unwantedSelectors = [
+                'script',
+                'style',
+                'noscript',
+                'nav',
+                'header',
+                'footer',
+                'aside',
+                '.ads',
+                '.advertisement',
+                '.ad',
+                '.nav',
+                '.navigation', 
+                '.menu',
+                '.sidebar',
+                '.social',
+                '.share',
+                '.comments',
+                '.comment',
+                '[class*="cdn-"]',
+                '[id*="cdn-"]'
+            ];
+
+            unwantedSelectors.forEach(selector => {
+                const elements = cleanContent.querySelectorAll(selector);
+                elements.forEach(el => el.remove());
+            });
+
+            // Get page title
+            const pageTitle = document.title || 'Extracted Content';
+
             return `
                 <!DOCTYPE html>
                 <html lang="${document.documentElement.lang || 'en'}">
                 <head>
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>CDN Clone: ${document.title}</title>
-                    ${clonedDoc.head.innerHTML}
+                    <title>📖 ${pageTitle}</title>
                     <style>
-                        /* CDN Clone Styles */
-                        body { 
-                            pointer-events: none !important; 
-                            user-select: text !important;
-                            overflow-x: auto !important;
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                            line-height: 1.6;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            color: #333;
+                            background: #fff;
                         }
-                        
-                        /* Allow text selection */
-                        p, span, div, h1, h2, h3, h4, h5, h6, li, td, th {
-                            user-select: text !important;
-                            -webkit-user-select: text !important;
-                            -moz-user-select: text !important;
-                            -ms-user-select: text !important;
-                        }
-                        
-                        /* Disable interactive elements */
-                        button, input, select, textarea, a {
-                            pointer-events: none !important;
-                            cursor: default !important;
-                        }
-                        
-                        /* Clone header */
-                        body::before {
-                            content: "🌐 CDN CLONED PAGE - READ ONLY MODE";
+
+                        /* CDN Header */
+                        .cdn-header {
                             position: fixed;
                             top: 0;
                             left: 0;
                             right: 0;
-                            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                             color: white;
                             text-align: center;
-                            padding: 8px;
-                            font-weight: bold;
-                            font-size: 12px;
-                            z-index: 999999;
-                            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                        }
-                        
-                        body { 
-                            margin-top: 35px !important; 
-                            padding-top: 0 !important;
-                        }
-                        
-                        /* Ensure readability */
-                        * {
-                            max-width: 100% !important;
-                        }
-                        
-                        /* Hide potentially problematic elements */
-                        iframe, embed, object, video {
-                            border: 2px dashed #ccc !important;
-                            background: #f9f9f9 !important;
-                        }
-                        
-                        iframe::before {
-                            content: "📺 Media content disabled in clone";
-                            position: absolute;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
+                            padding: 10px;
+                            font-weight: 600;
                             font-size: 14px;
+                            z-index: 999999;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        }
+
+                        .cdn-content {
+                            margin-top: 60px;
+                            padding: 20px 0;
+                        }
+
+                        /* Typography improvements */
+                        h1, h2, h3, h4, h5, h6 {
+                            color: #2c3e50;
+                            margin-top: 30px;
+                            margin-bottom: 15px;
+                        }
+
+                        h1 { font-size: 2.2em; }
+                        h2 { font-size: 1.8em; }
+                        h3 { font-size: 1.5em; }
+
+                        p {
+                            margin-bottom: 15px;
+                            text-align: justify;
+                        }
+
+                        /* Remove all interactive elements */
+                        button, input, select, textarea, a {
+                            pointer-events: none !important;
+                            cursor: default !important;
+                            text-decoration: none;
+                            color: inherit;
+                        }
+
+                        /* Images */
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            display: block;
+                            margin: 20px auto;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                        }
+
+                        /* Lists */
+                        ul, ol {
+                            padding-left: 30px;
+                            margin-bottom: 20px;
+                        }
+
+                        li {
+                            margin-bottom: 8px;
+                        }
+
+                        /* Code blocks */
+                        pre, code {
+                            background: #f8f9fa;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                        }
+
+                        pre {
+                            padding: 15px;
+                            overflow-x: auto;
+                            margin: 20px 0;
+                        }
+
+                        /* Tables */
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 20px 0;
+                        }
+
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 12px;
+                            text-align: left;
+                        }
+
+                        th {
+                            background: #f8f9fa;
+                            font-weight: 600;
+                        }
+
+                        /* Blockquotes */
+                        blockquote {
+                            border-left: 4px solid #667eea;
+                            padding-left: 20px;
+                            margin: 20px 0;
+                            font-style: italic;
                             color: #666;
+                        }
+
+                        /* Responsive */
+                        @media (max-width: 768px) {
+                            body {
+                                padding: 15px;
+                                font-size: 16px;
+                            }
+                            
+                            .cdn-header {
+                                font-size: 12px;
+                                padding: 8px;
+                            }
+                            
+                            .cdn-content {
+                                margin-top: 50px;
+                            }
+
+                            h1 { font-size: 1.8em; }
+                            h2 { font-size: 1.5em; }
+                            h3 { font-size: 1.3em; }
+                        }
+
+                        /* Dark mode support */
+                        @media (prefers-color-scheme: dark) {
+                            body {
+                                background: #1a1a1a;
+                                color: #e0e0e0;
+                            }
+                            
+                            h1, h2, h3, h4, h5, h6 {
+                                color: #ffffff;
+                            }
+                            
+                            pre, code {
+                                background: #2d2d2d;
+                                color: #e0e0e0;
+                            }
+                            
+                            th {
+                                background: #333;
+                            }
+                            
+                            th, td {
+                                border-color: #444;
+                            }
+                            
+                            blockquote {
+                                color: #aaa;
+                            }
+                        }
+
+                        /* Print styles */
+                        @media print {
+                            .cdn-header {
+                                display: none;
+                            }
+                            
+                            .cdn-content {
+                                margin-top: 0;
+                            }
+                            
+                            body {
+                                background: white;
+                                color: black;
+                            }
                         }
                     </style>
                 </head>
                 <body>
-                    ${clonedDoc.body.innerHTML}
+                    <div class="cdn-header">
+                        🌐 CDN Content Extractor - Main Content Only
+                    </div>
+                    <div class="cdn-content">
+                        ${cleanContent.innerHTML}
+                    </div>
+                    
                     <script>
-                        // Prevent any remaining scripts from running
-                        console.log('🌐 CDN Clone loaded - interactions disabled');
+                        console.log('📖 CDN Content extracted and displayed');
                         
-                        // Disable form submissions
-                        document.addEventListener('submit', function(e) {
+                        // Disable all forms and links
+                        document.addEventListener('click', function(e) {
                             e.preventDefault();
-                            console.log('Form submission blocked in clone');
                         });
                         
-                        // Disable clicks on links
-                        document.addEventListener('click', function(e) {
-                            if (e.target.tagName === 'A') {
-                                e.preventDefault();
-                                console.log('Link click blocked in clone');
+                        document.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                        });
+                        
+                        // Add smooth scrolling
+                        document.documentElement.style.scrollBehavior = 'smooth';
+                        
+                        // Auto-focus on content for better reading
+                        window.addEventListener('load', function() {
+                            const content = document.querySelector('.cdn-content');
+                            if (content) {
+                                content.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             }
                         });
                     </script>
