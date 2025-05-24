@@ -14,113 +14,110 @@
 // @run-at       document-end
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+  "use strict";
 
-    // Prevent multiple loading
-    if (window.SmartContentReader) {
-        return;
+  // Prevent multiple loading
+  if (window.SmartContentReader) {
+    return;
+  }
+
+  const VERSION = "1.0.0";
+
+  const settingConfig = {
+    fontSize: 18,
+    lineHeight: 1.8,
+    wordSpacing: 4,
+    sentencesPerParagraph: 3,
+    selectors: ["#chapter-content", ".entry-content", ".ndtruyen"],
+  };
+  // Replacement rules
+  const replacements = [
+    { search: /\."/g, replace: '".' },
+    { search: /\.”/g, replace: "”." },
+    { search: /\·/g, replace: "" },
+    { search: /\!/g, replace: "." },
+    { search: /\?/g, replace: " " },
+    { search: /\s+/g, replace: " " },
+    { search: /^\s+|\s+$/g, replace: " " },
+    { search: /(?:\s*\.\s*){2,}/g, replace: "." },
+    { search: /tr\.a/g, replace: "tra" },
+    { search: /ɭϊếʍƈ/g, replace: "liếm" },
+    { search: /hϊế͙p͙/g, replace: "hiếp" },
+    { search: /(\p{L})\.(?=\p{L}(?![\s.!?])(?<![A-Z]))/gu, replace: "$1" },
+  ];
+
+  function processTextIntoParagraphs(text, sentencesPerParagraph = 3) {
+    if (!text || typeof text !== "string") {
+      console.error("Invalid text input");
+      return document.createDocumentFragment();
     }
 
-    const VERSION = '1.0.0';
-
-    const settingConfig = {
-        fontSize: 18,
-        lineHeight: 1.8,
-        wordSpacing: 4,
-        sentencesPerParagraph: 3,
-        selectors: [
-            '#chapter-content',
-            '.entry-content',
-            '.ndtruyen'
-        ]
-    }
-    // Replacement rules
-    const replacements = [
-        { search: /\."/g, replace: '".' },
-        { search: /\.”/g, replace: '”.' },
-        { search: /\·/g, replace: '' },
-        { search: /\!/g, replace: '.' },
-        { search: /\?/g, replace: ' ' },
-        { search: /\s+/g, replace: ' ' },
-        { search: /^\s+|\s+$/g, replace: ' ' },
-        { search: /(?:\s*\.\s*){2,}/g, replace: '.' },
-        { search: /tr\.a/g, replace: 'tra' },
-        { search: /ɭϊếʍƈ/g, replace: 'liếm' },
-        { search: /hϊế͙p͙/g, replace: 'hiếp' },
-        { search: /(\p{L})\.(?=\p{L}(?![\s.!?])(?<![A-Z]))/gu, replace: '$1' },
-    ];
-
-    function processTextIntoParagraphs(text, sentencesPerParagraph = 3) {
-        if (!text || typeof text !== 'string') {
-            console.error('Invalid text input');
-            return document.createDocumentFragment();
-        }
-        console.log('text', text);
-
-        // Apply all replacements
-        let processed = text;
-        for (const { search, replace } of replacements) {
-            processed = processed.replace(search, replace);
-        }
-
-        // Split text by newlines, trim each line, and filter out empty lines
-        const lines = splitSentences(processed)
-            .map(line => line.trim())
-            .filter(line => line.length > 0);
-
-        // Create a container div to hold the paragraphs
-        const fragment = document.createElement('div');
-
-        // Group sentences into paragraphs and create <p> nodes
-        for (let i = 0; i < lines.length; i += sentencesPerParagraph) {
-            const group = lines.slice(i, i + sentencesPerParagraph).join(' ');
-            const p = document.createElement('p');
-            p.textContent = group;
-            fragment.appendChild(p);
-        }
-
-        return fragment;
+    // Apply all replacements
+    let processed = text;
+    for (const { search, replace } of replacements) {
+      processed = processed.replace(search, replace);
     }
 
-    // Hàm tách câu từ text đầu vào
-    function splitSentences(text) {
-        if (!text || typeof text !== 'string') return [];
-        const sentenceRegex = /[^.:]+[.!?…]*/g;
-        const matches = text.match(sentenceRegex);
-        return matches 
-            ? matches
-                .map(sentence => sentence.trim())
-                .filter(sentence => sentence.length > 1) 
-            : [];
+    // Split text by newlines, trim each line, and filter out empty lines
+    let lines = processed.split(/\n/).filter((line) => line.trim().length > 0);
+    if (lines.length < 10) {
+      lines = splitSentences(processed)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
     }
 
-    class SmartContentReader {
-        constructor() {
-            this.version = VERSION;
-            this.overlay = null;
-            this.isLoaded = false;
-            this.currentTheme = 'dark';
-            this.settingConfig = settingConfig || {};
-            console.log(`📖 Smart Content Reader v${VERSION} loaded`);
+    // Create a container div to hold the paragraphs
+    const fragment = document.createElement("div");
 
-        }
+    // Group sentences into paragraphs and create <p> nodes
+    for (let i = 0; i < lines.length; i += sentencesPerParagraph) {
+      const group = lines.slice(i, i + sentencesPerParagraph).join(" ");
+      const p = document.createElement("p");
+      p.textContent = group;
+      fragment.appendChild(p);
+    }
 
-        // Initialize the reader system
-        init() {
-            if (this.isLoaded) return;
-            
-            this.addStyles();
-            this.createOverlay();
-            this.bindEvents();
-            this.isLoaded = true;
-            
-            console.log('✅ Smart Content Reader initialized');
-            return this;
-        }
+    return fragment;
+  }
 
-        addStyles() {
-            const css = `
+  // Hàm tách câu từ text đầu vào
+  function splitSentences(text) {
+    if (!text || typeof text !== "string") return [];
+    const sentenceRegex = /[^.:]+[.!?…]*/g;
+    const matches = text.match(sentenceRegex);
+    return matches
+      ? matches
+          .map((sentence) => sentence.trim())
+          .filter((sentence) => sentence.length > 1)
+      : [];
+  }
+
+  class SmartContentReader {
+    constructor() {
+      this.version = VERSION;
+      this.overlay = null;
+      this.isLoaded = false;
+      this.currentTheme = "dark";
+      this.settingConfig = settingConfig || {};
+      console.log(`📖 Smart Content Reader v${VERSION} loaded`);
+    }
+
+    // Initialize the reader system
+    init() {
+      if (this.isLoaded) return;
+
+      this.addStyles();
+      this.createOverlay();
+      this.bindEvents();
+      this.isLoaded = true;
+
+      console.log("✅ Smart Content Reader initialized");
+      return this;
+    }
+
+    addStyles() {
+      const css = `
                 /* Smart Content Reader Styles */
                 .scr-overlay {
                     position: fixed;
@@ -420,10 +417,10 @@
                     }
 
                     .scr-floating-btn {
-                            top: 20px;
+                            bottom: 20px;
                             left: 20px;
-                            width: 30px;
-                            height: 30px;
+                            width: 40px;
+                            height: 40px;
                             font-size: 15px;
                     }
 
@@ -454,21 +451,21 @@
                 }
             `;
 
-            const style = document.createElement('style');
-            style.id = 'scr-styles';
-            style.textContent = css;
-            document.head.appendChild(style);
-        }
+      const style = document.createElement("style");
+      style.id = "scr-styles";
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
 
-        createOverlay() {
-            // Create overlay
-            this.overlay = document.createElement('main');
-            this.overlay.className = 'scr-overlay';
-            this.overlay.setAttribute('role', 'contents');
-            this.overlay.setAttribute('aria-label', 'contents');
-            this.overlay.setAttribute('aria-hidden', 'false');
-           
-            this.overlay.innerHTML = `
+    createOverlay() {
+      // Create overlay
+      this.overlay = document.createElement("main");
+      this.overlay.className = "scr-overlay";
+      this.overlay.setAttribute("role", "contents");
+      this.overlay.setAttribute("aria-label", "contents");
+      this.overlay.setAttribute("aria-hidden", "false");
+
+      this.overlay.innerHTML = `
                 <div class="scr-modal ${this.currentTheme}">
                     <button class="scr-close-btn" id="scr-close" title="Đóng">
                         ✕
@@ -483,279 +480,293 @@
                     </div>
                 </div>
             `;
-            document.body.insertBefore(this.overlay, document.body.firstChild);
+      document.body.insertBefore(this.overlay, document.body.firstChild);
 
-            // Create floating button
-            const floatingBtn = document.createElement('button');
-            floatingBtn.className = 'scr-floating-btn';
-            floatingBtn.innerHTML = '📖';
-            floatingBtn.title = 'Smart Content Reader - Đọc nội dung trang hiện tại';
-            floatingBtn.id = 'scr-floating-btn';
-            document.body.insertBefore(floatingBtn, document.body.firstChild);
-        }
-
-        bindEvents() {
-            const floatingBtn = document.getElementById('scr-floating-btn');
-            const closeBtn = document.getElementById('scr-close');
-            const settingsBtn = document.getElementById('scr-settings');
-            const settingsModal = document.getElementById('scr-settings-modal');
-            const settingsBackdrop = document.getElementById('scr-settings-backdrop');
-            const saveSettingsBtn = document.getElementById('scr-save-settings');
-            const cancelSettingsBtn = document.getElementById('scr-cancel-settings');
-
-            console.log('Settings button found:', settingsBtn);
-            console.log('Settings modal found:', settingsModal);
-
-            floatingBtn?.addEventListener('click', () => this.extractContent());
-            closeBtn?.addEventListener('click', () => this.close());
-            settingsBtn?.addEventListener('click', () => {
-                console.log('Settings button clicked!');
-                this.toggleSettingsModal();
-            });
-            settingsBackdrop?.addEventListener('click', () => this.closeSettingsModal());
-            saveSettingsBtn?.addEventListener('click', () => this.saveSettings());
-            cancelSettingsBtn?.addEventListener('click', () => this.closeSettingsModal());
-
-            // Close on overlay click
-            this.overlay.addEventListener('click', (e) => {
-                if (e.target === this.overlay) this.close();
-            });
-
-            // ESC key to close
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
-                    this.close();
-                }
-                
-                // Ctrl + Shift + R to open reader
-                if (e.ctrlKey && e.shiftKey && e.key === 'R') {
-                    e.preventDefault();
-                    if (this.overlay.classList.contains('active')) {
-                        this.close();
-                    } else {
-                        this.extractContent();
-                    }
-                }
-            });
-
-            // Auto-hide floating button on scroll
-            let scrollTimeout;
-            document.addEventListener('scroll', () => {
-                floatingBtn?.classList.add('hidden');
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    floatingBtn?.classList.remove('hidden');
-                }, 1000);
-            });
-        }
-
-        extractContent() {
-            try {
-                this.showLoading();
-                this.show();
-                this.settingConfig = settingConfig || {};
-
-                // Extract main content from current page
-                const mainContent = this.findMainContent();
-
-                if (mainContent) {
-                    // Clean and display content
-                    const buildHTML = processTextIntoParagraphs(mainContent.innerText, this.settingConfig.sentencesPerParagraph);
-                    console.log('Processed content:', buildHTML);
-                    this.displayContent(buildHTML);
-
-                    // Set modal content as priority for read-aloud
-                    const reader = document.getElementById('scr-reader');
-                    if (reader) {
-                        reader.setAttribute('aria-live', 'polite');
-                        reader.setAttribute('role', 'document');
-                    }
-
-                    mainContent.setAttribute('aria-hidden', 'true');
-                    mainContent.setAttribute('tabindex', '-1');
-
-                    this.hideLoading();
-                    this.showStatus('✅ Trích xuất thành công', 'success');
-                } else {
-                    this.hideLoading();
-                    this.showStatus('❌ Không tìm thấy nội dung chính', 'error');
-                }
-
-            } catch (error) {
-                console.error('Smart Content Reader extraction failed:', error);
-                this.hideLoading();
-                this.showStatus('❌ Lỗi trích xuất nội dung', 'error');
-            }
-        }
-
-        findMainContent() {
-            // Common selectors for main content
-            const selectors = this.settingConfig.selectors || []
-            // Try each selector
-            for (const selector of selectors) {
-                const element = document.querySelector(selector);
-                if (element && this.hasSignificantTextContent(element)) {
-                    return element;
-                }
-            }
-
-            // Fallback: find the largest text block
-            return this.findLargestTextBlock();
-        }
-
-        hasSignificantTextContent(element) {
-            const text = element.textContent || '';
-            return text.trim().length > 200; // At least 200 characters
-        }
-
-        findLargestTextBlock() {
-            const candidates = document.querySelectorAll('div, section, article');
-            let bestCandidate = null;
-            let maxTextLength = 0;
-
-            candidates.forEach(element => {
-                // Skip if element contains mostly non-text content
-                const scripts = element.querySelectorAll('script, style, nav, header, footer');
-                if (scripts.length > element.children.length / 2) return;
-
-                const textLength = (element.textContent || '').trim().length;
-                if (textLength > maxTextLength) {
-                    maxTextLength = textLength;
-                    bestCandidate = element;
-                }
-            });
-
-            return bestCandidate;
-        }
-
-        cleanContent(element) {
-            // Clone the element to avoid modifying the original
-            const clone = element.cloneNode(true);
-            console.log('🧼 Cleaning content...', clone.innerText);
-            // Remove unwanted elements
-            const unwantedSelectors = [
-                'script', 'style', 'nav', 'header', 'footer', 'aside',
-                '.advertisement', '.ads', '.ad', '.sponsor',
-                '.social-share', '.comments', '.comment',
-                '.sidebar', '.menu', '.navigation',
-                'iframe[src*="ads"]', 'iframe[src*="doubleclick"]'
-            ];
-
-            unwantedSelectors.forEach(selector => {
-                const elements = clone.querySelectorAll(selector);
-                elements.forEach(el => el.remove());
-            });
-
-            // Clean up attributes that might interfere with styling
-            const allElements = clone.querySelectorAll('*');
-            allElements.forEach(el => {
-                // Keep essential attributes only
-                const keepAttrs = ['href', 'src', 'alt', 'title'];
-                const attrs = Array.from(el.attributes);
-                attrs.forEach(attr => {
-                    if (!keepAttrs.includes(attr.name)) {
-                        el.removeAttribute(attr.name);
-                    }
-                });
-            });
-
-            return clone;
-        }
-
-        displayContent(content) {
-            const reader = document.getElementById('scr-reader');
-            if (!reader) return;
-
-            // Add page title if available
-            const pageTitle = document.title;
-            let html = '';
-
-            if (pageTitle) {
-                html += `<h1 style="text-align: center; font-size: 14px; color: #a0aab8;">${pageTitle}</h1>`;
-                
-            }
-
-            html += content?.innerHTML ?? content;
-            reader.innerHTML = html;
-
-            // Scroll to top
-            const contentContainer = document.querySelector('.scr-content');
-            if (contentContainer) {
-                contentContainer.scrollTop = 0;
-            }
-        }
-
-        show() {
-            this.overlay.style.display = 'flex';
-            setTimeout(() => this.overlay.classList.add('active'), 10);
-            document.body.style.overflow = 'hidden';
-            document.body.style.paddingRight = '0px'; // Remove scrollbar padding
-        }
-
-        close() {
-            this.overlay.classList.remove('active');
-            setTimeout(() => {
-                this.overlay.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                document.body.style.paddingRight = ''; // Reset scrollbar padding
-            }, 300);
-        }
-
-        showLoading() {
-            const loading = document.getElementById('scr-loading');
-            const reader = document.getElementById('scr-reader');
-            if (loading) loading.style.display = 'flex';
-            if (reader) reader.style.display = 'none';
-        }
-
-        hideLoading() {
-            const loading = document.getElementById('scr-loading');
-            const reader = document.getElementById('scr-reader');
-            if (loading) loading.style.display = 'none';
-            if (reader) reader.style.display = 'block';
-        }
-
-        showStatus(message, type = '') {
-            const status = document.getElementById('scr-status');
-            if (status) {
-                status.textContent = message;
-                status.className = `scr-status ${type}`;
-                status.style.display = 'block';
-                
-                
-                setTimeout(() => {
-                    status.style.display = 'none';
-                }, 3000);
-            }
-        }
-
-        // Public API
-        getVersion() {
-            return this.version;
-        }
-
-        isInitialized() {
-            return this.isLoaded;
-        }
+      // Create floating button
+      const floatingBtn = document.createElement("button");
+      floatingBtn.className = "scr-floating-btn";
+      floatingBtn.innerHTML = "📖";
+      floatingBtn.title = "Smart Content Reader - Đọc nội dung trang hiện tại";
+      floatingBtn.id = "scr-floating-btn";
+      document.body.insertBefore(floatingBtn, document.body.firstChild);
     }
 
-    // Create global instance
-    window.SmartContentReader = new SmartContentReader();
+    bindEvents() {
+      const floatingBtn = document.getElementById("scr-floating-btn");
+      const closeBtn = document.getElementById("scr-close");
+      const settingsBtn = document.getElementById("scr-settings");
+      const settingsModal = document.getElementById("scr-settings-modal");
+      const settingsBackdrop = document.getElementById("scr-settings-backdrop");
+      const saveSettingsBtn = document.getElementById("scr-save-settings");
+      const cancelSettingsBtn = document.getElementById("scr-cancel-settings");
 
-    // Auto-initialize
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            window.SmartContentReader.init();
+
+      floatingBtn?.addEventListener("click", () => this.extractContent());
+      closeBtn?.addEventListener("click", () => this.close());
+      settingsBtn?.addEventListener("click", () => {
+        this.toggleSettingsModal();
+      });
+      settingsBackdrop?.addEventListener("click", () =>
+        this.closeSettingsModal()
+      );
+      saveSettingsBtn?.addEventListener("click", () => this.saveSettings());
+      cancelSettingsBtn?.addEventListener("click", () =>
+        this.closeSettingsModal()
+      );
+
+      // Close on overlay click
+      this.overlay.addEventListener("click", (e) => {
+        if (e.target === this.overlay) this.close();
+      });
+
+      // ESC key to close
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && this.overlay.classList.contains("active")) {
+          this.close();
+        }
+
+        // Ctrl + Shift + R to open reader
+        if (e.ctrlKey && e.shiftKey && e.key === "R") {
+          e.preventDefault();
+          if (this.overlay.classList.contains("active")) {
+            this.close();
+          } else {
+            this.extractContent();
+          }
+        }
+      });
+
+      // Auto-hide floating button on scroll
+      let scrollTimeout;
+      document.addEventListener("scroll", () => {
+        floatingBtn?.classList.add("hidden");
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          floatingBtn?.classList.remove("hidden");
+        }, 1000);
+      });
+    }
+
+    extractContent() {
+      try {
+        this.showLoading();
+        this.show();
+        this.settingConfig = settingConfig || {};
+
+        // Extract main content from current page
+        const mainContent = this.findMainContent();
+
+        if (mainContent) {
+          // Clean and display content
+          const buildHTML = processTextIntoParagraphs(
+            mainContent.innerText,
+            this.settingConfig.sentencesPerParagraph
+          );
+          this.displayContent(buildHTML);
+
+          // Set modal content as priority for read-aloud
+          const reader = document.getElementById("scr-reader");
+          if (reader) {
+            reader.setAttribute("aria-live", "polite");
+            reader.setAttribute("role", "document");
+          }
+
+          mainContent.setAttribute("aria-hidden", "true");
+          mainContent.setAttribute("tabindex", "-1");
+
+          this.hideLoading();
+          this.showStatus("✅ Trích xuất thành công", "success");
+        } else {
+          this.hideLoading();
+          this.showStatus("❌ Không tìm thấy nội dung chính", "error");
+        }
+      } catch (error) {
+        console.error("Smart Content Reader extraction failed:", error);
+        this.hideLoading();
+        this.showStatus("❌ Lỗi trích xuất nội dung", "error");
+      }
+    }
+
+    findMainContent() {
+      // Common selectors for main content
+      const selectors = this.settingConfig.selectors || [];
+      // Try each selector
+      for (const selector of selectors) {
+        const element = document.querySelector(selector);
+        if (element && this.hasSignificantTextContent(element)) {
+          return element;
+        }
+      }
+
+      // Fallback: find the largest text block
+      return this.findLargestTextBlock();
+    }
+
+    hasSignificantTextContent(element) {
+      const text = element.textContent || "";
+      return text.trim().length > 200; // At least 200 characters
+    }
+
+    findLargestTextBlock() {
+      const candidates = document.querySelectorAll("div, section, article");
+      let bestCandidate = null;
+      let maxTextLength = 0;
+
+      candidates.forEach((element) => {
+        // Skip if element contains mostly non-text content
+        const scripts = element.querySelectorAll(
+          "script, style, nav, header, footer"
+        );
+        if (scripts.length > element.children.length / 2) return;
+
+        const textLength = (element.textContent || "").trim().length;
+        if (textLength > maxTextLength) {
+          maxTextLength = textLength;
+          bestCandidate = element;
+        }
+      });
+
+      return bestCandidate;
+    }
+
+    cleanContent(element) {
+      // Clone the element to avoid modifying the original
+      const clone = element.cloneNode(true);
+      console.log("🧼 Cleaning content...", clone.innerText);
+      // Remove unwanted elements
+      const unwantedSelectors = [
+        "script",
+        "style",
+        "nav",
+        "header",
+        "footer",
+        "aside",
+        ".advertisement",
+        ".ads",
+        ".ad",
+        ".sponsor",
+        ".social-share",
+        ".comments",
+        ".comment",
+        ".sidebar",
+        ".menu",
+        ".navigation",
+        'iframe[src*="ads"]',
+        'iframe[src*="doubleclick"]',
+      ];
+
+      unwantedSelectors.forEach((selector) => {
+        const elements = clone.querySelectorAll(selector);
+        elements.forEach((el) => el.remove());
+      });
+
+      // Clean up attributes that might interfere with styling
+      const allElements = clone.querySelectorAll("*");
+      allElements.forEach((el) => {
+        // Keep essential attributes only
+        const keepAttrs = ["href", "src", "alt", "title"];
+        const attrs = Array.from(el.attributes);
+        attrs.forEach((attr) => {
+          if (!keepAttrs.includes(attr.name)) {
+            el.removeAttribute(attr.name);
+          }
         });
-    } else {
-        window.SmartContentReader.init();
+      });
+
+      return clone;
     }
 
-    // Debug info
-    console.log('🚀 Smart Content Reader script loaded');
-    console.log('💡 Shortcuts:');
-    console.log('  - Click floating button (📖) to extract content');
-    console.log('  - Ctrl + Shift + R: Toggle reader');
-    console.log('  - ESC: Close reader');
+    displayContent(content) {
+      const reader = document.getElementById("scr-reader");
+      if (!reader) return;
 
+      // Add page title if available
+      const pageTitle = document.title;
+      let html = "";
+
+      if (pageTitle) {
+        html += `<h1 style="text-align: center; font-size: 14px; color: #a0aab8;">${pageTitle}</h1>`;
+      }
+
+      html += content?.innerHTML ?? content;
+      reader.innerHTML = html;
+
+      // Scroll to top
+      const contentContainer = document.querySelector(".scr-content");
+      if (contentContainer) {
+        contentContainer.scrollTop = 0;
+      }
+    }
+
+    show() {
+      this.overlay.style.display = "flex";
+      setTimeout(() => this.overlay.classList.add("active"), 10);
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "0px"; // Remove scrollbar padding
+    }
+
+    close() {
+      this.overlay.classList.remove("active");
+      setTimeout(() => {
+        this.overlay.style.display = "none";
+        document.body.style.overflow = "auto";
+        document.body.style.paddingRight = ""; // Reset scrollbar padding
+      }, 300);
+    }
+
+    showLoading() {
+      const loading = document.getElementById("scr-loading");
+      const reader = document.getElementById("scr-reader");
+      if (loading) loading.style.display = "flex";
+      if (reader) reader.style.display = "none";
+    }
+
+    hideLoading() {
+      const loading = document.getElementById("scr-loading");
+      const reader = document.getElementById("scr-reader");
+      if (loading) loading.style.display = "none";
+      if (reader) reader.style.display = "block";
+    }
+
+    showStatus(message, type = "") {
+      const status = document.getElementById("scr-status");
+      if (status) {
+        status.textContent = message;
+        status.className = `scr-status ${type}`;
+        status.style.display = "block";
+
+        setTimeout(() => {
+          status.style.display = "none";
+        }, 3000);
+      }
+    }
+
+    // Public API
+    getVersion() {
+      return this.version;
+    }
+
+    isInitialized() {
+      return this.isLoaded;
+    }
+  }
+
+  // Create global instance
+  window.SmartContentReader = new SmartContentReader();
+
+  // Auto-initialize
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      window.SmartContentReader.init();
+    });
+  } else {
+    window.SmartContentReader.init();
+  }
+
+  // Debug info
+  console.log("🚀 Smart Content Reader script loaded");
+  console.log("💡 Shortcuts:");
+  console.log("  - Click floating button (📖) to extract content");
+  console.log("  - Ctrl + Shift + R: Toggle reader");
+  console.log("  - ESC: Close reader");
 })();
