@@ -67,7 +67,7 @@ GM_addStyle(`
 
             // Gom 5 câu vào 1 thẻ <p>
             let groupedParagraphs = [];
-            for (let i = 0; i < sentences.length; i += group {
+            for (let i = 0; i < sentences.length; i += group) {
                 let group = sentences.slice(i, i + group).map(item => `${item}`).join(' ');
                 groupedParagraphs.push(`<p style="word-spacing:1px; margin: 1em 2px;">${group}</p>`);
             }
