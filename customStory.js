@@ -25,7 +25,7 @@ GM_addStyle(`
 
 (function() {
     'use strict';
-    const queries = [".truyen", "#chapter-c", "#chapter-content"];
+    const queries = [".truyen", "#chapter-c", "#chapter-content", "#chapter-content", ".entry-content", ".ndtruyen"];
     const removeItems = ["#modal1"]
     queries.forEach(query => {
         let container = document.querySelector(query);
