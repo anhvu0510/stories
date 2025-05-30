@@ -10,6 +10,8 @@
 // ==/UserScript==
 
 GM_addStyle(`
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Serif&family=Charter&display=swap');
+
 .msreadout-line-highlight:not(.msreadout-inactive-highlight) {
   background: linear-gradient(90deg, #ffe8a3, #fff6cc) !important;
   border-radius: 4px !important;
@@ -80,8 +82,9 @@ GM_addStyle(`
 
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
-            container.style.padding = '20px'
-            container.style.textAlign = 'justify'
+            container.style.padding = '20px';
+            container.style.textAlign = 'justify';
+            container.style.fontFamily = '"Patrick Hand", cursive';
         }
     })
     setTimeout(function(){
