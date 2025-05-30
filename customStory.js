@@ -85,6 +85,7 @@ GM_addStyle(`
             container.style.padding = '20px';
             container.style.textAlign = 'justify';
             container.style.fontFamily = '"Patrick Hand", cursive';
+            container.style.fontSize = '20px'
         }
     })
     setTimeout(function(){
