@@ -82,10 +82,9 @@ GM_addStyle(`
 
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
-            container.style.padding = '20px';
             container.style.textAlign = 'justify';
-            container.style.fontFamily = '"Patrick Hand", cursive';
-            container.style.fontSize = '20px'
+            container.style.fontFamily = '"Patrick Hand", cursive !important;';
+            container.style.fontSize = '25px !important;'
         }
     })
     setTimeout(function(){
