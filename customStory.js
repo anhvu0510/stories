@@ -11,6 +11,7 @@
 
 GM_addStyle(`
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Serif&family=Charter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 .msreadout-line-highlight:not(.msreadout-inactive-highlight) {
   background: linear-gradient(90deg, #ffe8a3, #fff6cc) !important;
@@ -27,6 +28,7 @@ GM_addStyle(`
 
 (function() {
     'use strict';
+    const group = 2;
     const queries = [".truyen", "#chapter-c", "#chapter-content", "#chapter-content", ".entry-content", ".ndtruyen"];
     const removeItems = ["#modal1"]
     queries.forEach(query => {
@@ -65,8 +67,8 @@ GM_addStyle(`
 
             // Gom 5 câu vào 1 thẻ <p>
             let groupedParagraphs = [];
-            for (let i = 0; i < sentences.length; i += 4) {
-                let group = sentences.slice(i, i + 4).map(item => `${item}`).join(' ');
+            for (let i = 0; i < sentences.length; i += group {
+                let group = sentences.slice(i, i + group).map(item => `${item}`).join(' ');
                 groupedParagraphs.push(`<p style="word-spacing:1px; margin: 1em 2px;">${group}</p>`);
             }
 
@@ -83,8 +85,8 @@ GM_addStyle(`
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
             container.style.textAlign = 'justify';
-            container.style.fontFamily = '"Patrick Hand", cursive !important;';
-            container.style.fontSize = '25px !important;'
+            container.style.fontFamily = "'Crimson Pro', 'Noto Serif', serif";
+            container.style.fontSize = '22px'
         }
     })
     setTimeout(function(){
