@@ -28,7 +28,7 @@ GM_addStyle(`
 
 (function() {
     'use strict';
-    const group = 2;
+    const groupLine = 3;
     const queries = [".truyen", "#chapter-c", "#chapter-content", "#chapter-content", ".entry-content", ".ndtruyen"];
     const removeItems = ["#modal1"]
     queries.forEach(query => {
@@ -36,6 +36,7 @@ GM_addStyle(`
         console.log('query', query)
         console.log('container', container)
         if (container) {
+            document.querySelectorAll(`${query} a`).forEach(aLink => aLink?.parentNode?.remove())
 
             // let content = container.innerHTML.trim().slice(0, -1);
             // let parts = content.split(/<br\s*\/?>\s*<br\s*\/?>/).map(part => part.trim()).filter(part => part !== "");
@@ -67,8 +68,8 @@ GM_addStyle(`
 
             // Gom 5 câu vào 1 thẻ <p>
             let groupedParagraphs = [];
-            for (let i = 0; i < sentences.length; i += group) {
-                let group = sentences.slice(i, i + group).map(item => `${item}`).join(' ');
+            for (let i = 0; i < sentences.length; i += groupLine) {
+                let group = sentences.slice(i, i + groupLine).map(item => `${item}`).join(' ');
                 groupedParagraphs.push(`<p style="word-spacing:1px; margin: 1em 2px;">${group}</p>`);
             }
 
@@ -84,9 +85,13 @@ GM_addStyle(`
 
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
+
+            container.style.background = 'rgb(3, 12, 25)';
+            container.style.color = 'rgb(125 125 125)';
+
             container.style.textAlign = 'justify';
             container.style.fontFamily = "'Crimson Pro', 'Noto Serif', serif";
-            container.style.fontSize = '22px'
+            container.style.fontSize = '20px'
         }
     })
     setTimeout(function(){
