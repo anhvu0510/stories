@@ -22,21 +22,23 @@ GM_addStyle(`
 }
 
  h1 {
-   word-spacing: 2px;
-   padding: 5px;
-   font-size: 20px;
-   font-weight: normal;
+   display: block;
+   word-spacing: 1.5px !important;
+   margin-bottom: 10px !important;
+   font-size: 18px !important;
+   font-weight: normal !important;
  }
 `);
 
 (function() {
     'use strict';
-    const queries = [".truyen", "#chapter-c", "#chapter-content"];
+    const groupLine = 4;
+    const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content'];
     const removeItems = ["#modal1"]
     const replacements = [
         [/!/g, '.'],
         [/\·/g, ''],
-        [/-/g, '~'],
+        [/–/g, '~'],
         [/\?/g, '.'],
         [/\s+/g, ' '],
         [/^\s+|\s+$/g, ' '],
@@ -46,8 +48,15 @@ GM_addStyle(`
 
     queries.forEach(query => {
         let container = document.querySelector(query);
+        console.log('container', container, query)
         if (container) {
+
+            const nav = document.querySelector('.wp-pagenavi');
             let content = container.innerText;
+
+            content = content.replace(/(?<!\.)\.(?!\.)(\s)?/g, '.\n').replace(/\bhttps?:\/\/[^\s]+/gi, '')
+            console.log(content)
+
             let parts = content.split("\n").filter(Boolean)
             let sentences = parts.map((part, index) => {
                 let sentence = part.trim();
@@ -57,24 +66,38 @@ GM_addStyle(`
                 if(/chương \d+/i.test(updatedPart) === true) {
                     updatedPart = `${updatedPart}.<div style="display:block;"></div>`;
                 }
+
                 replacements.forEach(([pattern, replacement]) => {
                     updatedPart = updatedPart.replace(pattern, replacement);
                 });
                 return updatedPart;
             }).filter(Boolean);
             let groupedParagraphs = [];
-            for (let i = 0; i < sentences.length; i += 4) {
-                let group = sentences.slice(i, i + 4).map(item => `${item}`).join(' ');
+            for (let i = 0; i < sentences.length; i += groupLine) {
+                let group = sentences.slice(i, i + groupLine).map(item => `${item}`).join(' ');
                 groupedParagraphs.push(`<h1>${group}</h1>`);
             }
             document.querySelector('body').style.background = 'rgb(3, 12, 25)';
             document.querySelector('body').style.color = 'rgb(125 125 125)';
-            container.innerHTML = groupedParagraphs.join('');
+            container.innerHTML = groupedParagraphs.join('')
+
+            if(nav) container.append(nav)
+
             container.setAttribute('role', 'main');
+
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
+
+
+            container.style.background = 'rgb(3, 12, 25)';
+            container.style.color = 'rgb(125 125 125)';
+
             container.style.padding = '20px'
             container.style.textAlign = 'justify'
+
+
+
+
         }
     })
     setTimeout(function(){
