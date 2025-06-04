@@ -34,11 +34,11 @@ GM_addStyle(`
 
  .story {
     text-align: justify;
-    margin: 0;
+    margin: 0 !important;
     font-family: math;
     word-spacing: 1px;
-    padding: 2px 10px;
-    font-size: 24px;
+    padding: 10px 15px;
+    font-size: 20px;
     font-weight: normal;
     line-height: 1.8;
  }
@@ -46,7 +46,7 @@ GM_addStyle(`
 
 (function() {
     'use strict';
-    const groupLine = 2;
+    const groupLine = 4;
     const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content'];
     const removeItems = ["#modal1"]
     const replacements = [
@@ -69,7 +69,7 @@ GM_addStyle(`
             let content = container.innerText;
 
             content = content
-                .replace(/([“"])([^“”"]*?)(\.)(["”])/g, '$1$2$4.')
+                .replace(/([“"])([^“”"]*?)(\.)(["”])/g, '$1$2$4.\n')
                 .replace(/(?<!\.)\.(?!\.)(?![^"“”]*["”])/g,'.\n')
                 .replace(/\bhttps?:\/\/[^\s]+/gi, '')
 
@@ -92,6 +92,7 @@ GM_addStyle(`
             for (let i = 0; i < sentences.length; i += groupLine) {
                 let group = sentences.slice(i, i + groupLine).map(item => `${item}`).join(' ');
                 // groupedParagraphs.push(`<h1>${group}</h1>`);
+                // groupedParagraphs.push(`<h4 class="story">${group}</h4>`);
                 groupedParagraphs.push(`<p class="story">${group}</p>`);
             }
             document.querySelector('body').style.background = 'rgb(3, 12, 25)';
