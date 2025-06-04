@@ -15,6 +15,7 @@ GM_addStyle(`
   border-radius: 4px !important;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important;
   transition: background 0.3s ease !important;
+  padding: 5px 0px;
 }
 
 .msreadout-word-highlight {
@@ -22,17 +23,30 @@ GM_addStyle(`
 }
 
  h1 {
-   display: block;
-   word-spacing: 1.5px !important;
-   margin-bottom: 10px !important;
-   font-size: 18px !important;
-   font-weight: normal !important;
+    text-align: justify;
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    word-spacing: 1px;
+    padding: 2px 10px;
+    font-size: 24px;
+    font-weight: normal;
+ }
+
+ .story {
+    text-align: justify;
+    margin: 0;
+    font-family: math;
+    word-spacing: 1px;
+    padding: 2px 10px;
+    font-size: 24px;
+    font-weight: normal;
+    line-height: 1.8;
  }
 `);
 
 (function() {
     'use strict';
-    const groupLine = 4;
+    const groupLine = 2;
     const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content'];
     const removeItems = ["#modal1"]
     const replacements = [
@@ -54,8 +68,10 @@ GM_addStyle(`
             const nav = document.querySelector('.wp-pagenavi');
             let content = container.innerText;
 
-            content = content.replace(/(?<!\.)\.(?!\.)(\s)?/g, '.\n').replace(/\bhttps?:\/\/[^\s]+/gi, '')
-            console.log(content)
+            content = content
+                .replace(/([“"])([^“”"]*?)(\.)(["”])/g, '$1$2$4.')
+                .replace(/(?<!\.)\.(?!\.)(?![^"“”]*["”])/g,'.\n')
+                .replace(/\bhttps?:\/\/[^\s]+/gi, '')
 
             let parts = content.split("\n").filter(Boolean)
             let sentences = parts.map((part, index) => {
@@ -64,7 +80,7 @@ GM_addStyle(`
                 if(updatedPart.includes("middle-content") === true) return false;
                 if(updatedPart.includes("♛") === true) return false;
                 if(/chương \d+/i.test(updatedPart) === true) {
-                    updatedPart = `${updatedPart}.<div style="display:block;"></div>`;
+                    updatedPart = `${updatedPart}</br>`;
                 }
 
                 replacements.forEach(([pattern, replacement]) => {
@@ -75,7 +91,8 @@ GM_addStyle(`
             let groupedParagraphs = [];
             for (let i = 0; i < sentences.length; i += groupLine) {
                 let group = sentences.slice(i, i + groupLine).map(item => `${item}`).join(' ');
-                groupedParagraphs.push(`<h1>${group}</h1>`);
+                // groupedParagraphs.push(`<h1>${group}</h1>`);
+                groupedParagraphs.push(`<p class="story">${group}</p>`);
             }
             document.querySelector('body').style.background = 'rgb(3, 12, 25)';
             document.querySelector('body').style.color = 'rgb(125 125 125)';
@@ -88,22 +105,17 @@ GM_addStyle(`
             container.parentNode.style.background = 'rgb(3, 12, 25)';
             container.parentNode.style.color = 'rgb(125 125 125)';
 
-
             container.style.background = 'rgb(3, 12, 25)';
             container.style.color = 'rgb(125 125 125)';
-
-            container.style.padding = '20px'
-            container.style.textAlign = 'justify'
-
-
-
-
         }
     })
     setTimeout(function(){
+        document.querySelector('body')?.setAttribute('role', 'main');
+        document.querySelector('main')?.setAttribute('role', 'main');
+
         document.querySelector('header')?.setAttribute('aria-hidden', 'true');
         document.querySelector('footer')?.setAttribute('aria-hidden', 'true');
-    }, 2000)
+    }, 500)
     function removeExternalLinks() {
         document.querySelectorAll('a[target="_blank"]').forEach(link => {
             try {
