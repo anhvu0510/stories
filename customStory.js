@@ -22,38 +22,40 @@ GM_addStyle(`
     const groupLine = 8;
     const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content', '.entry-content single-page', '.chapter-c'];
     const removeItems = ["#modal1"]
-    const replacements = [
-        [/!/g, '.'],
-        [/\·/g, ''],
-        [/–/g, '~'],
-        [/\?/g, '.'],
-        [/\s+/g, ' '],
-        [/\s*\.\s*/g, '.'],
-        ["!", "."],
-        ["\·", ""],
-        ["\.\.\.+", " ~ "],
-        ["\?", "."],
-        ["\s+", " "],
-        ["\+", "cộng"]
-    ];
+
+
+    function formatText(str) {
+        let output = str
+        .replace(/\!/g, '')
+        .replace(/\?/g, '')
+        .replace(/–/g, '~')
+        .replace(/“\s+/g, " “")
+        .replace(/\.\s+/g, ". ")
+
+        return output.trim();
+    }
+
+
+
+
+
+
+
     queries.forEach(query => {
         let container = document.querySelector(query);
         console.log('container', container, query)
         if (container) {
             const nav = document.querySelector('.wp-pagenavi');
             let content = container.innerText;
-            content = content.replace(/(?<!\.)\.(?!\.)(\s)?/g, '.\n').replace(/\bhttps?:\/\/[^\s]+/gi, '')
+            console.log(content)
+            // content = content.replace(/(?<!\.)\.(?!\.)(\s)?/g, '.\n').replace(/\bhttps?:\/\/[^\s]+/gi, '')
             let parts = content.split("\n").filter(Boolean)
             let sentences = parts.map((part, index) => {
                 let sentence = part.trim();
                 let updatedPart = /<\/?[a-z][\s\S]*>/i.test(sentence) ? sentence : sentence;
 
-                if(/chương \d+/i.test(updatedPart) === true) {
-                    updatedPart = `${updatedPart}.<div style="display:block;"></div>`;
-                }
-                replacements.forEach(([pattern, replacement]) => {
-                    updatedPart = updatedPart.replace(pattern, replacement);
-                });
+
+                updatedPart = formatText(updatedPart);
                 return updatedPart;
             }).filter(Boolean);
             let groupedParagraphs = [];
