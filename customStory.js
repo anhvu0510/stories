@@ -10,44 +10,17 @@
 // ==/UserScript==
 
 GM_addStyle(`
-.msreadout-line-highlight:not(.msreadout-inactive-highlight) {
-  background: linear-gradient(90deg, #ffe8a3, #fff6cc) !important;
-  border-radius: 4px !important;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important;
-  transition: background 0.3s ease !important;
-  padding: 5px 0px;
-}
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 
-.msreadout-word-highlight {
-  padding: 0 !important;
-}
-
- h1 {
-    text-align: justify;
-    margin: 0;
-    font-family: "Open Sans", sans-serif;
-    word-spacing: 1px;
-    padding: 2px 10px;
-    font-size: 24px;
-    font-weight: normal;
- }
-
- .story {
-    text-align: justify;
-    margin: 0 !important;
-    font-family: math;
-    word-spacing: 1px;
-    padding: 10px 15px;
-    font-size: 20px;
-    font-weight: normal;
-    line-height: 1.8;
- }
+.msreadout-line-highlight:not(.msreadout-inactive-highlight) { background: linear-gradient(90deg, #ffe8a3, #fff6cc) !important; border-radius: 4px !important; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important; transition: background 0.3s ease !important; }
+.msreadout-word-highlight { padding: 0 !important; }
+ .story { display: block; word-spacing: 0.5rem !important; margin-bottom: 30px !important; font-size: 35px !important; font-weight: bold !important; font-family: fantasy, "MedievalSharp", fantasy !important; line-height: 1.6em; }
 `);
 
 (function() {
     'use strict';
-    const groupLine = 4;
-    const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content'];
+    const groupLine = 8;
+    const queries = [".truyen", "#chapter-c", "#chapter-content" ,'.ndtruyen', '.entry-content', '.entry-content single-page', '.chapter-c'];
     const removeItems = ["#modal1"]
     const replacements = [
         [/!/g, '.'],
@@ -55,34 +28,29 @@ GM_addStyle(`
         [/–/g, '~'],
         [/\?/g, '.'],
         [/\s+/g, ' '],
-        [/^\s+|\s+$/g, ' '],
-        [/(?:\s*\.\s*){2,}/g, '.']
+        [/\s*\.\s*/g, '.'],
+        ["!", "."],
+        ["\·", ""],
+        ["\.\.\.+", " ~ "],
+        ["\?", "."],
+        ["\s+", " "],
+        ["\+", "cộng"]
     ];
-
-
     queries.forEach(query => {
         let container = document.querySelector(query);
         console.log('container', container, query)
         if (container) {
-
             const nav = document.querySelector('.wp-pagenavi');
             let content = container.innerText;
-
-            content = content
-                .replace(/([“"])([^“”"]*?)(\.)(["”])/g, '$1$2$4.\n')
-                .replace(/(?<!\.)\.(?!\.)(?![^"“”]*["”])/g,'.\n')
-                .replace(/\bhttps?:\/\/[^\s]+/gi, '')
-
+            content = content.replace(/(?<!\.)\.(?!\.)(\s)?/g, '.\n').replace(/\bhttps?:\/\/[^\s]+/gi, '')
             let parts = content.split("\n").filter(Boolean)
             let sentences = parts.map((part, index) => {
                 let sentence = part.trim();
                 let updatedPart = /<\/?[a-z][\s\S]*>/i.test(sentence) ? sentence : sentence;
-                if(updatedPart.includes("middle-content") === true) return false;
-                if(updatedPart.includes("♛") === true) return false;
-                if(/chương \d+/i.test(updatedPart) === true) {
-                    updatedPart = `${updatedPart}</br>`;
-                }
 
+                if(/chương \d+/i.test(updatedPart) === true) {
+                    updatedPart = `${updatedPart}.<div style="display:block;"></div>`;
+                }
                 replacements.forEach(([pattern, replacement]) => {
                     updatedPart = updatedPart.replace(pattern, replacement);
                 });
@@ -91,32 +59,22 @@ GM_addStyle(`
             let groupedParagraphs = [];
             for (let i = 0; i < sentences.length; i += groupLine) {
                 let group = sentences.slice(i, i + groupLine).map(item => `${item}`).join(' ');
-                // groupedParagraphs.push(`<h1>${group}</h1>`);
-                // groupedParagraphs.push(`<h4 class="story">${group}</h4>`);
-                groupedParagraphs.push(`<p class="story">${group}</p>`);
+                groupedParagraphs.push(`<section class="story">${group}</section>`);
             }
             document.querySelector('body').style.background = 'rgb(3, 12, 25)';
             document.querySelector('body').style.color = 'rgb(125 125 125)';
             container.innerHTML = groupedParagraphs.join('')
-
             if(nav) container.append(nav)
-
             container.setAttribute('role', 'main');
-
-            container.parentNode.style.background = 'rgb(3, 12, 25)';
-            container.parentNode.style.color = 'rgb(125 125 125)';
-
-            container.style.background = 'rgb(3, 12, 25)';
-            container.style.color = 'rgb(125 125 125)';
+            container.style.padding = '20px'
+            container.style.textAlign = 'justify'
+            container.style['-webkit-user-select'] = 'text';
         }
     })
     setTimeout(function(){
-        document.querySelector('body')?.setAttribute('role', 'main');
-        document.querySelector('main')?.setAttribute('role', 'main');
-
         document.querySelector('header')?.setAttribute('aria-hidden', 'true');
         document.querySelector('footer')?.setAttribute('aria-hidden', 'true');
-    }, 500)
+    }, 2000)
     function removeExternalLinks() {
         document.querySelectorAll('a[target="_blank"]').forEach(link => {
             try {
