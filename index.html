@@ -421,11 +421,11 @@
     <div id="selectionTooltip" class="hidden" onmousedown="event.preventDefault(); openReportSheet();" ontouchstart="event.preventDefault(); openReportSheet()" aria-hidden="true">
         <button class="tooltip-btn">
             <span class="tooltip-icon">✎</span>
-            <span>Báo lỗi đoạn này</span>
+            <!-- <span>Báo lỗi đoạn này</span> -->
         </button>
-        <button class="tooltip-btn" onclick="event.stopPropagation(); copySelection();">
+        <!-- <button class="tooltip-btn" onclick="event.stopPropagation(); copySelection();">
             <span class="tooltip-icon">📋</span>
-        </button>
+        </button> -->
     </div>
 
     <!-- GLOBAL OVERLAY -->
@@ -729,9 +729,7 @@
             
             let header = isInitial ? 
                 `<div style="text-align:center; margin-bottom:1rem;">
-                    <div style="font-size:0.85rem; color:var(--text-sub); margin-bottom:0.5rem; text-transform:uppercase;">${data.chapter.bookName}</div>
-                    <h2 style="font-family:'Merriweather'; color:var(--accent); font-size:1.5rem; margin-bottom:0.5rem;">${data.chapter.title}</h2>
-                    <div style="font-size:0.9rem;">Chương ${data.chapter.chapterNumber}</div>
+                    <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
                  </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
             
@@ -827,27 +825,29 @@
             if(sel.rangeCount > 0 && !sel.isCollapsed) {
                 const range = sel.getRangeAt(0);
                 const container = document.getElementById('readerContainer');
-                
-                if(container.contains(range.commonAncestorContainer)) {
-                    const rect = range.getBoundingClientRect();
-                    
-                    // Position calculations to keep it on screen
-                    const tipWidth = 140; // Approx width
-                    let left = rect.left + (rect.width / 2) - (tipWidth / 2);
-                    let top = rect.top - 60; // Above selection
-                    
-                    // Clamp to screen edges
-                    if (left < 10) left = 10;
-                    if (left + tipWidth > window.innerWidth - 10) left = window.innerWidth - tipWidth - 10;
-                    
-                    // If too close to top, show below selection
-                    if (top < 60) top = rect.bottom + 10;
+               
+                document.querySelector('#glassDock').classList.remove('hide')
 
-                    tip.style.left = `${left}px`;
-                    tip.style.top = `${top}px`;
-                    tip.classList.remove('hidden');
-                    return;
-                }
+                // if(container.contains(range.commonAncestorContainer)) {
+                //     const rect = range.getBoundingClientRect();
+                    
+                //     // Position calculations to keep it on screen
+                //     const tipWidth = 0; // Approx width
+                //     let left = rect.left + (rect.width / 2) - (tipWidth / 2);
+                //     let top = rect.top - 120; // Above selection
+                    
+                //     // Clamp to screen edges
+                //     if (left < 10) left = 10;
+                //     if (left + tipWidth > window.innerWidth - 10) left = window.innerWidth - tipWidth - 10;
+                    
+                //     // If too close to top, show below selection
+                //     if (top < 60) top = rect.bottom + 10;
+
+                //     tip.style.left = `${left}px`;
+                //     tip.style.top = `${top}px`;
+                //     tip.classList.remove('hidden');
+                //     return;
+                // }
             }
             tip.classList.add('hidden');
         }
