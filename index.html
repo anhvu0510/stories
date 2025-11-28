@@ -156,9 +156,10 @@
             font-size: var(--reader-font-size);
             line-height: var(--reader-line-height);
             color: #d1d5db; 
-            transition: font-size 0.2s, font-family 0.2s; 
+            transition: font-size 0.2s, font-family 0.2s;
+            /* padding: 0 12px; */
         }
-        .reader-text p { margin-bottom: 1.5rem; text-align: justify; }
+        .reader-text div { margin-bottom: 1.2rem; text-align: justify; word-spacing: 1.5px; }
         
         .chapter-header-compact {
             margin: 4rem 0 2rem; padding-top: 1rem;
@@ -597,10 +598,12 @@
             div.dataset.cid = cid; div.dataset.num = data.chapter.chapterNumber; div.dataset.bookName = data.chapter.bookName;
             
             let header = isInitial ? 
-                `<div style="text-align:center; margin-bottom:2rem;"><div style="font-size:0.8rem; color:#888; margin-bottom:0.5rem;">${data.chapter.bookName}</div><h2 style="font-family:'Merriweather'; color:var(--accent);">${data.chapter.title}</h2></div><hr style="border:0; border-top:1px dashed #444; margin-bottom:2rem;">` :
+                `<div style="text-align:center; margin-bottom:0.2rem;">
+                    <div style="font-size:0.8rem; color:#888; margin-bottom:0.5rem;" aria-hidden="true">${data.chapter.bookName}</div>
+                    <h5 style="font-family:'Merriweather'; color:var(--accent);">${data.chapter.title}</h5></div><hr style="border:0; border-top:1px dashed #444; margin-bottom:2rem;">` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
             
-            div.innerHTML = header + `<div class="reader-text">${data.chapter.content.filter(t=>t.trim()).map(t=>`<p>${t}</p>`).join('')}</div>`;
+            div.innerHTML = header + `<div class="reader-text">${data.chapter.content.filter(t=>t.trim()).map(t=>`<div>${t}</div>`).join('')}</div>`;
             document.getElementById('readerContainer').appendChild(div);
             
             if (isInitial) { appState.activeChapterId = cid; appState.prevChapterId = data.navigation?.prev?.chapterId; updateHeader(data.chapter); }
@@ -633,7 +636,8 @@
             });
         }
         function updateHeader(data) {
-            document.getElementById('pageTitle').innerHTML = `<div class="reader-header-title"><div class="rh-book">${data.bookName || ''}</div><div class="rh-chap">Chương ${data.chapterNumber}</div></div>`;
+            console.log('data', JSON.stringify(data, null, 2))
+            document.getElementById('pageTitle').innerHTML = `<div class="reader-header-title"><div class="rh-book">${data.bookName || ''} - Chương ${data?.chapterNumber}</div></div>`;
             let hist = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
             if(appState.book) {
                 hist = hist.filter(h=>h.bid!==appState.book.id);
