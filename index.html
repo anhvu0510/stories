@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#202028">
+    <meta name="theme-color" content="#0b1121">
     <title>Đọc Truyện Online</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,26 +11,29 @@
     <style>
         /* --- THEME CONFIG --- */
         :root {
-            --bg-app: #202028;       
-            --bg-surface: #2b2b36;   
-            --bg-glass: rgba(32, 32, 40, 0.9); 
-            --bg-input: #2b2b36;     
+            --bg-app: #0b1121;       
+            --bg-surface: #151e32;   
+            --bg-glass: rgba(11, 17, 33, 0.95); 
+            --bg-input: #1c263d;     
             
             --text-main: #eceff4;    
-            --text-sub: #94a3b8;     
+            --text-sub: #8f9bb3;     
             
-            --accent: #e06c75;       
-            --accent-glow: rgba(224, 108, 117, 0.25);
+            --accent: #ff4757;       
+            --accent-dark: #b33939;
+            --accent-glow: rgba(255, 71, 87, 0.25); 
             
-            --header-h: 60px; 
+            --header-h: 50px; 
             
-            /* Settings */
+            /* User Settings Variables */
             --reader-font-size: 1.2rem;
             --reader-font-family: 'Merriweather', serif;
             --reader-line-height: 1.8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        a { text-decoration: none; color: inherit; } /* Reset thẻ a */
 
         body {
             font-family: 'Quicksand', sans-serif;
@@ -50,12 +53,13 @@
         .header {
             position: fixed; top: 0; left: 0; right: 0;
             height: var(--header-h);
-            background: var(--bg-app); 
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             z-index: 90;
             display: flex; align-items: center;
-            padding: 0 1.2rem;
+            padding: 0 1rem;
+            border-bottom: 1px solid rgba(255,71,87,0.1); 
             transition: transform 0.3s;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
         }
         .header.hide { transform: translateY(-100%); }
         
@@ -65,236 +69,213 @@
         }
 
         .brand {
-            font-size: 1.2rem; font-weight: 700; color: var(--accent);
+            font-size: 0.95rem; 
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            max-width: 70vw;
             display: flex; align-items: center; gap: 5px;
         }
         
-        /* Reader Title */
-        .reader-header-title {
-            display: flex; flex-direction: column; align-items: center;
-            width: 100%;
-        }
-        .rh-book { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
-        .rh-chap { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+        .brand .highlight { color: var(--accent); font-weight: 700; }
 
         .icon-btn {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             border: none; color: var(--text-main);
             width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 1.1rem;
+            transition: background 0.2s;
         }
+        .icon-btn:active { background: var(--accent); color: white; }
 
         /* --- SEARCH --- */
         .search-area {
-            padding: 0.5rem 1.2rem 1.5rem;
-            background: var(--bg-app);
             position: sticky; top: var(--header-h); z-index: 80;
+            padding: 1rem; background: var(--bg-app); margin-bottom: 0.5rem;
         }
         .search-input {
-            width: 100%; background: var(--bg-input); border: none;
-            padding: 1rem 1rem 1rem 3rem; border-radius: 30px;
+            width: 100%; background: var(--bg-input); border: 1px solid #2e3a52;
+            padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: 30px;
             color: white; font-family: inherit; font-size: 0.95rem;
-            outline: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            outline: none; transition: all 0.3s;
         }
-        .search-icon {
-            position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%);
-            color: #666; pointer-events: none;
-        }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-sub); pointer-events: none; }
 
-        /* --- BOOK GRID --- */
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 1.2rem; }
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem; padding-bottom: 2rem;
-        }
-        @media (max-width: 480px) { .grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; } }
-
-        .cover-card {
-            aspect-ratio: 0.7;
-            background: linear-gradient(135deg, #4a2a2c, #331b1d);
-            border-radius: 12px; padding: 1rem;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; cursor: pointer; position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        /* --- BOOK LIST (ROW STYLE) --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        
+        .book-row {
+            display: flex; align-items: center; gap: 1rem;
+            background: var(--bg-surface);
+            padding: 0.8rem; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.1s;
+            margin-bottom: 0.8rem;
+            transition: background 0.2s;
         }
-        .cover-card:active { transform: scale(0.96); }
+        .book-row:active { background: #1e2a45; border-color: var(--accent); }
+
+        .book-icon {
+            width: 45px; height: 60px;
+            background: linear-gradient(135deg, #2c0b0e, #5a1a1a);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: rgba(255,255,255,0.3);
+            flex-shrink: 0; border: 1px solid rgba(255,71,87,0.2);
+        }
         
-        .cover-title {
-            font-family: 'Merriweather', serif; font-size: 1rem; font-weight: 700;
-            line-height: 1.4; color: #f0f0f0;
-            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-            margin-bottom: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .cover-badge {
-            position: absolute; bottom: 1rem;
-            background: rgba(0,0,0,0.3); color: #ccaaaa;
-            font-size: 0.7rem; font-weight: 600; padding: 4px 10px;
-            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .book-info { flex: 1; overflow: hidden; }
+        .book-title { font-weight: 600; font-size: 0.95rem; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .book-meta { font-size: 0.75rem; color: var(--text-sub); display: flex; gap: 8px; }
+        .tag { background: rgba(255,71,87,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
         /* --- CHAPTER LIST --- */
-        .chapter-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+        .chapter-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
         .chapter-row {
-            background: var(--bg-surface); padding: 1rem; border-radius: 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer;
+            display: block;
+            background: var(--bg-surface); 
+            padding: 1rem; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: background 0.2s;
         }
-        .chapter-row:active { background: #3a3a45; }
-        .ch-title { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
-        .ch-sub { font-size: 0.8rem; color: var(--text-sub); margin-top: 2px; }
+        .chapter-row:active { background: #1c263d; border-color: var(--accent); }
+        .ch-title { font-weight: 600; color: #e2e8f0; font-size: 0.95rem; }
+        .ch-sub { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
 
         /* --- READER VIEW --- */
         .reader-view { background: var(--bg-app); min-height: 100vh; }
-        .reader-container { padding: 0; max-width: 700px; margin: 0 auto; }
+        .reader-container { padding: 0; max-width: 700px; margin: 0 auto; position: relative; }
         
-        .chapter-block { padding: 1.5rem 0; min-height: 60vh; position: relative; }
+        .chapter-block { padding: 1.5rem; min-height: 60vh; position: relative; }
         
         .reader-text {
             font-family: var(--reader-font-family);
             font-size: var(--reader-font-size);
             line-height: var(--reader-line-height);
-            color: #d1d5db; transition: font-size 0.2s, font-family 0.2s; 
-            padding: 0px 12px;
+            color: #d1d5db; 
+            transition: font-size 0.2s, font-family 0.2s; 
         }
         .reader-text p { margin-bottom: 1.5rem; text-align: justify; }
         
         .chapter-header-compact {
-            margin: 3rem 0 1.5rem; padding-top: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: var(--accent); font-weight: 700; text-align: center;
-            font-family: 'Quicksand', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+            margin: 4rem 0 2rem; padding-top: 1rem;
+            border-top: 1px solid rgba(255,71,87,0.2);
+            color: var(--accent); font-weight: 700; font-size: 1.1rem;
+            text-align: center; font-family: 'Quicksand', sans-serif; text-transform: uppercase; letter-spacing: 1px;
         }
         
         .loading-next { text-align: center; padding: 2rem; color: var(--accent); }
+
+        /* --- COMPACT GLASS DOCK --- */
+        .glass-dock {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 340px; 
+            height: 55px; 
+            background: rgba(21, 30, 50, 0.85); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 71, 87, 0.15); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: flex; justify-content: space-evenly; align-items: center;
+            padding: 0 5px; z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
+            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        .glass-dock.hide { transform: translate(-50%, 180%); }
+
+        .dock-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            border: none; background: transparent;
+            color: #94a3b8;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; position: relative;
+        }
+        .dock-btn svg { width: 20px; height: 20px; stroke-width: 2.2px; }
+        .dock-btn.active { color: var(--accent); background: rgba(255, 71, 87, 0.1); }
+        .dock-btn:active { transform: scale(0.9); color: white; }
+        .dock-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .dock-btn.center { 
+            width: 50px; height: 50px; 
+            background: var(--accent); color: white; 
+            box-shadow: 0 4px 15px var(--accent-glow);
+            margin-top: -12px;
+        }
+        .dock-btn.center:active { transform: scale(0.95) translateY(2px); }
 
         /* --- SELECTION TOOLTIP --- */
         #selectionTooltip {
             position: fixed; z-index: 2002; 
             background: var(--bg-surface); 
-            border: 1px solid var(--accent); 
-            color: var(--text-main);
+            border: 1px solid var(--accent); color: var(--text-main);
             padding: 8px 16px; border-radius: 30px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
             transform: translateX(-50%) translateY(-120%);
             cursor: pointer; font-weight: bold;
             display: flex; align-items: center; gap: 8px;
-            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            user-select: none; -webkit-user-select: none; 
         }
-        #selectionTooltip::after {
-            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            border-width: 6px 6px 0; border-style: solid;
-            border-color: var(--accent) transparent transparent transparent;
-        }
-        @keyframes popIn { from { transform: translateX(-50%) translateY(-100%) scale(0.8); opacity: 0; } to { transform: translateX(-50%) translateY(-120%) scale(1); opacity: 1; } }
-
-        .tooltip-icon { width: 16px; height: 16px; fill: none; stroke: var(--accent); stroke-width: 2.5; }
 
         /* --- MODALS & DRAWERS --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            z-index: 3000; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        
-        .modal {
-            background: var(--bg-surface); width: 90%; max-width: 360px;
-            border-radius: 16px; padding: 1.5rem; position: relative;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            transform: scale(0.95); transition: transform 0.3s;
-        }
+        .modal { background: var(--bg-surface); width: 90%; max-width: 360px; border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); transform: scale(0.95); transition: transform 0.3s; }
         .modal-overlay.show .modal { transform: scale(1); }
         
-        .modal-input { width: 100%; background: var(--bg-input); border: 1px solid #444; padding: 12px; color: white; border-radius: 8px; margin-top: 5px; font-family: inherit; }
-        .modal-input:focus { border-color: var(--accent); outline: none; }
-        
-        .btn-submit { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 1rem; cursor: pointer; box-shadow: 0 4px 12px var(--accent-glow); }
-        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+        .modal-input { width: 100%; background: var(--bg-input); border: 1px solid #333; padding: 12px; color: white; border-radius: 8px; margin-top: 5px; }
+        .btn-submit { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 1rem; cursor: pointer; }
 
-        /* --- GLASS DOCK --- */
-        .glass-dock {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: auto; min-width: 280px; height: 56px; 
-            background: rgba(43, 43, 54, 0.9);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex; justify-content: center; gap: 1rem; align-items: center;
-            padding: 0 1.5rem; z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom);
-            transition: transform 0.3s;
-        }
-        .glass-dock.hide { transform: translate(-50%, 180%); }
-
-        .dock-btn {
-            width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent;
-            color: #888; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .dock-btn svg { width: 20px; height: 20px; }
-        .dock-btn:active { color: white; }
-        .dock-btn:disabled { opacity: 0.3; }
-        
-        .dock-btn.center { 
-            width: 48px; height: 48px; background: var(--accent); color: white; 
-            box-shadow: 0 4px 15px var(--accent-glow); margin-top: -4px;
-        }
-        .dock-btn.center:active { transform: scale(0.95); }
-
-        /* --- DRAWERS & SETTINGS --- */
+        /* Drawers */
         .drawer-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; }
         .drawer-mask.show { opacity: 1; pointer-events: auto; }
         
-        .drawer-panel { position: fixed; top: 0; bottom: 0; right: 0; width: 85%; max-width: 360px; background: var(--bg-surface); transform: translateX(100%); transition: 0.3s; z-index: 2001; display:flex; flex-direction:column; }
+        .drawer-panel { position: fixed; top: 0; bottom: 0; right: 0; width: 85%; max-width: 360px; background: var(--bg-surface); transform: translateX(100%); transition: 0.3s; z-index: 2001; display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.05); }
         .drawer-panel.show { transform: translateX(0); }
         
-        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-radius: 24px 24px 0 0; transform: translateY(100%); transition: 0.3s; z-index: 2001; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); max-height: 70vh; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-radius: 24px 24px 0 0; transform: translateY(100%); transition: 0.3s; z-index: 2001; display: flex; flex-direction: column; max-height: 70vh; border-top: 1px solid rgba(255,255,255,0.05); }
         .bottom-sheet.show { transform: translateY(0); }
 
-        .drawer-head { padding: 1.2rem; background: var(--bg-app); display: flex; justify-content: space-between; align-items: center; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-main); }
+        .drawer-head { padding: 1.2rem 1rem; background: var(--bg-app); display: flex; justify-content: space-between; align-items: center; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .drawer-body { flex: 1; overflow-y: auto; padding: 0; }
-        .drawer-item { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-        .drawer-item.active { background: rgba(224, 108, 117, 0.1); color: var(--accent); border-left: 3px solid var(--accent); }
+        .drawer-item { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+        .drawer-item.active { background: rgba(255, 71, 87, 0.08); border-left: 3px solid var(--accent); padding-left: 13px; }
+        .drawer-ch-num { font-size: 0.75rem; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
+        .drawer-item.active .drawer-ch-num { color: var(--accent); }
+        .drawer-ch-title { font-size: 0.9rem; color: #e2e8f0; font-weight: 500; }
 
         /* Settings UI */
         .settings-content { padding: 1.5rem; }
         .setting-group { margin-bottom: 2rem; }
-        .setting-label { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); margin-bottom: 0.8rem; display: flex; justify-content: space-between; }
-        
-        .font-controls { display: flex; justify-content: space-between; background: var(--bg-app); padding: 0.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        .font-btn { width: 44px; height: 44px; border-radius: 8px; border: none; background: var(--bg-surface); color: white; cursor: pointer; font-weight: bold; }
-        .font-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .font-select { padding: 10px; text-align: center; background: var(--bg-app); border-radius: 8px; color: #888; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .font-select.active { background: var(--accent); color: white; border-color: var(--accent); }
-        
+        .font-controls { display: flex; justify-content: space-between; background: var(--bg-app); padding: 0.6rem; border-radius: 16px; border: 1px solid #2e3a52; margin-top: 0.8rem; }
+        .font-btn { width: 48px; height: 48px; border-radius: 12px; border: none; background: var(--bg-surface); color: white; cursor: pointer; font-weight: bold; }
+        .font-btn:active { background: var(--accent); }
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 34px; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #2e3a52; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
         /* Pagination */
         .pagination { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
-        .p-btn { width: 40px; height: 40px; border-radius: 8px; background: var(--bg-surface); color: #888; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .p-btn.active { background: var(--accent); color: white; }
+        .p-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--bg-surface); color: white; border: 1px solid #2e3a52; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .p-btn.active { background: var(--accent); font-weight: bold; }
 
     </style>
 </head>
 <body>
 
+    <!-- Scroll Progress -->
     <div id="readProgress" style="position: fixed; top: 0; left:0; height:2px; background:var(--accent); width:0%; z-index: 1001;" aria-hidden="true"></div>
 
+    <!-- Header -->
     <header class="header" id="mainHeader" aria-hidden="true">
         <div class="header-inner">
             <div style="display:flex; align-items:center; gap:1rem;">
-                <button class="icon-btn hidden" id="backBtn" onclick="handleBack()">←</button>
+                <!-- Using A tag for BACK but handled by JS to prevent reload if possible -->
+                <a href="#" class="icon-btn hidden" id="backBtn" onclick="event.preventDefault(); handleBack()">←</a>
                 <div class="brand" id="pageTitle">NovelReader</div>
             </div>
             <div style="display:flex; gap:0.5rem;">
@@ -303,24 +284,25 @@
         </div>
     </header>
 
+    <!-- MAIN CONTENT -->
     <main>
         <!-- HOME -->
         <div id="screen-home">
             <div class="search-area" aria-hidden="true">
-                <div class="search-wrapper">
+                <div class="search-input-wrapper" style="position:relative; max-width:800px; margin:0 auto;">
                     <span class="search-icon">🔍</span>
                     <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm truyện...">
                 </div>
             </div>
             <div class="container">
-                <div class="grid" id="bookGrid"></div>
+                <div class="book-list" id="bookList"></div>
                 <div class="pagination" id="homePagination" aria-hidden="true"></div>
             </div>
         </div>
 
         <!-- CHAPTERS LIST -->
         <div id="screen-chapters" class="container hidden">
-            <div style="padding: 1rem 0; color: var(--text-sub); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">MỤC LỤC CHƯƠNG</div>
+            <div style="padding: 1rem 0; color: var(--text-sub); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">MỤC LỤC CHƯƠNG</div>
             <div id="chapterList" class="chapter-list"></div>
             <div class="pagination" id="chapterPagination" aria-hidden="true"></div>
         </div>
@@ -331,36 +313,38 @@
             <div id="loadingNext" class="loading-next hidden" aria-hidden="true">
                 <div class="fade-in">✦ Đang tải chương tiếp theo...</div>
             </div>
-            <div style="height: 60px;" aria-hidden="true"></div>
+            <div style="height: 50px;" aria-hidden="true"></div>
         </article>
     </main>
 
     <!-- GLASS DOCK -->
     <nav class="glass-dock" id="glassDock" aria-hidden="true">
-        <button class="dock-btn" onclick="setScreen('home')" title="Trang chủ">
+        <!-- Replace Buttons with A tags for SEO/Routing structure -->
+        <a href="?page=home" class="dock-btn" onclick="event.preventDefault(); setScreen('home')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </button>
-        <button class="dock-btn" id="btnPrev" onclick="navManual('prev')" title="Chương trước">
+        </a>
+        
+        <button class="dock-btn" id="btnPrev" onclick="navManual('prev')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         
-        <button class="dock-btn center" onclick="toggleDrawer('menu')" title="Mục lục">
+        <button class="dock-btn center" onclick="toggleDrawer('menu')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
         </button>
         
-        <button class="dock-btn" id="btnNext" onclick="navManual('next')" title="Chương sau">
+        <button class="dock-btn" id="btnNext" onclick="navManual('next')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-        <button class="dock-btn" id="btnSettings" onclick="toggleDrawer('settings')" title="Cài đặt">
+        
+        <button class="dock-btn" id="btnSettings" onclick="toggleDrawer('settings')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="16" font-weight="bold" fill="currentColor">Aa</text></svg>
         </button>
     </nav>
 
-    <!-- EDIT BUTTON TOOLTIP -->
+    <!-- SELECTION TOOLTIP -->
     <div id="selectionTooltip" class="hidden" onmousedown="event.preventDefault(); openEditModal();" ontouchstart="event.preventDefault(); openEditModal()">
-        <button class="icon-btn" style="width:auto; padding:0 10px; background:var(--bg-surface); border:1px solid var(--accent); color:white; border-radius:20px; display:flex; align-items:center; gap:5px; box-shadow:0 4px 10px rgba(0,0,0,0.5);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            <span style="font-weight:bold; font-size:0.9rem;">Sửa lỗi</span>
+        <button class="icon-btn" style="width:auto; padding:0 12px; background:var(--bg-surface); border:1px solid var(--accent); color:white; border-radius:20px; display:flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+            <span style="color:var(--accent); font-size:1.2rem;">✎</span> <span style="font-weight:bold; font-size:0.9rem;">Sửa lỗi</span>
         </button>
     </div>
 
@@ -378,7 +362,7 @@
             </div>
             <div style="display:flex; gap:1rem;">
                 <button class="btn-submit" style="background:transparent; border:1px solid #444; color:#888;" onclick="closeEditModal()">Hủy</button>
-                <button class="btn-submit" onclick="submitEdit()">Gửi Báo Cáo</button>
+                <button class="btn-submit" onclick="submitEdit()">Gửi</button>
             </div>
         </div>
     </div>
@@ -386,20 +370,23 @@
     <!-- DRAWERS -->
     <div class="drawer-mask" id="drawerMask" onclick="closeDrawers()" aria-hidden="true"></div>
     <div class="drawer-panel" id="menuDrawer" aria-hidden="true">
-        <div class="drawer-head"><span>MỤC LỤC</span><span onclick="closeDrawers()" style="cursor:pointer;">✕</span></div>
+        <div class="drawer-head"><span>DANH SÁCH CHƯƠNG</span><span onclick="closeDrawers()" style="cursor:pointer; padding:5px;">✕</span></div>
         <div class="drawer-body" id="menuBody"></div>
     </div>
     <div class="drawer-panel" id="historyDrawer" aria-hidden="true">
-        <div class="drawer-head"><span>LỊCH SỬ</span><span onclick="closeDrawers()" style="cursor:pointer;">✕</span></div>
+        <div class="drawer-head"><span>LỊCH SỬ ĐỌC</span><span onclick="closeDrawers()" style="cursor:pointer; padding:5px;">✕</span></div>
         <div class="drawer-body" id="historyBody"></div>
     </div>
 
     <!-- SETTINGS -->
     <div class="bottom-sheet" id="settingsDrawer" aria-hidden="true">
-        <div class="drawer-head"><span>GIAO DIỆN</span><span onclick="closeDrawers()" style="cursor:pointer;">✕</span></div>
+        <div class="drawer-head"><span>CÀI ĐẶT GIAO DIỆN</span><span onclick="closeDrawers()" style="cursor:pointer; padding:5px;">✕</span></div>
         <div class="settings-content">
             <div class="setting-group">
-                <div class="setting-label"><span>Tự động tải chương</span><label class="switch"><input type="checkbox" id="lazyLoadToggle" onchange="toggleLazyLoad(this)"><span class="slider"></span></label></div>
+                <div class="setting-label">
+                    <span>Tự động tải chương</span>
+                    <label class="switch"><input type="checkbox" id="lazyLoadToggle" onchange="toggleLazyLoad(this)"><span class="slider"></span></label>
+                </div>
             </div>
             <div class="setting-group">
                 <div class="setting-label">Cỡ chữ <span id="fontSizeDisplay" style="color:var(--accent)">19</span></div>
@@ -410,10 +397,10 @@
             </div>
             <div class="setting-group">
                 <div class="setting-label">Phông chữ</div>
-                <div class="font-grid">
-                    <div class="font-select active" data-font="'Merriweather', serif" onclick="changeFont(this)">Serif</div>
-                    <div class="font-select" data-font="'Quicksand', sans-serif" onclick="changeFont(this)">Sans</div>
-                    <div class="font-select" data-font="'Patrick Hand', cursive" onclick="changeFont(this)">Viết</div>
+                <div class="font-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:0.5rem;">
+                    <div class="font-select active" style="padding:10px; text-align:center; border:1px solid #333; border-radius:10px; background:#1a1a1a;" data-font="'Merriweather', serif" onclick="changeFont(this)">Serif</div>
+                    <div class="font-select" style="padding:10px; text-align:center; border:1px solid #333; border-radius:10px; background:#1a1a1a;" data-font="'Quicksand', sans-serif" onclick="changeFont(this)">Sans</div>
+                    <div class="font-select" style="padding:10px; text-align:center; border:1px solid #333; border-radius:10px; background:#1a1a1a;" data-font="'Patrick Hand', cursive" onclick="changeFont(this)">Viết</div>
                 </div>
             </div>
         </div>
@@ -424,127 +411,153 @@
         const STORAGE_KEY = 'novel_history_v3';
         const SETTINGS_KEY = 'novel_settings_v2';
         
-        let appState = { screen: 'home', book: null, chapter: null, scrollPos: 0, activeChapterId: null, nextChapterId: null, prevChapterId: null, isLoading: false, settings: { fontSize: 19, fontFamily: "'Merriweather', serif", lazyLoad: true } };
+        let appState = { 
+            screen: 'home', 
+            book: null, 
+            chapter: null, 
+            scrollPos: 0, 
+            activeChapterId: null, 
+            nextChapterId: null, 
+            prevChapterId: null, 
+            isLoading: false, 
+            settings: { fontSize: 19, fontFamily: "'Merriweather', serif", lazyLoad: true } 
+        };
         let observer;
 
         window.onload = () => {
-            loadSettings(); fetchBooks();
+            loadSettings(); 
+            handleInitialRoute(); // Check URL on load
+            
+            // Search listener
             let timer;
-            document.getElementById('searchInput').addEventListener('input', (e) => { clearTimeout(timer); timer = setTimeout(() => fetchBooks(1, e.target.value), 500); });
+            document.getElementById('searchInput').addEventListener('input', (e) => { 
+                clearTimeout(timer); 
+                timer = setTimeout(() => fetchBooks(1, e.target.value), 500); 
+            });
+            
             window.onscroll = onScroll;
-            updateDockState();
+            window.onpopstate = handleInitialRoute; // Handle browser Back button
+            
             observer = new IntersectionObserver(handleIntersect, { root: null, rootMargin: '-10% 0px -80% 0px', threshold: 0 });
             
             document.addEventListener('selectionchange', handleTextSelection);
             document.addEventListener('touchend', () => setTimeout(handleTextSelection, 50));
         };
 
-        /* --- EDIT TEXT LOGIC --- */
-        function handleTextSelection() {
-            if (appState.screen !== 'reader') return;
-            const sel = window.getSelection();
-            const tooltip = document.getElementById('selectionTooltip');
+        /* --- ROUTING LOGIC (NEW) --- */
+        function handleInitialRoute() {
+            const params = new URLSearchParams(window.location.search);
+            const view = params.get('view') || 'home';
             
-            if (sel.rangeCount > 0 && !sel.isCollapsed) {
-                const range = sel.getRangeAt(0);
-                const text = sel.toString().trim();
-                if (document.getElementById('readerContainer').contains(range.commonAncestorContainer)) {
-                    const rect = range.getBoundingClientRect();
-                    tooltip.style.top = (rect.top - 40) + 'px'; 
-                    tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-                    tooltip.classList.remove('hidden');
-                    return;
+            if (view === 'home') {
+                setScreen('home', false);
+                fetchBooks();
+            } else if (view === 'chapters') {
+                const bid = params.get('bookId');
+                const bname = params.get('bookName');
+                if (bid) fetchChapters(bid, bname || 'Mục lục', 1, false);
+            } else if (view === 'reader') {
+                const cid = params.get('chapterId');
+                const bid = params.get('bookId');
+                const bname = params.get('bookName');
+                if (cid) {
+                    appState.book = { id: bid, name: bname }; // Restore context if possible
+                    setupReader(cid, false);
                 }
             }
-            tooltip.classList.add('hidden');
         }
-        function openEditModal() {
-            const t = window.getSelection().toString().trim();
-            document.getElementById('originalTextInput').value = t;
-            document.getElementById('newTextInput').value = t;
-            document.getElementById('editModalOverlay').classList.add('show');
-            document.getElementById('selectionTooltip').classList.add('hidden');
-        }
-        function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('show'); window.getSelection().removeAllRanges(); }
-        async function submitEdit() {
-            const o = document.getElementById('originalTextInput').value;
-            const n = document.getElementById('newTextInput').value;
-            if(!o || !n || o===n) return closeEditModal();
-            let bid = appState.book?.id;
-            if(!bid && appState.activeChapterId) { 
-                /* Fallback logic if navigating directly */ 
-            }
-            if(!bid) return alert("Lỗi ID sách");
 
-            try {
-                const btn = document.querySelector('#editModalOverlay .btn-submit');
-                const txt = btn.innerText;
-                btn.innerText="..."; btn.disabled=true;
-                await fetch(`${API_BASE}/api/book/update/${bid}`, {
-                    method:'POST', headers:{'Content-Type':'application/json', 'ngrok-skip-browser-warning':'true'},
-                    body:JSON.stringify({originalText:o, newText:n})
-                });
-                alert("Đã gửi báo cáo!"); closeEditModal(); btn.innerText=txt; btn.disabled=false;
-            } catch(e){ alert("Lỗi gửi"); }
+        function pushState(view, params = {}) {
+            const url = new URL(window.location);
+            url.searchParams.set('view', view);
+            Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
+            window.history.pushState({}, '', url);
         }
 
         /* --- NAVIGATION --- */
-        function setScreen(name) {
+        function setScreen(name, updateHistory = true) {
             ['screen-home', 'screen-chapters', 'screen-reader'].forEach(id => document.getElementById(id).classList.add('hidden'));
             appState.screen = name;
+            
             if (name === 'home') {
                 document.getElementById('screen-home').classList.remove('hidden');
                 document.getElementById('pageTitle').innerText = 'NovelReader';
+                document.getElementById('backBtn').classList.add('hidden');
                 appState.book = null;
-            } else if (name === 'chapters') {
+                if(updateHistory) pushState('home');
+            } 
+            else if (name === 'chapters') {
                 document.getElementById('screen-chapters').classList.remove('hidden');
                 document.getElementById('backBtn').classList.remove('hidden');
                 document.getElementById('pageTitle').innerText = appState.book?.name || 'Mục lục';
-            } else if (name === 'reader') {
+            } 
+            else if (name === 'reader') {
                 document.getElementById('screen-reader').classList.remove('hidden');
                 document.getElementById('backBtn').classList.remove('hidden');
             }
-            updateDockState(); window.scrollTo(0,0);
+            updateDockState();
+            window.scrollTo(0,0);
         }
+
         function handleBack() {
-            if (appState.screen === 'reader') fetchChapters(appState.book.id, appState.book.name);
-            else { document.getElementById('backBtn').classList.add('hidden'); setScreen('home'); }
+            if (appState.screen === 'reader') {
+                // Go back to chapters
+                if (appState.book && appState.book.id) {
+                    fetchChapters(appState.book.id, appState.book.name);
+                } else {
+                    // Fallback if direct link
+                    window.history.back();
+                }
+            } else {
+                setScreen('home');
+            }
         }
+        
         function updateDockState() {
             const isReader = appState.screen === 'reader';
             ['btnPrev','btnNext','btnSettings'].forEach(id=>{
-                document.getElementById(id).style.opacity = isReader ? '1' : '0.3';
-                document.getElementById(id).style.pointerEvents = isReader ? 'auto' : 'none';
+                const el = document.getElementById(id);
+                el.style.opacity = isReader ? '1' : '0.3';
+                el.style.pointerEvents = isReader ? 'auto' : 'none';
             });
         }
 
-        /* --- API --- */
-        async function api(path) {
-            try {
-                let res = await fetch(API_BASE + path, { headers: { 'ngrok-skip-browser-warning': 'true' } });
-                if(!res.ok) throw new Error('Err');
-                return await res.json();
-            } catch { return null; }
-        }
+        /* --- BOOKS & CHAPTERS (Using A tags logic visually but JS for now) --- */
+        // I'll keep using onclick for now to ensure smooth transition in this environment
+        // but I've updated the URL state management above.
 
-        /* --- BOOKS & CHAPTERS --- */
         async function fetchBooks(page=1, q='') {
-            const el = document.getElementById('bookGrid');
+            const el = document.getElementById('bookList'); // Using List view now
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books?page=${page}&limit=12&search=${encodeURIComponent(q)}`);
+            const data = await api(`/api/books?page=${page}&limit=10&search=${encodeURIComponent(q)}`);
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy.</div>'; return; }
+            
+            // RENDER AS ROWS
             el.innerHTML = data.data.map(b => `
-                <div class="cover-card fade-in" onclick="fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
-                    <div class="cover-title">${b.bookName}</div>
-                    <div class="cover-badge">${b.chapterCount || 0} chương</div>
-                </div>
+                <a href="?view=chapters&bookId=${b.bookId}&bookName=${encodeURIComponent(b.bookName)}" 
+                   class="book-row fade-in" 
+                   onclick="event.preventDefault(); fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
+                    <div class="book-icon">📖</div>
+                    <div class="book-info">
+                        <div class="book-title">${b.bookName}</div>
+                        <div class="book-meta">
+                            <span class="tag">${b.chapterCount || 0} chương</span>
+                            <span>• Đang cập nhật</span>
+                        </div>
+                    </div>
+                    <div style="color:#888">›</div>
+                </a>
             `).join('');
+            
             renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
         }
 
-        async function fetchChapters(bid, bname, page=1) {
-            appState.book = { id: bid, name: bname }; setScreen('chapters');
-            const el = document.getElementById('chapterList'); // Added definition
+        async function fetchChapters(bid, bname, page=1, updateHistory=true) {
+            appState.book = { id: bid, name: bname }; 
+            setScreen('chapters', false); // Don't push generic state yet
+            if(updateHistory) pushState('chapters', { bookId: bid, bookName: bname });
+
+            const el = document.getElementById('chapterList');
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải...</div>';
             const data = await api(`/api/books/${bid}/chapters?page=${page}&limit=50`);
             if(!data || !data.chapters.length) {
@@ -552,25 +565,34 @@
                 return;
             }
             el.innerHTML = data.chapters.map(c => `
-                <div class="chapter-row fade-in" onclick="setupReader('${c.chapterId}')">
+                <a href="?view=reader&chapterId=${c.chapterId}&bookId=${bid}" 
+                   class="chapter-row fade-in" 
+                   onclick="event.preventDefault(); setupReader('${c.chapterId}')">
                     <div><div class="ch-title">${c.title}</div><div class="ch-sub">Chương ${c.chapterNumber}</div></div>
                     <div style="color:var(--accent)">›</div>
-                </div>
+                </a>
             `).join('');
             renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p));
         }
 
         /* --- READER --- */
-        async function setupReader(cid) {
-            setScreen('reader'); document.getElementById('readerContainer').innerHTML = ''; 
-            appState.isLoading = false; await fetchAndRenderChapter(cid, true); preloadMenu();
+        async function setupReader(cid, updateHistory=true) {
+            setScreen('reader', false);
+            if(updateHistory) pushState('reader', { chapterId: cid, bookId: appState.book?.id });
+            
+            document.getElementById('readerContainer').innerHTML = ''; 
+            appState.isLoading = false; 
+            await fetchAndRenderChapter(cid, true); 
+            preloadMenu();
         }
+
         async function fetchAndRenderChapter(cid, isInitial = false) {
             if (appState.isLoading) return;
             appState.isLoading = true; if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
             const data = await api(`/api/chapters/${cid}`);
             appState.isLoading = false; document.getElementById('loadingNext').classList.add('hidden');
             if (!data) return;
+            
             const div = document.createElement('div'); div.className = 'chapter-block fade-in'; div.id = `chap-${cid}`;
             div.dataset.cid = cid; div.dataset.num = data.chapter.chapterNumber; div.dataset.bookName = data.chapter.bookName;
             
@@ -586,6 +608,12 @@
             observer.observe(div);
         }
 
+        // ... [Logic phần API, Settings, Edit Text, Drawer vẫn giữ nguyên như phiên bản trước] ...
+        async function api(path) {
+            try { let res = await fetch(API_BASE + path, { headers: { 'ngrok-skip-browser-warning': 'true' } }); if(!res.ok) throw new Error('Err'); return await res.json(); } catch { return null; }
+        }
+        // ... (Các hàm handleIntersect, updateHeader, onScroll, navManual, renderPager, cleanupDOM, toggleDrawer, closeDrawers, preloadMenu, highlightActiveChapter, renderHistory, edit text logic, settings logic... - Tôi giữ nguyên logic này vì nó đã ổn định)
+
         /* --- UTILS --- */
         function handleIntersect(entries) {
             entries.forEach(entry => {
@@ -596,6 +624,10 @@
                         updateHeader({bookName: div.dataset.bookName, chapterNumber: div.dataset.num});
                         highlightActiveChapter();
                         cleanupDOM(div);
+                        // Silent update URL without push to history stack to avoid spamming back button
+                        const url = new URL(window.location);
+                        url.searchParams.set('chapterId', div.dataset.cid);
+                        window.history.replaceState({}, '', url);
                     }
                 }
             });
@@ -647,7 +679,6 @@
         }
         function closeDrawers() { document.getElementById('drawerMask').classList.remove('show'); document.querySelectorAll('.drawer-panel, .bottom-sheet').forEach(e=>e.classList.remove('show')); }
         
-        // Settings & Helpers
         function loadSettings() { try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)); if(s)appState.settings={...appState.settings,...s}}catch{} applySettings();}
         function applySettings() {
             const r=document.documentElement; r.style.setProperty('--reader-font-size', (appState.settings.fontSize/16)+'rem');
@@ -686,6 +717,44 @@
             el.innerHTML = hist.length ? hist.map(h=>`<div class="drawer-item" onclick="closeDrawers(); appState.book={id:'${h.bid}',name:'${h.bname}'}; setupReader('${h.cid}')"><div class="drawer-ch-num">${h.bname}</div><div class="drawer-ch-title">Chương ${h.cnum}</div></div>`).join('') : '<div style="padding:1rem;text-align:center;color:#888;">Trống</div>';
         }
 
+        /* Edit Logic */
+        function handleTextSelection() {
+            if (appState.screen !== 'reader') return;
+            const sel = window.getSelection();
+            const tip = document.getElementById('selectionTooltip');
+            if(sel.rangeCount>0 && !sel.isCollapsed) {
+                const range = sel.getRangeAt(0);
+                if(document.getElementById('readerContainer').contains(range.commonAncestorContainer)) {
+                    const rect = range.getBoundingClientRect();
+                    tip.style.top=(rect.top-40)+'px'; tip.style.left=(rect.left+rect.width/2)+'px';
+                    tip.classList.remove('hidden'); return;
+                }
+            }
+            tip.classList.add('hidden');
+        }
+        function openEditModal() {
+            const t = window.getSelection().toString().trim();
+            document.getElementById('originalTextInput').value = t;
+            document.getElementById('newTextInput').value = t;
+            document.getElementById('editModalOverlay').classList.add('show');
+            document.getElementById('selectionTooltip').classList.add('hidden');
+        }
+        function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('show'); window.getSelection().removeAllRanges(); }
+        async function submitEdit() {
+            const o = document.getElementById('originalTextInput').value;
+            const n = document.getElementById('newTextInput').value;
+            if(!o || !n || o===n) return closeEditModal();
+            const bid = appState.book?.id || (appState.chapter ? appState.chapter.chapter.bookId : null);
+            if(!bid) return alert("Lỗi ID sách");
+            try {
+                const btn = document.querySelector('.btn-submit'); btn.innerText="...";
+                await fetch(`${API_BASE}/api/book/update/${bid}`, {
+                    method:'POST', headers:{'Content-Type':'application/json', 'ngrok-skip-browser-warning':'true'},
+                    body:JSON.stringify({originalText:o, newText:n})
+                });
+                alert("Đã gửi báo cáo!"); closeEditModal(); btn.innerText="Gửi";
+            } catch{ alert("Lỗi gửi"); }
+        }
     </script>
 </body>
 </html>
