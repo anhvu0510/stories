@@ -184,7 +184,7 @@
         .chapter-header-compact {
             margin: 3rem 0 2rem; padding: 1rem 0;
             border-top: 1px solid rgba(255,71,87,0.2); border-bottom: 1px solid rgba(255,71,87,0.2);
-            color: var(--accent); font-weight: 700; font-size: 1.1rem;
+            color: var(--accent); font-weight: 700; font-size: 0.8rem;
             text-align: center; font-family: 'Quicksand', sans-serif; text-transform: uppercase; letter-spacing: 1px;
         }
         
@@ -389,7 +389,7 @@
             <div id="loadingNext" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
                 <div class="fade-in">✦ Đang tải chương tiếp...</div>
             </div>
-            <div style="height: 100px;"></div>
+            <!-- <div style="height: 100px;"></div> -->
         </article>
     </main>
 
@@ -439,7 +439,7 @@
         </div>
         <div class="sheet-body report-form">
             <label>Nội dung gốc</label>
-            <input type="text" class="report-input" id="originalText" readonly>
+            <input type="text" class="report-input" id="originalText">
             
             <label>Loại lỗi</label>
             <div class="chip-group">
@@ -864,6 +864,7 @@
 
         function handleReportClick() {
             const sel = window.getSelection();
+            openReportSheet();
             if (sel.rangeCount > 0 && !sel.isCollapsed) {
                 openReportSheet();
             } else {
@@ -872,8 +873,8 @@
         }
 
         function openReportSheet() {
-            const text = window.getSelection().toString().trim();
-            if (!text) return;
+            const text = window.getSelection().toString().trim() ?? '';
+            // if (!text) return;
             
             document.getElementById('originalText').value = text;
             document.getElementById('newText').value = text;
