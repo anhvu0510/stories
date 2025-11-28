@@ -610,7 +610,9 @@
                 settingsBtn.classList.add('hidden'); // Hide Settings on Home
                 appState.book = null;
                 dock.classList.remove('hide');
+                
                 if(updateHistory) pushState('home');
+                fetchBooks();
             } 
             else if (name === 'chapters') {
                 document.getElementById('screen-chapters').classList.remove('hidden');
