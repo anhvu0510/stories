@@ -47,6 +47,15 @@
             overflow-x: hidden;
         }
 
+        .msreadout-line-highlight:not(.msreadout-inactive-highlight) { 
+            background: linear-gradient(90deg, #ffe8a3, #fff6cc) !important; 
+            border-radius: 4px !important; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important; 
+            transition: background 0.3s ease !important; 
+        }
+        
+        .msreadout-word-highlight { padding: 0px !important; }
+
+
         /* --- UTILS --- */
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
@@ -326,7 +335,6 @@
         .side-drawer.show { transform: translateX(0); }
         .drawer-item { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
         .drawer-item.active { border-left: 3px solid var(--accent); background: rgba(255,71,87,0.05); }
-
     </style>
 </head>
 <body>
@@ -727,7 +735,7 @@
             div.dataset.num = data.chapter.chapterNumber; 
             div.dataset.bookName = data.chapter.bookName;
             
-            let content = data.chapter.content.filter(t=>t.trim()).map(t=>`<div>${t}</div>`).join('');
+            let content = data.chapter.content.filter(t=>t.trim()).map(t=>`<p style="word-spacing: 2px; padding: 0.5rem 0; display: block;">${t}</p>`).join('');
             
             let header = isInitial ? 
                 `<div style="text-align:center; margin-bottom:1rem;">
