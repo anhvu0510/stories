@@ -1147,7 +1147,7 @@
         {
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books?page=${page}&limit=10&search=${encodeURIComponent(q)}`);
+            const data = await api(`/api/books?page=${page}&limit=1000&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
 
@@ -1176,7 +1176,7 @@
             const el = document.getElementById('chapterList');
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
 
-            const data = await api(`/api/books/${bid}/chapters?page=${page}&limit=50`);
+            const data = await api(`/api/books/${bid}/chapters?page=${page}&limit=500`);
             if (!data || !data.chapters.length)
             {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
