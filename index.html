@@ -1187,7 +1187,7 @@
             // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
             
-            const data = await api(`/api/books?page=${pageNum}&limit=10&search=${encodeURIComponent(q)}`);
+            const data = await api(`/api/books?page=${pageNum}&limit=100&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
 
@@ -1707,7 +1707,7 @@
             if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
 
             el.innerHTML = '<div style="padding:2rem;text-align:center;color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=500`);
+            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=10000`);
 
             if (data)
             {
