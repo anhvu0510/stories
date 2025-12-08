@@ -973,7 +973,17 @@
     <div class="side-drawer" id="historyDrawer" aria-hidden="true">
         <div class="sheet-header">
             <div class="sheet-title">Lịch sử đọc</div>
-            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button class="icon-btn small" onclick="clearHistory()" title="Xóa tất cả lịch sử">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </button>
+                <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
+            </div>
         </div>
         <div class="sheet-body" id="historyBody" style="padding:0;"></div>
     </div>
@@ -1076,6 +1086,17 @@
         /* --- NAVIGATION --- */
         function setScreen(name, updateHistory = true)
         {
+            // Nếu đang ở màn hình khác và chuyển sang màn hình mới, reload trang
+            if (appState.screen !== name && appState.screen !== 'home')
+            {
+                // Lưu trạng thái mới vào URL trước khi reload
+                if (name === 'home')
+                {
+                    window.location.href = window.location.pathname;
+                    return;
+                }
+            }
+
             ['screen-home', 'screen-chapters', 'screen-reader'].forEach(id => document.getElementById(id).classList.add('hidden'));
             appState.screen = name;
 
@@ -1147,7 +1168,7 @@
         {
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books?page=${page}&limit=1000&search=${encodeURIComponent(q)}`);
+            const data = await api(`/api/books?page=${page}&limit=10&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
 
@@ -1164,11 +1185,22 @@
                 </div>
             `).join('');
 
-            renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
+            renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q), q);
         }
 
         async function fetchChapters(bid, bname, page = 1, updateHistory = true)
         {
+            // Reload trang khi chuyển từ reader về chapters
+            if (appState.screen === 'reader')
+            {
+                const url = new URL(window.location);
+                url.searchParams.set('view', 'chapters');
+                url.searchParams.set('bookId', bid);
+                url.searchParams.set('bookName', bname);
+                window.location.href = url.toString();
+                return;
+            }
+
             appState.book = { id: bid, name: bname };
             setScreen('chapters', false);
             if (updateHistory) pushState('chapters', { bookId: bid, bookName: bname });
@@ -1190,11 +1222,23 @@
                 </div>
             `).join('');
 
-            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p));
+            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false), bid, bname);
         }
 
         async function setupReader(cid, updateHistory = true)
         {
+            // Reload trang khi chuyển từ chapters sang reader
+            if (appState.screen === 'chapters' && updateHistory)
+            {
+                const url = new URL(window.location);
+                url.searchParams.set('view', 'reader');
+                url.searchParams.set('chapterId', cid);
+                url.searchParams.set('bookId', appState.book?.id || '');
+                url.searchParams.set('bookName', appState.book?.name || '');
+                window.location.href = url.toString();
+                return;
+            }
+
             setScreen('reader', false);
             if (updateHistory) pushState('reader', { chapterId: cid, bookId: appState.book?.id, bookName: appState.book?.name });
 
@@ -1204,8 +1248,17 @@
             preloadMenu();
         }
 
-        async function fetchAndRenderChapter(cid, isInitial = false)
+        async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false)
         {
+            // Nếu forceReload = true, reload trang để reset DOM
+            if (forceReload)
+            {
+                const url = new URL(window.location);
+                url.searchParams.set('chapterId', cid);
+                window.location.href = url.toString();
+                return;
+            }
+
             if (appState.isLoading) return;
             appState.isLoading = true;
             if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
@@ -1611,7 +1664,17 @@
             ).join('') : '<div style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</div>';
         }
 
-        function renderPager(id, pg, cb)
+        function clearHistory()
+        {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc?'))
+            {
+                localStorage.removeItem(STORAGE_KEY);
+                renderHistory();
+                showToast('Đã xóa lịch sử');
+            }
+        }
+
+        function renderPager(id, pg, cb, ...args)
         {
             const el = document.getElementById(id);
             if (!pg || pg.totalPages <= 1) { el.innerHTML = ''; return; }
@@ -1619,22 +1682,36 @@
             const c = pg.currentPage || 1;
             const btnStyle = "width:36px; height:36px; border-radius:8px; background:#1e293b; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;";
 
+            // Store callback with context
+            const pagerId = `pager_${id}`;
+            window[pagerId] = { cb, args };
+
             el.innerHTML = `
-                ${c > 1 ? `<div style="${btnStyle}" onclick="window.tmpCb(${c - 1})">←</div>` : ''}
+                ${c > 1 ? `<div style="${btnStyle}" onclick="window.${pagerId}.cb(${c - 1}, ...window.${pagerId}.args)">←</div>` : ''}
                 <div style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
-                ${c < pg.totalPages ? `<div style="${btnStyle}" onclick="window.tmpCb(${c + 1})">→</div>` : ''}
+                ${c < pg.totalPages ? `<div style="${btnStyle}" onclick="window.${pagerId}.cb(${c + 1}, ...window.${pagerId}.args)">→</div>` : ''}
             `;
-            window.tmpCb = cb;
         }
 
         function navManual(dir)
         {
-            if (dir === 'prev' && appState.prevChapterId) setupReader(appState.prevChapterId);
+            if (dir === 'prev' && appState.prevChapterId) 
+            {
+                // Reload trang khi chuyển chương để reset DOM
+                fetchAndRenderChapter(appState.prevChapterId, false, true);
+            }
             else if (dir === 'next' && appState.nextChapterId)
             {
                 const el = document.getElementById(`chap-${appState.nextChapterId}`);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                else setupReader(appState.nextChapterId);
+                if (el) 
+                {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                }
+                else 
+                {
+                    // Reload trang khi load chương mới để reset DOM
+                    fetchAndRenderChapter(appState.nextChapterId, false, true);
+                }
             }
         }
 
