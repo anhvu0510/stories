@@ -408,7 +408,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 12px;
-            z-index: 1000;
+            z-index: 2200;
             transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
         }
 
@@ -992,6 +992,7 @@
         const API_BASE = 'https://armorplated-thersa-unstained.ngrok-free.dev';
         const STORAGE_KEY = 'novel_history_v3';
         const SETTINGS_KEY = 'novel_settings_v3';
+        const PROGRESS_KEY = 'novel_progress_v3'; // ADDED: Key for progress
 
         let appState = {
             screen: 'home',
@@ -1040,6 +1041,20 @@
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
+
+        // ADDED: Safe Save Function
+        const saveReadProgress = debounce((cid, offset) => {
+            try {
+                let progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+                progress[cid] = Math.max(0, Math.floor(offset));
+                // Optional: Cleanup old keys if object gets too big
+                const keys = Object.keys(progress);
+                if (keys.length > 50) delete progress[keys[0]];
+                localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+            } catch (e) {
+                console.error('Error saving progress', e);
+            }
+        }, 300);
 
         /* --- ROUTING --- */
         function handleInitialRoute()
@@ -1168,9 +1183,18 @@
         {
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books?page=${page}&limit=1000&search=${encodeURIComponent(q)}`);
+            
+            // FIXED: Ensure page is an integer
+            const pageNum = parseInt(page) || 1;
+            
+            const data = await api(`/api/books?page=${pageNum}&limit=10&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
+
+            // FIXED: Enforce currentPage update from client side to ensure UI sync
+            if (data.pagination) {
+                data.pagination.currentPage = pageNum;
+            }
 
             el.innerHTML = data.data.map(b => `
                 <div class="book-row" onclick="fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
@@ -1185,7 +1209,7 @@
                 </div>
             `).join('');
 
-            renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q), q);
+            renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
         }
 
         async function fetchChapters(bid, bname, page = 1, updateHistory = true)
@@ -1208,11 +1232,19 @@
             const el = document.getElementById('chapterList');
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
 
-            const data = await api(`/api/books/${bid}/chapters?page=${page}&limit=500`);
+            // FIXED: Ensure page is an integer
+            const pageNum = parseInt(page) || 1;
+
+            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=20`);
             if (!data || !data.chapters.length)
             {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
                 return;
+            }
+
+            // FIXED: Enforce currentPage update
+            if (data.pagination) {
+                data.pagination.currentPage = pageNum;
             }
 
             el.innerHTML = data.chapters.map(c => `
@@ -1222,7 +1254,7 @@
                 </div>
             `).join('');
 
-            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false), bid, bname);
+            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
         }
 
         async function setupReader(cid, updateHistory = true)
@@ -1276,6 +1308,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
+            // --- RESTORED LOGIC: Using exact original code for content parsing ---
             let content = data.chapter.content.filter(t => t.trim()).map(t => `<p style="word-spacing: 2px; padding: 0.5rem 0; display: block;">${t}</p>`).join('');
 
             let header = isInitial ?
@@ -1292,9 +1325,37 @@
                 appState.activeChapterId = cid;
                 appState.prevChapterId = data.navigation?.prev?.chapterId;
                 updateHeader(data.chapter);
+                // ADDED: Restore Position
+                restoreReadProgress(cid);
             }
             appState.nextChapterId = data.navigation?.next?.chapterId;
             observer.observe(div);
+        }
+
+        // ADDED: Restore Function
+        function restoreReadProgress(cid) {
+            try {
+                const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+                const savedOffset = progress[cid];
+                
+                if (typeof savedOffset === 'number' && savedOffset > 0) {
+                    const el = document.getElementById(`chap-${cid}`);
+                    if (el) {
+                        setTimeout(() => {
+                            window.scrollTo({
+                                top: el.offsetTop + savedOffset,
+                                behavior: 'auto'
+                            });
+                            // showToast('Đang đọc tiếp từ vị trí cũ');
+                        }, 100);
+                    }
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            } catch(e) {
+                console.warn('Could not restore progress', e);
+                window.scrollTo(0, 0);
+            }
         }
 
         /* --- UI LOGIC --- */
@@ -1316,6 +1377,15 @@
                 if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000))
                 {
                     fetchAndRenderChapter(appState.nextChapterId);
+                }
+
+                 // ADDED: Track Progress in onScroll
+                if (appState.activeChapterId) {
+                    const el = document.getElementById(`chap-${appState.activeChapterId}`);
+                    if (el) {
+                        const relativeY = y - el.offsetTop;
+                        saveReadProgress(appState.activeChapterId, relativeY);
+                    }
                 }
             } else
             {
@@ -1366,7 +1436,14 @@
             {
                 let hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
                 hist = hist.filter(h => h.bid !== appState.book.id);
-                hist.unshift({ bid: appState.book.id, bname: appState.book.name, cid: appState.activeChapterId, cnum: data.chapterNumber });
+                // Init scrollPos to 0 when starting new chapter record
+                hist.unshift({ 
+                    bid: appState.book.id, 
+                    bname: appState.book.name, 
+                    cid: appState.activeChapterId, 
+                    cnum: data.chapterNumber,
+                    scrollPos: 0 
+                });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 20)));
             }
         }
@@ -1555,6 +1632,11 @@
 
         function openSheet(id)
         {
+            // Close any other open sheet first
+            document.querySelectorAll('.bottom-sheet.show, .side-drawer.show').forEach(el => {
+                if (el.id !== id) el.classList.remove('show');
+            });
+
             document.getElementById('sheetOverlay').classList.add('show');
             document.getElementById(id).classList.add('show');
         }
@@ -1674,22 +1756,23 @@
             }
         }
 
-        function renderPager(id, pg, cb, ...args)
+        function renderPager(id, pg, cb)
         {
             const el = document.getElementById(id);
             if (!pg || pg.totalPages <= 1) { el.innerHTML = ''; return; }
 
             const c = pg.currentPage || 1;
+            
+            // Create a unique global reference for this callback
+            const cbName = `pager_cb_${id}`;
+            window[cbName] = cb;
+
             const btnStyle = "width:36px; height:36px; border-radius:8px; background:#1e293b; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;";
 
-            // Store callback with context
-            const pagerId = `pager_${id}`;
-            window[pagerId] = { cb, args };
-
             el.innerHTML = `
-                ${c > 1 ? `<div style="${btnStyle}" onclick="window.${pagerId}.cb(${c - 1}, ...window.${pagerId}.args)">←</div>` : ''}
+                ${c > 1 ? `<div style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</div>` : ''}
                 <div style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
-                ${c < pg.totalPages ? `<div style="${btnStyle}" onclick="window.${pagerId}.cb(${c + 1}, ...window.${pagerId}.args)">→</div>` : ''}
+                ${c < pg.totalPages ? `<div style="${btnStyle}" onclick="window['${cbName}'](${c + 1})">→</div>` : ''}
             `;
         }
 
