@@ -1235,7 +1235,7 @@
             // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
 
-            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=20`);
+            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=10000`);
             if (!data || !data.chapters.length)
             {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
