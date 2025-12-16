@@ -975,7 +975,8 @@
             <div class="sheet-title">Lịch sử đọc</div>
             <div style="display:flex; gap:8px; align-items:center;">
                 <button class="icon-btn small" onclick="clearHistory()" title="Xóa tất cả lịch sử">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         <line x1="10" y1="11" x2="10" y2="17"></line>
@@ -1008,15 +1009,13 @@
         };
         let observer;
 
-        window.onload = () =>
-        {
+        window.onload = () => {
             loadSettings();
             handleInitialRoute();
 
             // Search Debounce
             let timer;
-            document.getElementById('searchInput').addEventListener('input', (e) =>
-            {
+            document.getElementById('searchInput').addEventListener('input', (e) => {
                 clearTimeout(timer);
                 timer = setTimeout(() => fetchBooks(1, e.target.value), 600);
             });
@@ -1032,11 +1031,9 @@
             document.addEventListener('touchend', () => setTimeout(handleTextSelection, 100));
         };
 
-        function debounce(func, wait)
-        {
+        function debounce(func, wait) {
             let timeout;
-            return function (...args)
-            {
+            return function (...args) {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
@@ -1057,56 +1054,45 @@
         }, 300);
 
         /* --- ROUTING --- */
-        function handleInitialRoute()
-        {
+        function handleInitialRoute() {
             const params = new URLSearchParams(window.location.search);
             const view = params.get('view') || 'home';
 
-            if (view === 'home')
-            {
+            if (view === 'home') {
                 setScreen('home', false);
                 fetchBooks();
-            } else if (view === 'chapters')
-            {
+            } else if (view === 'chapters') {
                 const bid = params.get('bookId');
                 const bname = params.get('bookName');
                 if (bid) fetchChapters(bid, bname || 'Mục lục', 1, false);
-            } else if (view === 'reader')
-            {
+            } else if (view === 'reader') {
                 const cid = params.get('chapterId');
                 const bid = params.get('bookId');
-                if (cid)
-                {
+                if (cid) {
                     appState.book = { id: bid, name: params.get('bookName') || '' };
                     setupReader(cid, false);
                 }
             }
         }
 
-        function pushState(view, params = {})
-        {
-            try
-            {
+        function pushState(view, params = {}) {
+            try {
                 const url = new URL(window.location);
                 url.searchParams.set('view', view);
                 Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
                 window.history.pushState({}, '', url);
-            } catch (e)
-            {
+            } catch (e) {
                 // Ignore SecurityError for blob/sandbox environments
                 console.warn("History pushState disabled in this environment");
             }
         }
 
         /* --- NAVIGATION --- */
-        function setScreen(name, updateHistory = true)
-        {
+        function setScreen(name, updateHistory = true) {
             // Nếu đang ở màn hình khác và chuyển sang màn hình mới, reload trang
-            if (appState.screen !== name && appState.screen !== 'home')
-            {
+            if (appState.screen !== name && appState.screen !== 'home') {
                 // Lưu trạng thái mới vào URL trước khi reload
-                if (name === 'home')
-                {
+                if (name === 'home') {
                     window.location.href = window.location.pathname;
                     return;
                 }
@@ -1121,8 +1107,7 @@
             const title = document.getElementById('pageTitle');
             const settingsBtn = document.getElementById('headerSettingsBtn');
 
-            if (name === 'home')
-            {
+            if (name === 'home') {
                 document.getElementById('screen-home').classList.remove('hidden');
                 title.innerText = 'NovelReader';
                 backBtn.classList.add('hidden');
@@ -1133,16 +1118,14 @@
                 if (updateHistory) pushState('home');
                 fetchBooks();
             }
-            else if (name === 'chapters')
-            {
+            else if (name === 'chapters') {
                 document.getElementById('screen-chapters').classList.remove('hidden');
                 backBtn.classList.remove('hidden');
                 settingsBtn.classList.add('hidden'); // Hide on Chapters
                 title.innerText = appState.book?.name || 'Mục lục';
                 dock.classList.add('hide'); // Hide dock on chapter list
             }
-            else if (name === 'reader')
-            {
+            else if (name === 'reader') {
                 document.getElementById('screen-reader').classList.remove('hidden');
                 backBtn.classList.remove('hidden');
                 settingsBtn.classList.remove('hidden'); // Show on Reader
@@ -1153,41 +1136,34 @@
             window.scrollTo(0, 0);
         }
 
-        function handleBack()
-        {
-            if (appState.screen === 'reader')
-            {
+        function handleBack() {
+            if (appState.screen === 'reader') {
                 if (appState.book && appState.book.id) fetchChapters(appState.book.id, appState.book.name);
-                else
-                {
+                else {
                     try { window.history.back(); } catch (e) { setScreen('home'); }
                 }
-            } else
-            {
+            } else {
                 setScreen('home');
             }
         }
 
-        function updateDockState()
-        {
+        function updateDockState() {
             const isReader = appState.screen === 'reader';
-            ['btnPrev', 'btnNext', 'btnReport'].forEach(id =>
-            {
+            ['btnPrev', 'btnNext', 'btnReport'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.toggle('disabled', !isReader);
             });
         }
 
         /* --- DATA FETCHING --- */
-        async function fetchBooks(page = 1, q = '')
-        {
+        async function fetchBooks(page = 1, q = '') {
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-            
+
             // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
-            
-            const data = await api(`/api/books?page=${pageNum}&limit=100&search=${encodeURIComponent(q)}`);
+
+            const data = await api(`/api/books?page=${pageNum}&limit=1000&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
 
@@ -1212,11 +1188,9 @@
             renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
         }
 
-        async function fetchChapters(bid, bname, page = 1, updateHistory = true)
-        {
+        async function fetchChapters(bid, bname, page = 1, updateHistory = true) {
             // Reload trang khi chuyển từ reader về chapters
-            if (appState.screen === 'reader')
-            {
+            if (appState.screen === 'reader') {
                 const url = new URL(window.location);
                 url.searchParams.set('view', 'chapters');
                 url.searchParams.set('bookId', bid);
@@ -1235,9 +1209,8 @@
             // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
 
-            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=10000`);
-            if (!data || !data.chapters.length)
-            {
+            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=500`);
+            if (!data || !data.chapters.length) {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
                 return;
             }
@@ -1257,11 +1230,9 @@
             renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
         }
 
-        async function setupReader(cid, updateHistory = true)
-        {
+        async function setupReader(cid, updateHistory = true) {
             // Reload trang khi chuyển từ chapters sang reader
-            if (appState.screen === 'chapters' && updateHistory)
-            {
+            if (appState.screen === 'chapters' && updateHistory) {
                 const url = new URL(window.location);
                 url.searchParams.set('view', 'reader');
                 url.searchParams.set('chapterId', cid);
@@ -1280,11 +1251,9 @@
             preloadMenu();
         }
 
-        async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false)
-        {
+        async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false) {
             // Nếu forceReload = true, reload trang để reset DOM
-            if (forceReload)
-            {
+            if (forceReload) {
                 const url = new URL(window.location);
                 url.searchParams.set('chapterId', cid);
                 window.location.href = url.toString();
@@ -1320,8 +1289,7 @@
             div.innerHTML = header + `<div class="reader-text">${content}</div>`;
             document.getElementById('readerContainer').appendChild(div);
 
-            if (isInitial)
-            {
+            if (isInitial) {
                 appState.activeChapterId = cid;
                 appState.prevChapterId = data.navigation?.prev?.chapterId;
                 updateHeader(data.chapter);
@@ -1337,7 +1305,7 @@
             try {
                 const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
                 const savedOffset = progress[cid];
-                
+
                 if (typeof savedOffset === 'number' && savedOffset > 0) {
                     const el = document.getElementById(`chap-${cid}`);
                     if (el) {
@@ -1352,18 +1320,16 @@
                 } else {
                     window.scrollTo(0, 0);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn('Could not restore progress', e);
                 window.scrollTo(0, 0);
             }
         }
 
         /* --- UI LOGIC --- */
-        function onScroll()
-        {
+        function onScroll() {
             const y = window.scrollY;
-            if (appState.screen === 'reader')
-            {
+            if (appState.screen === 'reader') {
                 const totalH = document.documentElement.scrollHeight - window.innerHeight;
                 document.getElementById('readProgress').style.width = (totalH > 0 ? (y / totalH) * 100 : 0) + '%';
 
@@ -1374,12 +1340,11 @@
                 document.getElementById('mainHeader').classList.toggle('hide', hideUI);
 
                 // Lazy Load
-                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000))
-                {
+                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000)) {
                     fetchAndRenderChapter(appState.nextChapterId);
                 }
 
-                 // ADDED: Track Progress in onScroll
+                // ADDED: Track Progress in onScroll
                 if (appState.activeChapterId) {
                     const el = document.getElementById(`chap-${appState.activeChapterId}`);
                     if (el) {
@@ -1387,29 +1352,23 @@
                         saveReadProgress(appState.activeChapterId, relativeY);
                     }
                 }
-            } else
-            {
+            } else {
                 document.getElementById('readProgress').style.width = '0';
             }
             appState.scrollPos = y;
         }
 
-        function handleIntersect(entries)
-        {
-            entries.forEach(entry =>
-            {
-                if (entry.isIntersecting)
-                {
+        function handleIntersect(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
                     const div = entry.target;
-                    if (appState.activeChapterId !== div.dataset.cid)
-                    {
+                    if (appState.activeChapterId !== div.dataset.cid) {
                         appState.activeChapterId = div.dataset.cid;
                         updateHeader({ bookName: div.dataset.bookName, chapterNumber: div.dataset.num });
                         highlightActiveChapter();
 
                         // Silent update URL (Safe for Blob/Sandbox)
-                        try
-                        {
+                        try {
                             const url = new URL(window.location);
                             url.searchParams.set('chapterId', div.dataset.cid);
                             window.history.replaceState({}, '', url);
@@ -1417,8 +1376,7 @@
 
                         // Clean up old chapters
                         const container = document.getElementById('readerContainer');
-                        if (container.children.length > 5)
-                        {
+                        if (container.children.length > 5) {
                             observer.unobserve(container.children[0]);
                             container.children[0].remove();
                         }
@@ -1427,29 +1385,26 @@
             });
         }
 
-        function updateHeader(data)
-        {
+        function updateHeader(data) {
             document.getElementById('pageTitle').innerText = `${data.bookName} - C${data.chapterNumber}`;
 
             // Save History
-            if (appState.book)
-            {
+            if (appState.book) {
                 let hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
                 hist = hist.filter(h => h.bid !== appState.book.id);
                 // Init scrollPos to 0 when starting new chapter record
-                hist.unshift({ 
-                    bid: appState.book.id, 
-                    bname: appState.book.name, 
-                    cid: appState.activeChapterId, 
+                hist.unshift({
+                    bid: appState.book.id,
+                    bname: appState.book.name,
+                    cid: appState.activeChapterId,
                     cnum: data.chapterNumber,
-                    scrollPos: 0 
+                    scrollPos: 0
                 });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 20)));
             }
         }
 
-        function showToast(msg)
-        {
+        function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
             t.classList.add('show');
@@ -1457,16 +1412,14 @@
         }
 
         /* --- SPELL CHECK / SELECTION --- */
-        function handleTextSelection()
-        {
+        function handleTextSelection() {
             if (appState.screen !== 'reader') return;
 
             const sel = window.getSelection();
             const tip = document.getElementById('selectionTooltip');
 
             // Check if selection is valid and inside reader text
-            if (sel.rangeCount > 0 && !sel.isCollapsed)
-            {
+            if (sel.rangeCount > 0 && !sel.isCollapsed) {
                 const range = sel.getRangeAt(0);
                 const container = document.getElementById('readerContainer');
 
@@ -1496,34 +1449,27 @@
             tip.classList.add('hidden');
         }
 
-        function copySelection()
-        {
+        function copySelection() {
             const text = window.getSelection().toString();
-            navigator.clipboard.writeText(text).then(() =>
-            {
+            navigator.clipboard.writeText(text).then(() => {
                 showToast('Đã sao chép!');
                 window.getSelection().removeAllRanges();
             });
         }
 
-        function handleReportClick()
-        {
+        function handleReportClick() {
             const sel = window.getSelection();
             openReportSheet();
-            if (sel.rangeCount > 0 && !sel.isCollapsed)
-            {
+            if (sel.rangeCount > 0 && !sel.isCollapsed) {
                 openReportSheet();
-            } else
-            {
+            } else {
                 showToast('Vui lòng bôi đen văn bản cần sửa!');
             }
         }
 
 
-        async function handleTranslate()
-        {
-            try
-            {
+        async function handleTranslate() {
+            try {
                 showToast("Đang dịch lại chương...");
                 const result = await fetch(`${API_BASE}/stories/gemini-ai/translate`, {
                     method: 'POST',
@@ -1536,23 +1482,21 @@
                 }).then(res => {
                     return res.json();
                 });
-                
-                if(result[appState.activeChapterId]?.chapter?.state  !== 'SUCCEEDED') {
+
+                if (result[appState.activeChapterId]?.chapter?.state !== 'SUCCEEDED') {
                     showToast("Yêu cầu dịch lại đã thất bại.");
                     return;
                 }
 
                 setupReader(appState.activeChapterId, false);
                 showToast("Dịch lại chương thành công");
-            } catch (e)
-            {
+            } catch (e) {
                 console.log(e);
                 showToast("Lỗi dịch chương");
-            } 
+            }
         }
 
-        function openReportSheet()
-        {
+        function openReportSheet() {
             const text = window.getSelection().toString().trim() ?? '';
             // if (!text) return;
 
@@ -1564,32 +1508,28 @@
             openSheet('reportSheet');
         }
 
-        function selectErrorType(el, type)
-        {
+        function selectErrorType(el, type) {
             document.querySelectorAll('.chip-group .chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             appState.errorType = type;
         }
 
-        async function submitReport()
-        {
+        async function submitReport() {
             const o = document.getElementById('originalText').value;
             const n = document.getElementById('newText').value;
             const type = appState.errorType;
 
             const bid = appState.book?.id;
-            if (!bid)
-            {
+            if (!bid) {
                 showToast("Không tìm thấy ID sách");
                 return;
             }
 
             const btn = document.querySelector('#reportSheet .btn-primary');
 
-            try
-            {
+            try {
                 btn.innerText = "Đang gửi...";
-                await fetch(`${API_BASE}/api/book/update/${bid}`, {
+                const result = await fetch(`${API_BASE}/api/book/update/${bid}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
                     body: JSON.stringify({
@@ -1598,15 +1538,13 @@
                         chapterId: appState.activeChapterId,
                         errorType: type
                     })
-                });
-                showToast("Cảm ơn bạn đã báo cáo!");
+                }).then(res => res.json());
+                showToast(result.message || "Báo cáo đã được gửi");
                 setupReader(appState.activeChapterId, false);
-            } catch (e)
-            {
+            } catch (e) {
                 console.log(e);
                 showToast("Lỗi khi gửi báo cáo");
-            } finally
-            {
+            } finally {
                 btn.innerText = "Gửi báo cáo";
                 closeAllDrawers();
                 window.getSelection().removeAllRanges();
@@ -1614,24 +1552,19 @@
         }
 
         /* --- DRAWER / SHEET LOGIC --- */
-        function toggleDrawer(name)
-        {
-            if (name === 'menu')
-            {
+        function toggleDrawer(name) {
+            if (name === 'menu') {
                 preloadMenu();
                 openSheet('menuDrawer');
-            } else if (name === 'history')
-            {
+            } else if (name === 'history') {
                 renderHistory();
                 openSheet('historyDrawer');
-            } else if (name === 'settings')
-            {
+            } else if (name === 'settings') {
                 openSheet('settingsSheet');
             }
         }
 
-        function openSheet(id)
-        {
+        function openSheet(id) {
             // Close any other open sheet first
             document.querySelectorAll('.bottom-sheet.show, .side-drawer.show').forEach(el => {
                 if (el.id !== id) el.classList.remove('show');
@@ -1641,25 +1574,21 @@
             document.getElementById(id).classList.add('show');
         }
 
-        function closeAllDrawers()
-        {
+        function closeAllDrawers() {
             document.getElementById('sheetOverlay').classList.remove('show');
             document.querySelectorAll('.bottom-sheet, .side-drawer').forEach(el => el.classList.remove('show'));
         }
 
         /* --- SETTINGS & HELPERS --- */
-        function loadSettings()
-        {
-            try
-            {
+        function loadSettings() {
+            try {
                 const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
                 if (s) appState.settings = { ...appState.settings, ...s };
             } catch { }
             applySettings();
         }
 
-        function applySettings()
-        {
+        function applySettings() {
             const r = document.documentElement;
             r.style.setProperty('--reader-font-size', (appState.settings.fontSize / 16) + 'rem');
             r.style.setProperty('--reader-font-family', appState.settings.fontFamily);
@@ -1670,8 +1599,7 @@
             const tog = document.getElementById('lazyToggleCircle');
             if (tog) tog.style.left = appState.settings.lazyLoad ? '22px' : '2px';
 
-            document.querySelectorAll('[data-font]').forEach(el =>
-            {
+            document.querySelectorAll('[data-font]').forEach(el => {
                 if (el.dataset.font === appState.settings.fontFamily) el.classList.add('active');
                 else el.classList.remove('active');
             });
@@ -1679,38 +1607,33 @@
 
         function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appState.settings)); applySettings(); }
 
-        function changeFontSize(d)
-        {
+        function changeFontSize(d) {
             let s = appState.settings.fontSize + d;
             if (s < 14) s = 14; if (s > 28) s = 28;
             appState.settings.fontSize = s;
             saveSettings();
         }
 
-        function changeFont(el)
-        {
+        function changeFont(el) {
             appState.settings.fontFamily = el.dataset.font;
             saveSettings();
         }
 
-        function toggleLazyLoad(el)
-        {
+        function toggleLazyLoad(el) {
             appState.settings.lazyLoad = !appState.settings.lazyLoad;
             saveSettings();
         }
 
         /* --- MENU & PAGINATION --- */
-        async function preloadMenu()
-        {
+        async function preloadMenu() {
             const el = document.getElementById('menuBody');
             if (!appState.book) return;
             if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
 
             el.innerHTML = '<div style="padding:2rem;text-align:center;color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=10000`);
+            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=500`);
 
-            if (data)
-            {
+            if (data) {
                 el.setAttribute('data-bid', appState.book.id);
                 el.innerHTML = data.chapters.map(c =>
                     `<div class="drawer-item" id="menu-ch-${c.chapterId}" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
@@ -1722,20 +1645,17 @@
             highlightActiveChapter();
         }
 
-        function highlightActiveChapter()
-        {
+        function highlightActiveChapter() {
             if (!appState.activeChapterId) return;
             document.querySelectorAll('.drawer-item.active').forEach(e => e.classList.remove('active'));
             const el = document.getElementById(`menu-ch-${appState.activeChapterId}`);
-            if (el)
-            {
+            if (el) {
                 el.classList.add('active');
                 setTimeout(() => el.scrollIntoView({ block: 'center' }), 300);
             }
         }
 
-        function renderHistory()
-        {
+        function renderHistory() {
             const el = document.getElementById('historyBody');
             const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             el.innerHTML = hist.length ? hist.map(h =>
@@ -1746,23 +1666,20 @@
             ).join('') : '<div style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</div>';
         }
 
-        function clearHistory()
-        {
-            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc?'))
-            {
+        function clearHistory() {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc?')) {
                 localStorage.removeItem(STORAGE_KEY);
                 renderHistory();
                 showToast('Đã xóa lịch sử');
             }
         }
 
-        function renderPager(id, pg, cb)
-        {
+        function renderPager(id, pg, cb) {
             const el = document.getElementById(id);
             if (!pg || pg.totalPages <= 1) { el.innerHTML = ''; return; }
 
             const c = pg.currentPage || 1;
-            
+
             // Create a unique global reference for this callback
             const cbName = `pager_cb_${id}`;
             window[cbName] = cb;
@@ -1776,32 +1693,25 @@
             `;
         }
 
-        function navManual(dir)
-        {
-            if (dir === 'prev' && appState.prevChapterId) 
-            {
+        function navManual(dir) {
+            if (dir === 'prev' && appState.prevChapterId) {
                 // Reload trang khi chuyển chương để reset DOM
                 fetchAndRenderChapter(appState.prevChapterId, false, true);
             }
-            else if (dir === 'next' && appState.nextChapterId)
-            {
+            else if (dir === 'next' && appState.nextChapterId) {
                 const el = document.getElementById(`chap-${appState.nextChapterId}`);
-                if (el) 
-                {
+                if (el) {
                     el.scrollIntoView({ behavior: 'smooth' });
                 }
-                else 
-                {
+                else {
                     // Reload trang khi load chương mới để reset DOM
                     fetchAndRenderChapter(appState.nextChapterId, false, true);
                 }
             }
         }
 
-        async function api(path)
-        {
-            try
-            {
+        async function api(path) {
+            try {
                 let res = await fetch(API_BASE + path, { headers: { 'ngrok-skip-browser-warning': 'true' } });
                 if (!res.ok) throw new Error('Err');
                 return await res.json();
