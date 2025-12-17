@@ -1278,7 +1278,7 @@
             div.dataset.bookName = data.chapter.bookName;
 
             // --- RESTORED LOGIC: Using exact original code for content parsing ---
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p style="word-spacing: 2px; padding: 0.5rem 0; display: block;">${t}</p>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p style="word-spacing: 2px; padding: 0.5rem 0; display: inline-block;">${t}</p>`).join('');
 
             let header = isInitial ?
                 `<div style="text-align:center; margin-bottom:1rem;">
