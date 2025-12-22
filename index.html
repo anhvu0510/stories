@@ -35,6 +35,7 @@
             --reader-font-family: 'Merriweather', serif;
             --reader-line-height: 1.8;
             --reader-text-align: justify;
+            --reader-word-spacing: normal;
         }
 
         * {
@@ -307,6 +308,7 @@
             border-radius: 6px;
             font-weight: 600;
             font-size: 0.7rem;
+            margin-right: 16rem;
         }
 
         /* --- CHAPTER LIST --- */
@@ -367,6 +369,7 @@
             font-size: var(--reader-font-size);
             line-height: var(--reader-line-height);
             text-align: var(--reader-text-align);
+            word-spacing: var(--reader-word-spacing);
             color: #d1d5db;
             -webkit-font-smoothing: antialiased;
         }
@@ -549,10 +552,10 @@
             border-radius: 24px 24px 0 0;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 2101;
+            z-index: 5101;
             display: flex;
             flex-direction: column;
-            max-height: 85vh;
+            max-height: 90vh;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
             padding-bottom: var(--safe-area-bottom);
@@ -596,7 +599,8 @@
             font-weight: 600;
         }
 
-        .report-input {
+        .report-input,
+        .form-select {
             width: 100%;
             background: #0b1121;
             border: 1px solid #2e3a52;
@@ -606,9 +610,18 @@
             font-family: inherit;
             font-size: 1rem;
             margin-bottom: 16px;
+            appearance: none;
         }
 
-        .report-input:focus {
+        .form-select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .report-input:focus,
+        .form-select:focus {
             border-color: var(--accent);
             outline: none;
         }
@@ -653,10 +666,43 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.1s;
         }
 
         .btn-primary:active {
             transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid #2e3a52;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-outline:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-xs {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #2e3a52;
+            background: #151e32;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .btn-xs:active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
 
         /* Settings UI */
@@ -720,6 +766,247 @@
         .drawer-item.active {
             border-left: 3px solid var(--accent);
             background: rgba(255, 71, 87, 0.05);
+        }
+
+        /* --- TRANSLATION SHEET STYLES --- */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .book-select-container {
+            background: #0b1121;
+            border: 1px solid #2e3a52;
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-search-input {
+            width: 100%;
+            background: #0f1629;
+            border: none;
+            border-bottom: 1px solid #2e3a52;
+            padding: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .book-checkbox-list {
+            overflow-y: auto;
+            flex: 1;
+            padding: 8px;
+        }
+
+        .book-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            gap: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .book-checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .book-checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .book-checkbox-name {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #e2e8f0;
+        }
+
+        /* Tabs */
+        .tab-group {
+            display: flex;
+            background: #0b1121;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+            border: 1px solid #2e3a52;
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab-item.active {
+            background: #2e3a52;
+            color: white;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #2e3a52;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Modal for Confirmation */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 6000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .confirm-card {
+            background: #1e293b;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.show .confirm-card {
+            transform: scale(1);
+        }
+
+        .confirm-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .confirm-detail {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .confirm-value {
+            color: #e2e8f0;
+            font-weight: 600;
+            text-align: right;
+            max-width: 60%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .confirm-list-container {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .confirm-list-item {
+            font-size: 0.85rem;
+            color: #ccc;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .row-items {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-direction: column;
         }
     </style>
 </head>
@@ -792,6 +1079,8 @@
 
         <!-- CHAPTERS LIST -->
         <div id="screen-chapters" class="container hidden">
+            <div class="pagination" id="chapterPagination"
+                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
             <div
                 style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
                 Danh sách chương</div>
@@ -893,6 +1182,140 @@
     <!-- GLOBAL OVERLAY -->
     <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllDrawers()" aria-hidden="true"></div>
 
+    <!-- TRANSLATION SHEET (NEW) -->
+    <div class="bottom-sheet" id="translationSheet" aria-hidden="true">
+        <div class="sheet-header">
+            <div class="sheet-title">Cấu hình Dịch AI</div>
+            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
+        </div>
+        <div class="sheet-body">
+            <!-- Tabs -->
+            <div class="tab-group">
+                <div class="tab-item active" id="tabBtnCurrent" onclick="switchTransTab('current')">Hiện tại</div>
+                <div class="tab-item" id="tabBtnBatchChapter" onclick="switchTransTab('batch_chapter')">Nhiều chương
+                </div>
+                <div class="tab-item" id="tabBtnStory" onclick="switchTransTab('story')">Truyện</div>
+            </div>
+
+
+            <div id="tabContentCurrent">
+                <div id="tabContentCurrentText"
+                    style="padding:10px 0; color:var(--accent); font-weight:600; text-align:center; margin-bottom:10px;">
+                    Dịch và đọc ngay chương đang mở
+                </div>
+            </div>
+
+            <!-- Model Selection -->
+            <div class="form-group">
+                <label class="form-label">Chọn Model AI</label>
+                <select id="aiModelSelect" class="form-select">
+                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+                    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                </select>
+            </div>
+
+            <!-- Tab Content: Current -->
+
+
+            <!-- Tab Content: Batch Chapter -->
+            <div id="tabContentBatchChapter" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">Chọn chương (Truyện hiện tại)</label>
+
+                    <!-- Fast Select Buttons -->
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <button class="btn-xs" onclick="fastSelectChapters('all')">Chọn tất cả</button>
+                        <button class="btn-xs" onclick="fastSelectChapters('none')">Bỏ chọn</button>
+                        <button class="btn-xs" onclick="fastSelectChapters('range')">Phạm vi</button>
+                    </div>
+
+                    <div class="book-select-container">
+                        <input type="text" class="book-search-input" id="transChapterSearch"
+                            placeholder="Tìm tên chương..." oninput="filterTranslationChapters(this.value)">
+                        <div class="book-checkbox-list" id="transChapterList">
+                            <!-- Populated by JS -->
+                            <div style="padding:10px;color:#888;">Đang tải danh sách chương...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Story -->
+            <div id="tabContentStory" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">Chọn truyện cần dịch</label>
+                    <div class="book-select-container">
+                        <input type="text" class="book-search-input" id="transBookSearch"
+                            placeholder="Tìm tên truyện..." oninput="filterTranslationBooks(this.value)">
+                        <div class="book-checkbox-list" id="transBookList">
+                            <!-- Populated by JS -->
+                            <div style="padding:10px;color:#888;">Đang tải danh sách...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word Limits -->
+            <div class="form-group flex-row">
+                <div style="flex:1">
+                    <label class="form-label">Min Words</label>
+                    <input type="number" id="transMinWords" class="report-input" value="100" style="margin-bottom:0">
+                </div>
+                <div style="flex:1">
+                    <label class="form-label">Max Words</label>
+                    <input type="number" id="transMaxWords" class="report-input" value="500" style="margin-bottom:0">
+                </div>
+            </div>
+
+            <!-- Toggle Scope -->
+            <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
+                <label class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành công)</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="transScopeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div style="font-size:0.8rem; color:#64748b; margin-top:-10px; margin-bottom:20px;">
+                Tắt: Chỉ dịch phần thất bại • Bật: Dịch lại toàn bộ
+            </div>
+
+            <!-- Actions -->
+            <button class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt đầu dịch</button>
+            <div style="height:20px"></div>
+        </div>
+    </div>
+
+    <!-- CONFIRM MODAL (NEW) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="confirm-card">
+            <div class="confirm-title">Xác nhận dịch</div>
+            <div style="border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:15px; padding-bottom:5px;">
+                <div class="confirm-detail"><span>Chế độ:</span> <span id="confMode" class="confirm-value"></span></div>
+                <div class="confirm-detail"><span>Model:</span> <span id="confModel" class="confirm-value"></span></div>
+                <div class="confirm-detail"><span>Phạm vi:</span> <span id="confScope" class="confirm-value"></span>
+                </div>
+                <div class="confirm-detail"><span>Batch Size:</span> <span id="confBatch" class="confirm-value"></span>
+                </div>
+                <div class="confirm-detail"><span>Số lượng:</span> <span id="confCount" class="confirm-value"></span>
+                </div>
+            </div>
+
+            <div style="font-size:0.85rem; font-weight:600; color:#cbd5e1; margin-bottom:5px;">Danh sách chọn:</div>
+            <div class="confirm-list-container" id="confList">
+                <!-- List Items Here -->
+            </div>
+
+            <div style="font-size:0.8rem; color:#94a3b8; line-height:1.4; margin-top:15px;">
+                Yêu cầu sẽ được gửi 1 lần duy nhất vào hàng đợi xử lý nền.
+            </div>
+            <div class="modal-actions">
+                <button class="btn-outline" onclick="closeConfirmModal()">Hủy</button>
+                <button class="btn-primary" id="btnRealSubmit" onclick="confirmTranslation()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- REPORT ERROR SHEET -->
     <div class="bottom-sheet" id="reportSheet" aria-hidden="true">
         <div class="sheet-header">
@@ -926,15 +1349,58 @@
             <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
         </div>
         <div class="sheet-body">
+
             <div class="setting-row">
-                <span>Cỡ chữ</span>
-                <div class="font-controls">
-                    <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
-                    <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold" id="fontSizeDisplay">18
+                <span>Tự động tải chương</span>
+                <!-- Simple CSS Switch -->
+                <div style="position:relative; width:44px; height:24px; background:#2e3a52; border-radius:12px; cursor:pointer;"
+                    onclick="toggleLazyLoad(this)">
+                    <div id="lazyToggleCircle"
+                        style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; transition:0.3s;">
                     </div>
-                    <button class="font-btn" onclick="changeFontSize(1)">A+</button>
                 </div>
             </div>
+
+
+            <div class="setting-row">
+                <div class="row-items">
+                    <span>Front Size</span>
+                    <div class="font-controls">
+                        <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                            id="fontSizeDisplay">18
+                        </div>
+                        <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+                    </div>
+                </div>
+
+
+                <div class="row-items">
+                    <span>Word Spacing</span>
+                    <div class="font-controls">
+                        <button class="font-btn" onclick="changeWordSpacing(-1)">A-</button>
+                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                            id="wordSpacingDisplay">0
+                        </div>
+                        <button class="font-btn" onclick="changeWordSpacing(1)">A+</button>
+                    </div>
+                </div>
+
+                <div class="row-items">
+                    <span>Group Lines</span>
+                    <div class="font-controls">
+                        <button class="font-btn" onclick="changeSentenceCount(-1)">A-</button>
+                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                            id="sentenceCountDisplay">1
+                        </div>
+                        <button class="font-btn" onclick="changeSentenceCount(1)">A+</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
 
             <div class="setting-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
                 <span>Phông chữ</span>
@@ -948,16 +1414,7 @@
                 </div>
             </div>
 
-            <div class="setting-row">
-                <span>Tự động tải chương</span>
-                <!-- Simple CSS Switch -->
-                <div style="position:relative; width:44px; height:24px; background:#2e3a52; border-radius:12px; cursor:pointer;"
-                    onclick="toggleLazyLoad(this)">
-                    <div id="lazyToggleCircle"
-                        style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; transition:0.3s;">
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -978,7 +1435,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path>
                         <line x1="10" y1="11" x2="10" y2="17"></line>
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
@@ -993,7 +1450,8 @@
         const API_BASE = 'https://armorplated-thersa-unstained.ngrok-free.dev';
         const STORAGE_KEY = 'novel_history_v3';
         const SETTINGS_KEY = 'novel_settings_v3';
-        const PROGRESS_KEY = 'novel_progress_v3'; // ADDED: Key for progress
+        const PROGRESS_KEY = 'novel_progress_v3';
+        const TRANS_OPTIONS_KEY = 'novel_trans_opts_v1';
 
         let appState = {
             screen: 'home',
@@ -1005,17 +1463,25 @@
             prevChapterId: null,
             isLoading: false,
             errorType: 'spelling',
-            settings: { fontSize: 18, fontFamily: "'Merriweather', serif", lazyLoad: true }
+            settings: { fontSize: 18, fontFamily: "'Merriweather', serif", lazyLoad: true, groupLines: 1, wordSpacing: 0 },
+            // Translation cache
+            allBooksCache: null,
+            currentBookChaptersCache: null,
+            activeTranslateTab: 'current', // 'current' | 'batch_chapter' | 'story'
+            pendingTranslation: null
         };
         let observer;
 
-        window.onload = () => {
+        window.onload = () =>
+        {
             loadSettings();
+            loadTranslationOptions(); // Load saved translation options
             handleInitialRoute();
 
             // Search Debounce
             let timer;
-            document.getElementById('searchInput').addEventListener('input', (e) => {
+            document.getElementById('searchInput').addEventListener('input', (e) =>
+            {
                 clearTimeout(timer);
                 timer = setTimeout(() => fetchBooks(1, e.target.value), 600);
             });
@@ -1031,68 +1497,73 @@
             document.addEventListener('touchend', () => setTimeout(handleTextSelection, 100));
         };
 
-        function debounce(func, wait) {
+        function debounce(func, wait)
+        {
             let timeout;
-            return function (...args) {
+            return function (...args)
+            {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
 
-        // ADDED: Safe Save Function
-        const saveReadProgress = debounce((cid, offset) => {
-            try {
+        const saveReadProgress = debounce((cid, offset) =>
+        {
+            try
+            {
                 let progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
                 progress[cid] = Math.max(0, Math.floor(offset));
-                // Optional: Cleanup old keys if object gets too big
                 const keys = Object.keys(progress);
                 if (keys.length > 50) delete progress[keys[0]];
                 localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
-            } catch (e) {
-                console.error('Error saving progress', e);
-            }
+            } catch (e) { }
         }, 300);
 
         /* --- ROUTING --- */
-        function handleInitialRoute() {
+        function handleInitialRoute()
+        {
             const params = new URLSearchParams(window.location.search);
             const view = params.get('view') || 'home';
 
-            if (view === 'home') {
+            if (view === 'home')
+            {
                 setScreen('home', false);
                 fetchBooks();
-            } else if (view === 'chapters') {
+            } else if (view === 'chapters')
+            {
                 const bid = params.get('bookId');
                 const bname = params.get('bookName');
                 if (bid) fetchChapters(bid, bname || 'Mục lục', 1, false);
-            } else if (view === 'reader') {
+            } else if (view === 'reader')
+            {
                 const cid = params.get('chapterId');
                 const bid = params.get('bookId');
-                if (cid) {
+                if (cid)
+                {
                     appState.book = { id: bid, name: params.get('bookName') || '' };
                     setupReader(cid, false);
                 }
             }
         }
 
-        function pushState(view, params = {}) {
-            try {
+        function pushState(view, params = {})
+        {
+            try
+            {
                 const url = new URL(window.location);
                 url.searchParams.set('view', view);
                 Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
                 window.history.pushState({}, '', url);
-            } catch (e) {
-                // Ignore SecurityError for blob/sandbox environments
-                console.warn("History pushState disabled in this environment");
-            }
+            } catch (e) { }
         }
 
         /* --- NAVIGATION --- */
-        function setScreen(name, updateHistory = true) {
-            // Nếu đang ở màn hình khác và chuyển sang màn hình mới, reload trang
-            if (appState.screen !== name && appState.screen !== 'home') {
-                // Lưu trạng thái mới vào URL trước khi reload
-                if (name === 'home') {
+        function setScreen(name, updateHistory = true)
+        {
+            if (appState.screen !== name && appState.screen !== 'home')
+            {
+                if (name === 'home')
+                {
                     window.location.href = window.location.pathname;
                     return;
                 }
@@ -1107,28 +1578,30 @@
             const title = document.getElementById('pageTitle');
             const settingsBtn = document.getElementById('headerSettingsBtn');
 
-            if (name === 'home') {
+            if (name === 'home')
+            {
                 document.getElementById('screen-home').classList.remove('hidden');
                 title.innerText = 'NovelReader';
                 backBtn.classList.add('hidden');
-                settingsBtn.classList.add('hidden'); // Hide Settings on Home
+                settingsBtn.classList.add('hidden');
                 appState.book = null;
                 dock.classList.remove('hide');
-
                 if (updateHistory) pushState('home');
                 fetchBooks();
             }
-            else if (name === 'chapters') {
+            else if (name === 'chapters')
+            {
                 document.getElementById('screen-chapters').classList.remove('hidden');
                 backBtn.classList.remove('hidden');
-                settingsBtn.classList.add('hidden'); // Hide on Chapters
+                settingsBtn.classList.add('hidden');
                 title.innerText = appState.book?.name || 'Mục lục';
-                dock.classList.add('hide'); // Hide dock on chapter list
+                dock.classList.add('hide');
             }
-            else if (name === 'reader') {
+            else if (name === 'reader')
+            {
                 document.getElementById('screen-reader').classList.remove('hidden');
                 backBtn.classList.remove('hidden');
-                settingsBtn.classList.remove('hidden'); // Show on Reader
+                settingsBtn.classList.remove('hidden');
                 dock.classList.remove('hide');
             }
 
@@ -1136,42 +1609,39 @@
             window.scrollTo(0, 0);
         }
 
-        function handleBack() {
-            if (appState.screen === 'reader') {
+        function handleBack()
+        {
+            if (appState.screen === 'reader')
+            {
                 if (appState.book && appState.book.id) fetchChapters(appState.book.id, appState.book.name);
-                else {
-                    try { window.history.back(); } catch (e) { setScreen('home'); }
-                }
-            } else {
+                else try { window.history.back(); } catch (e) { setScreen('home'); }
+            } else
+            {
                 setScreen('home');
             }
         }
 
-        function updateDockState() {
+        function updateDockState()
+        {
             const isReader = appState.screen === 'reader';
-            ['btnPrev', 'btnNext', 'btnReport'].forEach(id => {
+            ['btnPrev', 'btnNext', 'btnReport'].forEach(id =>
+            {
                 const el = document.getElementById(id);
                 if (el) el.classList.toggle('disabled', !isReader);
             });
         }
 
         /* --- DATA FETCHING --- */
-        async function fetchBooks(page = 1, q = '') {
+        async function fetchBooks(page = 1, q = '')
+        {
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
-
-            // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
-
             const data = await api(`/api/books?page=${pageNum}&limit=1000&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
-
-            // FIXED: Enforce currentPage update from client side to ensure UI sync
-            if (data.pagination) {
-                data.pagination.currentPage = pageNum;
-            }
-
+            if (data.pagination) data.pagination.currentPage = pageNum;
+            console.log('data', JSON.stringify(data, null, 2))
             el.innerHTML = data.data.map(b => `
                 <div class="book-row" onclick="fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
                     <div class="book-icon">${b.bookName.charAt(0)}</div>
@@ -1179,18 +1649,18 @@
                         <div class="book-title">${b.bookName}</div>
                         <div class="book-meta">
                             <span class="tag">${b.chapterCount || 0} chương</span>
-                            <span>• ${b.author || 'Đang cập nhật'}</span>
+                            <span>${b.createdAt || 'Đang cập nhật'}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
-
             renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
         }
 
-        async function fetchChapters(bid, bname, page = 1, updateHistory = true) {
-            // Reload trang khi chuyển từ reader về chapters
-            if (appState.screen === 'reader') {
+        async function fetchChapters(bid, bname, page = 1, updateHistory = true)
+        {
+            if (appState.screen === 'reader')
+            {
                 const url = new URL(window.location);
                 url.searchParams.set('view', 'chapters');
                 url.searchParams.set('bookId', bid);
@@ -1205,20 +1675,15 @@
 
             const el = document.getElementById('chapterList');
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
-
-            // FIXED: Ensure page is an integer
             const pageNum = parseInt(page) || 1;
 
             const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=500`);
-            if (!data || !data.chapters.length) {
+            if (!data || !data.chapters.length)
+            {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
                 return;
             }
-
-            // FIXED: Enforce currentPage update
-            if (data.pagination) {
-                data.pagination.currentPage = pageNum;
-            }
+            if (data.pagination) data.pagination.currentPage = pageNum;
 
             el.innerHTML = data.chapters.map(c => `
                 <div class="chapter-row" onclick="setupReader('${c.chapterId}')">
@@ -1226,13 +1691,13 @@
                     <div style="color:var(--accent); font-weight:bold;">›</div>
                 </div>
             `).join('');
-
             renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
         }
 
-        async function setupReader(cid, updateHistory = true) {
-            // Reload trang khi chuyển từ chapters sang reader
-            if (appState.screen === 'chapters' && updateHistory) {
+        async function setupReader(cid, updateHistory = true)
+        {
+            if (appState.screen === 'chapters' && updateHistory)
+            {
                 const url = new URL(window.location);
                 url.searchParams.set('view', 'reader');
                 url.searchParams.set('chapterId', cid);
@@ -1251,9 +1716,10 @@
             preloadMenu();
         }
 
-        async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false) {
-            // Nếu forceReload = true, reload trang để reset DOM
-            if (forceReload) {
+        async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false)
+        {
+            if (forceReload)
+            {
                 const url = new URL(window.location);
                 url.searchParams.set('chapterId', cid);
                 window.location.href = url.toString();
@@ -1264,7 +1730,7 @@
             appState.isLoading = true;
             if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
 
-            const data = await api(`/api/chapters/${cid}`);
+            const data = await api(`/api/chapters/${cid}/?groupLines=${appState.settings.groupLines}`);
             appState.isLoading = false;
             document.getElementById('loadingNext').classList.add('hidden');
 
@@ -1277,8 +1743,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            // --- RESTORED LOGIC: Using exact original code for content parsing ---
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="word-spacing: 2px; padding: 0.5rem 0; display: inline-block;">${t}</section>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="padding: 0.5rem 0; display: inline-block;">${t}</section>`).join('');
 
             let header = isInitial ?
                 `<div style="text-align:center; margin-bottom:1rem;">
@@ -1289,94 +1754,83 @@
             div.innerHTML = header + `<div class="reader-text">${content}</div>`;
             document.getElementById('readerContainer').appendChild(div);
 
-            if (isInitial) {
+            if (isInitial)
+            {
                 appState.activeChapterId = cid;
+                appState.chapterName = data.chapter.title;
                 appState.prevChapterId = data.navigation?.prev?.chapterId;
                 updateHeader(data.chapter);
-                // ADDED: Restore Position
                 restoreReadProgress(cid);
             }
             appState.nextChapterId = data.navigation?.next?.chapterId;
             observer.observe(div);
         }
 
-        // ADDED: Restore Function
-        function restoreReadProgress(cid) {
-            try {
+        function restoreReadProgress(cid)
+        {
+            try
+            {
                 const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
                 const savedOffset = progress[cid];
-
-                if (typeof savedOffset === 'number' && savedOffset > 0) {
+                if (typeof savedOffset === 'number' && savedOffset > 0)
+                {
                     const el = document.getElementById(`chap-${cid}`);
-                    if (el) {
-                        setTimeout(() => {
-                            window.scrollTo({
-                                top: el.offsetTop + savedOffset,
-                                behavior: 'auto'
-                            });
-                            // showToast('Đang đọc tiếp từ vị trí cũ');
-                        }, 100);
-                    }
-                } else {
+                    if (el) setTimeout(() => { window.scrollTo({ top: el.offsetTop + savedOffset, behavior: 'auto' }); }, 100);
+                } else
+                {
                     window.scrollTo(0, 0);
                 }
-            } catch (e) {
-                console.warn('Could not restore progress', e);
-                window.scrollTo(0, 0);
-            }
+            } catch (e) { window.scrollTo(0, 0); }
         }
 
         /* --- UI LOGIC --- */
-        function onScroll() {
+        function onScroll()
+        {
             const y = window.scrollY;
-            if (appState.screen === 'reader') {
+            if (appState.screen === 'reader')
+            {
                 const totalH = document.documentElement.scrollHeight - window.innerHeight;
                 document.getElementById('readProgress').style.width = (totalH > 0 ? (y / totalH) * 100 : 0) + '%';
-
                 const scrollingDown = y > appState.scrollPos;
                 const hideUI = scrollingDown && y > 100;
 
                 document.getElementById('glassDock').classList.toggle('hide', hideUI);
                 document.getElementById('mainHeader').classList.toggle('hide', hideUI);
 
-                // Lazy Load
-                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000)) {
+                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000))
+                {
                     fetchAndRenderChapter(appState.nextChapterId);
                 }
 
-                // ADDED: Track Progress in onScroll
-                if (appState.activeChapterId) {
+                if (appState.activeChapterId)
+                {
                     const el = document.getElementById(`chap-${appState.activeChapterId}`);
-                    if (el) {
-                        const relativeY = y - el.offsetTop;
-                        saveReadProgress(appState.activeChapterId, relativeY);
-                    }
+                    if (el) saveReadProgress(appState.activeChapterId, y - el.offsetTop);
                 }
-            } else {
+            } else
+            {
                 document.getElementById('readProgress').style.width = '0';
             }
             appState.scrollPos = y;
         }
 
-        function handleIntersect(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
+        function handleIntersect(entries)
+        {
+            entries.forEach(entry =>
+            {
+                if (entry.isIntersecting)
+                {
                     const div = entry.target;
-                    if (appState.activeChapterId !== div.dataset.cid) {
+                    if (appState.activeChapterId !== div.dataset.cid)
+                    {
                         appState.activeChapterId = div.dataset.cid;
                         updateHeader({ bookName: div.dataset.bookName, chapterNumber: div.dataset.num });
                         highlightActiveChapter();
+                        try { const url = new URL(window.location); url.searchParams.set('chapterId', div.dataset.cid); window.history.replaceState({}, '', url); } catch (e) { }
 
-                        // Silent update URL (Safe for Blob/Sandbox)
-                        try {
-                            const url = new URL(window.location);
-                            url.searchParams.set('chapterId', div.dataset.cid);
-                            window.history.replaceState({}, '', url);
-                        } catch (e) { }
-
-                        // Clean up old chapters
                         const container = document.getElementById('readerContainer');
-                        if (container.children.length > 5) {
+                        if (container.children.length > 5)
+                        {
                             observer.unobserve(container.children[0]);
                             container.children[0].remove();
                         }
@@ -1385,26 +1839,20 @@
             });
         }
 
-        function updateHeader(data) {
+        function updateHeader(data)
+        {
             document.getElementById('pageTitle').innerText = `${data.bookName} - C${data.chapterNumber}`;
-
-            // Save History
-            if (appState.book) {
+            if (appState.book)
+            {
                 let hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
                 hist = hist.filter(h => h.bid !== appState.book.id);
-                // Init scrollPos to 0 when starting new chapter record
-                hist.unshift({
-                    bid: appState.book.id,
-                    bname: appState.book.name,
-                    cid: appState.activeChapterId,
-                    cnum: data.chapterNumber,
-                    scrollPos: 0
-                });
+                hist.unshift({ bid: appState.book.id, bname: appState.book.name, cid: appState.activeChapterId, cnum: data.chapterNumber, scrollPos: 0 });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 20)));
             }
         }
 
-        function showToast(msg) {
+        function showToast(msg)
+        {
             const t = document.getElementById('toast');
             t.innerText = msg;
             t.classList.add('show');
@@ -1412,139 +1860,440 @@
         }
 
         /* --- SPELL CHECK / SELECTION --- */
-        function handleTextSelection() {
+        function handleTextSelection()
+        {
             if (appState.screen !== 'reader') return;
-
             const sel = window.getSelection();
             const tip = document.getElementById('selectionTooltip');
-
-            // Check if selection is valid and inside reader text
-            if (sel.rangeCount > 0 && !sel.isCollapsed) {
-                const range = sel.getRangeAt(0);
-                const container = document.getElementById('readerContainer');
-
+            if (sel.rangeCount > 0 && !sel.isCollapsed)
+            {
                 document.querySelector('#glassDock').classList.remove('hide')
-
-                // if(container.contains(range.commonAncestorContainer)) {
-                //     const rect = range.getBoundingClientRect();
-
-                //     // Position calculations to keep it on screen
-                //     const tipWidth = 0; // Approx width
-                //     let left = rect.left + (rect.width / 2) - (tipWidth / 2);
-                //     let top = rect.top - 120; // Above selection
-
-                //     // Clamp to screen edges
-                //     if (left < 10) left = 10;
-                //     if (left + tipWidth > window.innerWidth - 10) left = window.innerWidth - tipWidth - 10;
-
-                //     // If too close to top, show below selection
-                //     if (top < 60) top = rect.bottom + 10;
-
-                //     tip.style.left = `${left}px`;
-                //     tip.style.top = `${top}px`;
-                //     tip.classList.remove('hidden');
-                //     return;
-                // }
             }
             tip.classList.add('hidden');
         }
 
-        function copySelection() {
-            const text = window.getSelection().toString();
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Đã sao chép!');
-                window.getSelection().removeAllRanges();
-            });
+        function handleReportClick()
+        {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0 && !sel.isCollapsed) openReportSheet();
+            else showToast('Vui lòng bôi đen văn bản cần sửa!');
         }
 
-        function handleReportClick() {
-            const sel = window.getSelection();
-            openReportSheet();
-            if (sel.rangeCount > 0 && !sel.isCollapsed) {
-                openReportSheet();
-            } else {
-                showToast('Vui lòng bôi đen văn bản cần sửa!');
+        /* --- TRANSLATION LOGIC (UPDATED) --- */
+        function handleTranslate()
+        {
+            openSheet('translationSheet');
+            // Default to 'current' if a book is open, else 'story'
+            if (appState.book?.id)
+            {
+                switchTransTab('current');
+            } else
+            {
+                switchTransTab('story');
             }
         }
 
+        function switchTransTab(tab)
+        {
+            appState.activeTranslateTab = tab;
+            document.getElementById('tabBtnCurrent').classList.toggle('active', tab === 'current');
+            document.getElementById('tabBtnBatchChapter').classList.toggle('active', tab === 'batch_chapter');
+            document.getElementById('tabBtnStory').classList.toggle('active', tab === 'story');
 
-        async function handleTranslate() {
-            try {
-                showToast("Đang dịch lại chương...");
+            document.getElementById('tabContentCurrent').classList.toggle('hidden', tab !== 'current');
+            document.getElementById('tabContentBatchChapter').classList.toggle('hidden', tab !== 'batch_chapter');
+            document.getElementById('tabContentStory').classList.toggle('hidden', tab !== 'story');
+
+            // Update main button text
+            const btn = document.getElementById('btnSubmitTransSheet');
+            btn.innerText = tab === 'current' ? "Dịch ngay" : "Tiếp tục";
+
+            if (tab === 'batch_chapter')
+            {
+                if (appState.book?.id) loadTranslationChapters();
+                else document.getElementById('transChapterList').innerHTML = '<div style="padding:10px;color:#d63031;">Chưa mở truyện</div>';
+            }
+            else if (tab === 'story')
+            {
+                loadTranslationBooks();
+            }
+            else if (tab === 'current' && appState?.activeChapterId)
+            {
+                // No loading needed
+                document.getElementById('tabContentCurrentText').innerText = appState.chapterName || 'Chương hiện tại';
+            }
+
+
+        }
+
+        async function loadTranslationBooks()
+        {
+            const listEl = document.getElementById('transBookList');
+            if (appState.allBooksCache)
+            {
+                renderTranslationBooks(appState.allBooksCache);
+                return;
+            }
+            const data = await api(`/api/books?page=1&limit=1000`);
+            if (data && data.data)
+            {
+                appState.allBooksCache = data.data;
+                renderTranslationBooks(data.data);
+            } else
+            {
+                listEl.innerHTML = '<div style="padding:10px;color:#d63031;">Không tải được danh sách truyện</div>';
+            }
+        }
+
+        function renderTranslationBooks(books)
+        {
+            const listEl = document.getElementById('transBookList');
+            if (books.length === 0)
+            {
+                listEl.innerHTML = '<div style="padding:10px;color:#888;">Không tìm thấy truyện</div>';
+                return;
+            }
+            listEl.innerHTML = books.map(b => `
+                <label class="book-checkbox-item">
+                    <input type="checkbox" value="${b.bookId}" data-name="${b.bookName}" name="transBooks">
+                    <span class="book-checkbox-name" title="${b.bookName}">${b.bookName}</span>
+                </label>
+            `).join('');
+        }
+
+        function filterTranslationBooks(query)
+        {
+            if (!appState.allBooksCache) return;
+            const q = query.toLowerCase();
+            const filtered = appState.allBooksCache.filter(b => b.bookName.toLowerCase().includes(q));
+            renderTranslationBooks(filtered);
+        }
+
+        // New functions for Chapters Tab
+        async function loadTranslationChapters()
+        {
+            const listEl = document.getElementById('transChapterList');
+            const bid = appState.book.id;
+
+            // Simple cache reset if book changes
+            if (appState.currentBookChaptersCache && appState.currentBookChaptersCache.bid !== bid)
+            {
+                appState.currentBookChaptersCache = null;
+            }
+
+            if (appState.currentBookChaptersCache)
+            {
+                renderTranslationChapters(appState.currentBookChaptersCache.chapters);
+                return;
+            }
+
+            const data = await api(`/api/books/${bid}/chapters?page=1&limit=500`);
+            if (data && data.chapters)
+            {
+                appState.currentBookChaptersCache = { bid: bid, chapters: data.chapters };
+                renderTranslationChapters(data.chapters);
+            } else
+            {
+                listEl.innerHTML = '<div style="padding:10px;color:#d63031;">Không tải được danh sách chương</div>';
+            }
+        }
+
+        function renderTranslationChapters(chapters)
+        {
+            const listEl = document.getElementById('transChapterList');
+            const activeCid = appState.activeChapterId;
+
+            if (chapters.length === 0)
+            {
+                listEl.innerHTML = '<div style="padding:10px;color:#888;">Chưa có chương nào</div>';
+                return;
+            }
+
+            listEl.innerHTML = chapters.map(c => `
+                <label class="book-checkbox-item">
+                    <input type="checkbox" value="${c.chapterId}" data-name="Chương ${c.chapterNumber}" ${c.chapterId === activeCid ? 'checked' : ''} name="transChapters" data-idx="${c.chapterNumber}">
+                    <span class="book-checkbox-name" title="${c.title}">Chương ${c.chapterNumber}: ${c.title}</span>
+                </label>
+            `).join('');
+        }
+
+        function filterTranslationChapters(query)
+        {
+            if (!appState.currentBookChaptersCache) return;
+            const q = query.toLowerCase();
+            const filtered = appState.currentBookChaptersCache.chapters.filter(c =>
+                c.title.toLowerCase().includes(q) || c.chapterNumber.toString().includes(q)
+            );
+            renderTranslationChapters(filtered);
+        }
+
+        // --- FAST SELECT LOGIC ---
+        function fastSelectChapters(action)
+        {
+            const checkboxes = document.querySelectorAll('input[name="transChapters"]');
+            if (!checkboxes.length) return;
+
+            if (action === 'all')
+            {
+                checkboxes.forEach(cb => cb.checked = true);
+            } else if (action === 'none')
+            {
+                checkboxes.forEach(cb => cb.checked = false);
+            } else if (action === 'range')
+            {
+                const start = parseInt(prompt("Nhập số chương bắt đầu:", "1"));
+                const end = parseInt(prompt("Nhập số chương kết thúc:", "100"));
+                if (!isNaN(start) && !isNaN(end) && start <= end)
+                {
+                    checkboxes.forEach(cb =>
+                    {
+                        const idx = parseInt(cb.getAttribute('data-idx'));
+                        if (idx >= start && idx <= end) cb.checked = true;
+                    });
+                }
+            }
+        }
+
+        // --- CACHE LOGIC ---
+        function loadTranslationOptions()
+        {
+            try
+            {
+                const opts = JSON.parse(localStorage.getItem(TRANS_OPTIONS_KEY));
+                if (opts)
+                {
+                    if (opts.model) document.getElementById('aiModelSelect').value = opts.model;
+                    if (opts.minWords) document.getElementById('transMinWords').value = opts.minWords;
+                    if (opts.maxWords) document.getElementById('transMaxWords').value = opts.maxWords;
+                    if (opts.scope !== undefined) document.getElementById('transScopeToggle').checked = opts.scope;
+                }
+            } catch (e) { console.error('Load opts error', e); }
+        }
+
+        function saveTranslationOptions()
+        {
+            const opts = {
+                model: document.getElementById('aiModelSelect').value,
+                minWords: document.getElementById('transMinWords').value,
+                maxWords: document.getElementById('transMaxWords').value,
+                scope: document.getElementById('transScopeToggle').checked
+            };
+            localStorage.setItem(TRANS_OPTIONS_KEY, JSON.stringify(opts));
+        }
+
+        async function submitTranslation()
+        {
+            saveTranslationOptions(); // Save options before submitting
+
+            // Gather common data
+            const model = document.getElementById('aiModelSelect').value;
+            const minW = parseInt(document.getElementById('transMinWords').value) || 100;
+            const maxW = parseInt(document.getElementById('transMaxWords').value) || 500;
+            const isFullScope = document.getElementById('transScopeToggle').checked;
+            const mode = appState.activeTranslateTab;
+
+            // --- Case 1: Current Chapter (Instant) ---
+            if (mode === 'current')
+            {
+                if (!appState.activeChapterId) { showToast("Chưa mở chương nào"); return; }
+
+                const btn = document.getElementById('btnSubmitTransSheet');
+                const originalText = btn.innerText;
+                btn.innerText = "Đang xử lý...";
+                btn.disabled = true;
+
+                try
+                {
+                    const payload = {
+                        model, minWords: minW, maxWords: maxW, retryTranslate: isFullScope,
+                        mode: 'current',
+                        bookId: appState.book.id,
+                        chapterId: [appState.activeChapterId],
+                    };
+
+                    const result = await fetch(`${API_BASE}/stories/gemini-ai/translate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+                        body: JSON.stringify(payload)
+                    }).then(res => res.json());
+                    if (result[appState.activeChapterId]?.chapter?.state !== 'SUCCEEDED')
+                    {
+                        throw new Error("Yêu cầu dịch lại đã thất bại.");
+                    }
+
+
+                    showToast("Dịch thành công!");
+                    closeAllDrawers();
+                    setupReader(appState.activeChapterId, false); // Reload content
+                } catch (e)
+                {
+                    showToast("Lỗi: " + e.message);
+                    closeAllDrawers();
+                } finally
+                {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+                return;
+            }
+
+            // --- Case 2 & 3: Batch Modes (Require Confirmation) ---
+            let selectedIds = [];
+            let selectedNames = [];
+            let countLabel = "";
+
+            if (mode === 'story')
+            {
+                const checkboxes = document.querySelectorAll('input[name="transBooks"]:checked');
+                checkboxes.forEach(cb =>
+                {
+                    selectedIds.push(cb.value);
+                    selectedNames.push(cb.getAttribute('data-name'));
+                });
+                if (selectedIds.length === 0) { showToast("Vui lòng chọn ít nhất 1 truyện"); return; }
+                countLabel = selectedIds.length + " truyện";
+            }
+            else // batch_chapter
+            {
+                if (!appState.book?.id) { showToast("Vui lòng mở truyện trước"); return; }
+                const checkboxes = document.querySelectorAll('input[name="transChapters"]:checked');
+                checkboxes.forEach(cb =>
+                {
+                    selectedIds.push(cb.value);
+                    selectedNames.push(cb.getAttribute('data-name'));
+                });
+                if (selectedIds.length === 0) { showToast("Vui lòng chọn ít nhất 1 chương"); return; }
+                countLabel = selectedIds.length + " chương";
+            }
+
+            // Prepare Payload for Confirmation
+            appState.pendingTranslation = {
+                mode: mode,
+                model: model,
+                minWords: minW,
+                maxWords: maxW,
+                retryTranslate: isFullScope,
+                ids: selectedIds,
+                names: selectedNames, // For display only
+                activeBookId: appState.book?.id
+            };
+
+            // Show Confirmation
+            document.getElementById('confMode').innerText = mode === 'batch_chapter' ? "Dịch Chương (Batch)" : "Dịch Truyện (Batch)";
+            document.getElementById('confModel').innerText = model;
+            document.getElementById('confScope').innerText = isFullScope ? "Dịch lại toàn bộ" : "Chỉ dịch phần lỗi/thiếu";
+            document.getElementById('confBatch').innerText = `${minW} - ${maxW} từ`;
+            document.getElementById('confCount').innerText = countLabel;
+
+            // Populate List
+            const listEl = document.getElementById('confList');
+            listEl.innerHTML = selectedNames.map(n => `<div class="confirm-list-item">${n}</div>`).join('');
+
+            closeAllDrawers(); // Close sheet
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeConfirmModal()
+        {
+            document.getElementById('confirmModal').classList.remove('show');
+            appState.pendingTranslation = null;
+        }
+
+        async function confirmTranslation()
+        {
+            const p = appState.pendingTranslation;
+            if (!p) return;
+
+            const btn = document.getElementById('btnRealSubmit');
+            btn.innerText = "Đang gửi...";
+            btn.style.opacity = "0.7";
+
+            try
+            {
+                let payload = {
+                    model: p.model,
+                    minWords: p.minWords,
+                    maxWords: p.maxWords,
+                    retryTranslate: p.retryTranslate,
+                    mode: p.mode,
+                    currentChapterId: appState.activeChapterId
+                };
+
+                if (p.mode === 'batch_chapter')
+                {
+                    payload.bookId = p.activeBookId;
+                    payload.chapterId = p.ids;
+                } else
+                {
+                    payload.bookId = p.ids;
+                }
+
                 const result = await fetch(`${API_BASE}/stories/gemini-ai/translate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
-                    body: JSON.stringify({
-                        bookId: appState.book?.id,
-                        chapterId: appState.activeChapterId,
-                        retryTranslate: true
-                    })
-                }).then(res => {
-                    return res.json();
+                    body: JSON.stringify(payload)
                 });
 
-                if (result[appState.activeChapterId]?.chapter?.state !== 'SUCCEEDED') {
-                    showToast("Yêu cầu dịch lại đã thất bại.");
-                    return;
-                }
+                showToast("Đã gửi yêu cầu dịch thành công!");
 
-                setupReader(appState.activeChapterId, false);
-                showToast("Dịch lại chương thành công");
-            } catch (e) {
-                console.log(e);
-                showToast("Lỗi dịch chương");
+                // Refresh current chapter if it was in the batch
+                // if (p.mode === 'batch_chapter' && appState.activeChapterId && p.ids.includes(appState.activeChapterId))
+                // {
+                //     setTimeout(() => setupReader(appState.activeChapterId, false), 2000);
+                // }
+
+            } catch (e)
+            {
+                console.error(e);
+                showToast("Có lỗi khi gửi yêu cầu");
+            } finally
+            {
+                btn.innerText = "Đồng ý";
+                btn.style.opacity = "1";
+                closeConfirmModal();
             }
         }
 
-        function openReportSheet() {
-            const text = window.getSelection().toString().trim() ?? '';
-            // if (!text) return;
 
+        function openReportSheet()
+        {
+            const text = window.getSelection().toString().trim() ?? '';
             document.getElementById('originalText').value = text;
             document.getElementById('newText').value = text;
-
             document.getElementById('selectionTooltip').classList.add('hidden');
-
             openSheet('reportSheet');
         }
 
-        function selectErrorType(el, type) {
+        function selectErrorType(el, type)
+        {
             document.querySelectorAll('.chip-group .chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             appState.errorType = type;
         }
 
-        async function submitReport() {
+        async function submitReport()
+        {
             const o = document.getElementById('originalText').value;
             const n = document.getElementById('newText').value;
             const type = appState.errorType;
-
             const bid = appState.book?.id;
-            if (!bid) {
-                showToast("Không tìm thấy ID sách");
-                return;
-            }
 
+            if (!bid) { showToast("Không tìm thấy ID sách"); return; }
             const btn = document.querySelector('#reportSheet .btn-primary');
 
-            try {
+            try
+            {
                 btn.innerText = "Đang gửi...";
                 const result = await fetch(`${API_BASE}/api/book/update/${bid}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
-                    body: JSON.stringify({
-                        originalText: o,
-                        newText: n,
-                        chapterId: appState.activeChapterId,
-                        errorType: type
-                    })
+                    body: JSON.stringify({ originalText: o, newText: n, chapterId: appState.activeChapterId, errorType: type })
                 }).then(res => res.json());
                 showToast(result.message || "Báo cáo đã được gửi");
                 setupReader(appState.activeChapterId, false);
-            } catch (e) {
-                console.log(e);
-                showToast("Lỗi khi gửi báo cáo");
-            } finally {
+            } catch (e) { showToast("Lỗi khi gửi báo cáo"); }
+            finally
+            {
                 btn.innerText = "Gửi báo cáo";
                 closeAllDrawers();
                 window.getSelection().removeAllRanges();
@@ -1552,88 +2301,87 @@
         }
 
         /* --- DRAWER / SHEET LOGIC --- */
-        function toggleDrawer(name) {
-            if (name === 'menu') {
+        function toggleDrawer(name)
+        {
+            if (name === 'menu')
+            {
                 preloadMenu();
                 openSheet('menuDrawer');
-            } else if (name === 'history') {
+            } else if (name === 'history')
+            {
                 renderHistory();
                 openSheet('historyDrawer');
-            } else if (name === 'settings') {
+            } else if (name === 'settings')
+            {
                 openSheet('settingsSheet');
             }
         }
 
-        function openSheet(id) {
-            // Close any other open sheet first
-            document.querySelectorAll('.bottom-sheet.show, .side-drawer.show').forEach(el => {
+        function openSheet(id)
+        {
+            document.querySelectorAll('.bottom-sheet.show, .side-drawer.show').forEach(el =>
+            {
                 if (el.id !== id) el.classList.remove('show');
             });
-
             document.getElementById('sheetOverlay').classList.add('show');
             document.getElementById(id).classList.add('show');
         }
 
-        function closeAllDrawers() {
+        function closeAllDrawers()
+        {
             document.getElementById('sheetOverlay').classList.remove('show');
             document.querySelectorAll('.bottom-sheet, .side-drawer').forEach(el => el.classList.remove('show'));
         }
 
         /* --- SETTINGS & HELPERS --- */
-        function loadSettings() {
-            try {
+        function loadSettings()
+        {
+            try
+            {
                 const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
                 if (s) appState.settings = { ...appState.settings, ...s };
             } catch { }
             applySettings();
         }
 
-        function applySettings() {
+        function applySettings()
+        {
             const r = document.documentElement;
             r.style.setProperty('--reader-font-size', (appState.settings.fontSize / 16) + 'rem');
             r.style.setProperty('--reader-font-family', appState.settings.fontFamily);
+            r.style.setProperty('--reader-word-spacing', appState.settings.wordSpacing + 'px');
 
             document.getElementById('fontSizeDisplay').innerText = appState.settings.fontSize;
+            document.getElementById('wordSpacingDisplay').innerText = appState.settings.wordSpacing;
+            document.getElementById('sentenceCountDisplay').innerText = appState.settings.groupLines;
 
-            // Toggle Update
+
             const tog = document.getElementById('lazyToggleCircle');
             if (tog) tog.style.left = appState.settings.lazyLoad ? '22px' : '2px';
-
-            document.querySelectorAll('[data-font]').forEach(el => {
+            document.querySelectorAll('[data-font]').forEach(el =>
+            {
                 if (el.dataset.font === appState.settings.fontFamily) el.classList.add('active');
                 else el.classList.remove('active');
             });
         }
 
         function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appState.settings)); applySettings(); }
-
-        function changeFontSize(d) {
-            let s = appState.settings.fontSize + d;
-            if (s < 14) s = 14; if (s > 28) s = 28;
-            appState.settings.fontSize = s;
-            saveSettings();
-        }
-
-        function changeFont(el) {
-            appState.settings.fontFamily = el.dataset.font;
-            saveSettings();
-        }
-
-        function toggleLazyLoad(el) {
-            appState.settings.lazyLoad = !appState.settings.lazyLoad;
-            saveSettings();
-        }
+        function changeFontSize(d) { let s = appState.settings.fontSize + d; if (s < 14) s = 14; if (s > 28) s = 28; appState.settings.fontSize = s; saveSettings(); }
+        function changeWordSpacing(d) { let s = appState.settings.wordSpacing + d; if (s < 0) s = 0; if (s > 10) s = 10; appState.settings.wordSpacing = s; document.documentElement.style.setProperty('--reader-word-spacing', s + 'px'); saveSettings(); }
+        function changeSentenceCount(d) { let s = (appState.settings.groupLines ?? 1) + d; if (s < 1) s = 1; if (s > 10) s = 10; appState.settings.groupLines = s; saveSettings(); setupReader(appState.activeChapterId, false); }
+        function changeFont(el) { appState.settings.fontFamily = el.dataset.font; saveSettings(); }
+        function toggleLazyLoad(el) { appState.settings.lazyLoad = !appState.settings.lazyLoad; saveSettings(); }
 
         /* --- MENU & PAGINATION --- */
-        async function preloadMenu() {
+        async function preloadMenu()
+        {
             const el = document.getElementById('menuBody');
             if (!appState.book) return;
             if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
-
             el.innerHTML = '<div style="padding:2rem;text-align:center;color:#888;">Đang tải...</div>';
             const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=500`);
-
-            if (data) {
+            if (data)
+            {
                 el.setAttribute('data-bid', appState.book.id);
                 el.innerHTML = data.chapters.map(c =>
                     `<div class="drawer-item" id="menu-ch-${c.chapterId}" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
@@ -1645,17 +2393,16 @@
             highlightActiveChapter();
         }
 
-        function highlightActiveChapter() {
+        function highlightActiveChapter()
+        {
             if (!appState.activeChapterId) return;
             document.querySelectorAll('.drawer-item.active').forEach(e => e.classList.remove('active'));
             const el = document.getElementById(`menu-ch-${appState.activeChapterId}`);
-            if (el) {
-                el.classList.add('active');
-                setTimeout(() => el.scrollIntoView({ block: 'center' }), 300);
-            }
+            if (el) { el.classList.add('active'); setTimeout(() => el.scrollIntoView({ block: 'center' }), 300); }
         }
 
-        function renderHistory() {
+        function renderHistory()
+        {
             const el = document.getElementById('historyBody');
             const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             el.innerHTML = hist.length ? hist.map(h =>
@@ -1666,26 +2413,24 @@
             ).join('') : '<div style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</div>';
         }
 
-        function clearHistory() {
-            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc?')) {
+        function clearHistory()
+        {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc?'))
+            {
                 localStorage.removeItem(STORAGE_KEY);
                 renderHistory();
                 showToast('Đã xóa lịch sử');
             }
         }
 
-        function renderPager(id, pg, cb) {
+        function renderPager(id, pg, cb)
+        {
             const el = document.getElementById(id);
             if (!pg || pg.totalPages <= 1) { el.innerHTML = ''; return; }
-
             const c = pg.currentPage || 1;
-
-            // Create a unique global reference for this callback
             const cbName = `pager_cb_${id}`;
             window[cbName] = cb;
-
             const btnStyle = "width:36px; height:36px; border-radius:8px; background:#1e293b; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;";
-
             el.innerHTML = `
                 ${c > 1 ? `<div style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</div>` : ''}
                 <div style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
@@ -1693,25 +2438,21 @@
             `;
         }
 
-        function navManual(dir) {
-            if (dir === 'prev' && appState.prevChapterId) {
-                // Reload trang khi chuyển chương để reset DOM
-                fetchAndRenderChapter(appState.prevChapterId, false, true);
-            }
-            else if (dir === 'next' && appState.nextChapterId) {
+        function navManual(dir)
+        {
+            if (dir === 'prev' && appState.prevChapterId) fetchAndRenderChapter(appState.prevChapterId, false, true);
+            else if (dir === 'next' && appState.nextChapterId)
+            {
                 const el = document.getElementById(`chap-${appState.nextChapterId}`);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth' });
-                }
-                else {
-                    // Reload trang khi load chương mới để reset DOM
-                    fetchAndRenderChapter(appState.nextChapterId, false, true);
-                }
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else fetchAndRenderChapter(appState.nextChapterId, false, true);
             }
         }
 
-        async function api(path) {
-            try {
+        async function api(path)
+        {
+            try
+            {
                 let res = await fetch(API_BASE + path, { headers: { 'ngrok-skip-browser-warning': 'true' } });
                 if (!res.ok) throw new Error('Err');
                 return await res.json();
