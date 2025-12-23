@@ -2045,7 +2045,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p style="display:block; margin: 0.95rem 0">${t}</p>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="display:block; margin: 0.95rem 0">${t}</section>`).join('');
 
             let header = isInitial ?
                 `<section style="text-align:center; margin-bottom:1rem;">
