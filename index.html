@@ -2045,7 +2045,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section>${t}</section>`).join('</br>');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p style="display:block; margin: 0.95rem 0">${t}</p>`).join('');
 
             let header = isInitial ?
                 `<section style="text-align:center; margin-bottom:1rem;">
@@ -2053,7 +2053,7 @@
                  </section>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
+            div.innerHTML = header + `<section lang="vi" class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
