@@ -109,7 +109,7 @@
             color: white;
             font-size: 0.9rem;
             font-weight: 500;
-            z-index: 3000;
+            z-index: 10000;
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
@@ -2469,7 +2469,7 @@
                     }
 
 
-                    showToast("Dịch thành công!");
+                    showToast("Dịch thành công:  " + result[appState.activeChapterId]?.chapter?.totalTokens + " tokens");
                     closeAllDrawers();
                     setupReader(appState.activeChapterId, false); // Reload content
                 } catch (e)
