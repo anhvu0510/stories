@@ -26,6 +26,9 @@
             --accent: #ff4757;
             --accent-dark: #d63031;
             --accent-glow: rgba(255, 71, 87, 0.3);
+            
+            --warning: #f1c40f;
+            --warning-bg: rgba(241, 196, 15, 0.15);
 
             --header-h: 56px;
             --safe-area-bottom: env(safe-area-inset-bottom, 20px);
@@ -247,7 +250,7 @@
             align-items: center;
             gap: 1rem;
             background: var(--bg-surface);
-            padding: 1rem;
+            padding: 0.4rem;
             border-radius: 16px;
             margin-bottom: 1rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -297,8 +300,9 @@
             font-size: 0.8rem;
             color: var(--text-sub);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 8px;
+            flex-direction: column;
         }
 
         .tag {
@@ -328,6 +332,11 @@
             border-radius: 12px;
             margin-bottom: 8px;
         }
+        
+        .chapter-row.pending-row {
+            border-left: 3px solid var(--warning);
+            background: rgba(241, 196, 15, 0.05);
+        }
 
         .chapter-row:active {
             background: #25314d;
@@ -343,6 +352,124 @@
             font-size: 0.8rem;
             color: #64748b;
             margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .badge-pending {
+            font-size: 0.65rem;
+            color: var(--warning);
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            padding: 1px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        
+        .badge-pending-list {
+            font-size: 0.7rem;
+            color: var(--warning);
+            margin-left: auto;
+            font-style: italic;
+        }
+
+        /* --- REDESIGNED FILTER TOOLBAR (Mobile Optimized) --- */
+        .filter-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 16px 0 12px;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        /* Segmented Control (Tabs) */
+        .segmented-control {
+            display: flex;
+            background: #151e32;
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex: 1;
+            /* width: fit-content; */
+        }
+
+        .segment-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .segment-item.active {
+            background: var(--bg-input);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .segment-item.active.pending {
+            color: var(--warning);
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+        }
+
+        /* Sort Button Wrapper (Icon Button) */
+        .sort-btn-wrapper {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            background: #151e32;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-sub);
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .sort-btn-wrapper:active {
+            transform: scale(0.92);
+            background: var(--bg-input);
+            color: var(--accent);
+        }
+
+        /* Hide the native select but keep functionality */
+        .sort-select {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* Batch Action Bar */
+        .batch-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid var(--warning);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            color: #f1c40f;
+            animation: fadeIn 0.3s;
         }
 
         /* --- READER VIEW --- */
@@ -672,6 +799,22 @@
         .btn-primary:active {
             transform: scale(0.98);
         }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: #443200;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+        
+        .btn-warning:active {
+            transform: scale(0.95);
+        }
 
         .btn-outline {
             background: transparent;
@@ -839,6 +982,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             color: #e2e8f0;
+            flex: 1;
         }
 
         /* Tabs */
@@ -1008,6 +1152,11 @@
             align-items: center;
             flex-direction: column;
         }
+        
+        .active-filter {
+            background: rgba(241, 196, 15, 0.2) !important;
+            font-weight: 700 !important;
+        }
     </style>
 </head>
 
@@ -1025,6 +1174,7 @@
     <header class="header" id="mainHeader" aria-hidden="true">
         <div class="header-inner">
             <div style="display:flex; align-items:center; gap:0.5rem; flex:1; min-width:0;">
+                
                 <button class="icon-btn hidden" id="backBtn" onclick="handleBack()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1042,6 +1192,27 @@
                 </div>
             </div>
 
+            <button class="dock-btn" onclick="handleTranslate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" width="20" height="20">
+                <!-- left stylized 'A' card -->
+                <rect x="2" y="3.5" width="8" height="13" rx="1" />
+                <path d="M4.2 11h3" />
+                <path d="M3.2 14.2L5.2 8.6L7.2 14.2" />
+
+                <!-- right '文'-like card -->
+                <rect x="14" y="3.5" width="8" height="13" rx="1" />
+                <path d="M16.5 8.5h4" />
+                <path d="M16.5 11.5h4" />
+                <path d="M16.5 14.5h4" />
+
+                <!-- two small curved arrows between them -->
+                <path d="M11 9.5c0.8-1 2-1.7 3.3-1.9" />
+                <polyline points="14.8 7.3 15.6 6 13.6 6.4" />
+                <path d="M13.5 16.5c-0.9 1-2.1 1.7-3.4 1.9" />
+                <polyline points="9.8 18.7 9 20 11 19.6" />
+            </svg>
+        </button>
             <!-- Header Actions: History & Settings (moved up) -->
             <div class="header-actions">
                 <button class="icon-btn small hidden" id="headerSettingsBtn" onclick="toggleDrawer('settings')">
@@ -1079,13 +1250,44 @@
 
         <!-- CHAPTERS LIST -->
         <div id="screen-chapters" class="container hidden">
+            
             <div class="pagination" id="chapterPagination"
                 style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
+            
             <div
                 style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
                 Danh sách chương</div>
+
+            <!-- REDESIGNED FILTER TOOLBAR -->
+            <div class="filter-toolbar">
+                <!-- Segmented Control for State -->
+                <div class="segmented-control">
+                    <div id="seg-all" class="segment-item active" onclick="setFilterState('all')">Tất cả</div>
+                    <div id="seg-pending" class="segment-item" onclick="setFilterState('pending')">Chưa dịch</div>
+                </div>
+
+                <!-- Styled Sort Button -->
+                <div class="sort-btn-wrapper">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18M7 12h10M10 18h4"/>
+                    </svg>
+                    <select id="sortOption" class="sort-select" onchange="applyFilters()">
+                        <option value="num_asc">Chương: Thấp → Cao</option>
+                        <option value="num_desc">Chương: Cao → Thấp</option>
+                        <option value="time_new">Ngày: Mới nhất</option>
+                        <option value="time_old">Ngày: Cũ nhất</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- BATCH ACTION (Appears only when Pending is filtered) -->
+            <div id="batchActionBar" class="batch-action-bar hidden">
+                <span style="font-size: 0.9rem; font-weight: 600;">Danh sách chưa dịch</span>
+                <button class="btn-xs" onclick="handleManagePending()" style="background: var(--warning); color: #443200; border: none; font-weight: 700; padding: 8px 16px;">Dịch nhanh</button>
+            </div>
+
             <div id="chapterList" class="chapter-list"></div>
-            <div class="pagination" id="chapterPagination"
+            <div class="pagination" id="chapterPagination2"
                 style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
         </div>
 
@@ -1220,28 +1422,36 @@
             <!-- Tab Content: Batch Chapter -->
             <div id="tabContentBatchChapter" class="hidden">
                 <div class="form-group">
-                    <label class="form-label">Chọn chương (Truyện hiện tại)</label>
+                    <label class="form-label">Cấu hình tải danh sách</label>
+                    <div style="display:flex; gap:10px; margin-bottom:16px;">
+                        <select id="batchLoadMode" class="form-select" style="margin-bottom:0; flex:1;" onchange="loadBatchChapters()">
+                            <option value="all">Tất cả chương</option>
+                            <option value="pending">Chương chưa dịch</option>
+                        </select>
+                        <input type="number" id="batchLoadLimit" class="report-input" value="50" placeholder="Limit" style="margin-bottom:0; width: 80px;" onchange="loadBatchChapters()">
+                    </div>
 
-                    <!-- Fast Select Buttons -->
-                    <div style="display:flex; gap:8px; margin-bottom:12px;">
-                        <button class="btn-xs" onclick="fastSelectChapters('all')">Chọn tất cả</button>
-                        <button class="btn-xs" onclick="fastSelectChapters('none')">Bỏ chọn</button>
-                        <button class="btn-xs" onclick="fastSelectChapters('range')">Phạm vi</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label class="form-label" style="margin-bottom:0">Danh sách chương</label>
+                        <div style="display:flex; gap:8px;">
+                            <span class="tag" onclick="toggleBatchSelection(true)" style="cursor:pointer;">Tất cả</span>
+                            <span class="tag" onclick="selectBatchRange()" style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#2ecc71;">Phạm vi</span>
+                            <span class="tag" onclick="toggleBatchSelection(false)" style="background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer;">Bỏ</span>
+                        </div>
                     </div>
 
                     <div class="book-select-container">
                         <input type="text" class="book-search-input" id="transChapterSearch"
-                            placeholder="Tìm tên chương..." oninput="filterTranslationChapters(this.value)">
+                            placeholder="Lọc trong danh sách đã tải..." oninput="filterTranslationChapters(this.value)">
                         <div class="book-checkbox-list" id="transChapterList">
-                            <!-- Populated by JS -->
-                            <div style="padding:10px;color:#888;">Đang tải danh sách chương...</div>
+                            <div style="padding:10px;color:#888;text-align:center;">Hãy chọn chế độ và tải danh sách</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Tab Content: Story -->
-            <div id="tabContentStory" class="hidden">
+            <div aria-hidden="true" id="tabContentStory" class="hidden">
                 <div class="form-group">
                     <label class="form-label">Chọn truyện cần dịch</label>
                     <div class="book-select-container">
@@ -1256,7 +1466,7 @@
             </div>
 
             <!-- Word Limits -->
-            <div class="form-group flex-row">
+            <div aria-hidden="true" class="form-group flex-row">
                 <div style="flex:1">
                     <label class="form-label">Min Words</label>
                     <input type="number" id="transMinWords" class="report-input" value="100" style="margin-bottom:0">
@@ -1268,25 +1478,25 @@
             </div>
 
             <!-- Toggle Scope -->
-            <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
-                <label class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành công)</label>
+            <div aria-hidden="true" class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
+                <label aria-hidden="true" class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành công)</label>
                 <label class="toggle-switch">
                     <input type="checkbox" id="transScopeToggle">
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size:0.8rem; color:#64748b; margin-top:-10px; margin-bottom:20px;">
+            <div aria-hidden="true" style="font-size:0.8rem; color:#64748b; margin-top:-10px; margin-bottom:20px;">
                 Tắt: Chỉ dịch phần thất bại • Bật: Dịch lại toàn bộ
             </div>
 
             <!-- Actions -->
-            <button class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt đầu dịch</button>
+            <button aria-hidden="true" class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt đầu dịch</button>
             <div style="height:20px"></div>
         </div>
     </div>
 
     <!-- CONFIRM MODAL (NEW) -->
-    <div class="modal-overlay" id="confirmModal">
+    <div class="modal-overlay" id="confirmModal" aria-hidden="true">
         <div class="confirm-card">
             <div class="confirm-title">Xác nhận dịch</div>
             <div style="border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:15px; padding-bottom:5px;">
@@ -1324,15 +1534,15 @@
         </div>
         <div class="sheet-body report-form">
             <label>Nội dung gốc</label>
-            <input type="text" class="report-input" id="originalText">
+            <input type="text" class="report-input" id="originalText" placeholder="Nhập nội dung cần sửa...">
 
-            <label>Loại lỗi</label>
+            <!-- <label>Loại lỗi</label>
             <div class="chip-group">
                 <div class="chip active" onclick="selectErrorType(this, 'spelling')">Sai chính tả</div>
                 <div class="chip" onclick="selectErrorType(this, 'translation')">Dịch sai</div>
                 <div class="chip" onclick="selectErrorType(this, 'name')">Sai tên</div>
                 <div class="chip" onclick="selectErrorType(this, 'other')">Khác</div>
-            </div>
+            </div> -->
 
             <label>Đề xuất sửa đổi</label>
             <input type="text" class="report-input" id="newText" placeholder="Nhập nội dung đúng...">
@@ -1475,7 +1685,11 @@
             allBooksCache: null,
             currentBookChaptersCache: null,
             activeTranslateTab: 'current', // 'current' | 'batch_chapter' | 'story'
-            pendingTranslation: null
+            pendingTranslation: null,
+            pendingChaptersList: [], // Store pending chapters IDs
+            currentChapterList: [], // Store all chapters of current page (original order)
+            filterState: 'all', // NEW: Store filter state
+            sortOption: 'num_asc' // NEW: Store sort option
         };
         let observer;
 
@@ -1655,8 +1869,8 @@
                     <div class="book-info">
                         <div class="book-title">${b.bookName}</div>
                         <div class="book-meta">
-                            <span class="tag">${b.chapterCount || 0} chương</span>
-                            <span>${b.createdAt || 'Đang cập nhật'}</span>
+                            <span class="tag"> Tổng: ${b.chapterCount || 0} - Đã dịch: ${b.totalTranslated || 0} - Chưa dịch: ${b.totalPending || 0}</span>
+                            <span style="padding: 0px 4px">   ${b.createdAt || 'Đang cập nhật'}  </span> 
                         </div>
                     </div>
                 </div>
@@ -1681,24 +1895,105 @@
             if (updateHistory) pushState('chapters', { bookId: bid, bookName: bname });
 
             const el = document.getElementById('chapterList');
+            const batchBar = document.getElementById('batchActionBar');
+            const segAll = document.getElementById('seg-all');
+            const segPending = document.getElementById('seg-pending');
+            
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
+            
             const pageNum = parseInt(page) || 1;
+            
+            // Build Query Params for Server-Side Filtering & Sorting
+            let sortBy = 'chapterNumber';
+            let sortOrder = 'ASC';
+            
+            if (appState.sortOption === 'num_desc') sortOrder = 'DESC';
+            else if (appState.sortOption === 'time_new') { sortBy = 'updatedAt'; sortOrder = 'DESC'; }
+            else if (appState.sortOption === 'time_old') { sortBy = 'updatedAt'; sortOrder = 'ASC'; }
+            
+            let filterParam = '';
+            
+            // Update UI State for Filter
+            if (appState.filterState === 'pending') {
+                filterParam = '&state=PENDING';
+                batchBar.classList.remove('hidden');
+                segPending.classList.add('active', 'pending');
+                segAll.classList.remove('active');
+            } else {
+                batchBar.classList.add('hidden');
+                segAll.classList.add('active');
+                segPending.classList.remove('active', 'pending');
+            }
 
-            const data = await api(`/api/books/${bid}/chapters?page=${pageNum}&limit=500`);
+            const limit = 50; // Reduce limit for faster loading since we use server pagination
+            const url = `/api/books/${bid}/chapters?page=${pageNum}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}${filterParam}`;
+            
+            const data = await api(url);
+            
             if (!data || !data.chapters.length)
             {
-                el.innerHTML = '<div style="padding:2rem; text-align:center;">Chưa có chương nào.</div>';
+                el.innerHTML = '<div style="padding:2rem; text-align:center;">Không tìm thấy chương nào.</div>';
+                // Reset pagination if empty
+                renderPager('chapterPagination', { totalPages: 0, currentPage: 1 }, null);
+                renderPager('chapterPagination2', { totalPages: 0, currentPage: 1 }, null);
                 return;
             }
             if (data.pagination) data.pagination.currentPage = pageNum;
 
-            el.innerHTML = data.chapters.map(c => `
-                <div class="chapter-row" onclick="setupReader('${c.chapterId}')">
-                    <div><div class="ch-title">${c.title}</div><div class="ch-sub">Chương ${c.chapterNumber}</div></div>
+            appState.currentChapterList = data.chapters;
+            
+            // Render directly
+            el.innerHTML = data.chapters.map(c => renderChapterRow(c)).join('');
+            
+            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
+            renderPager('chapterPagination2', data.pagination, (p) => fetchChapters(bid, bname, p, false));
+        }
+        
+        // --- Filtering & Sorting Logic (Triggered by UI) ---
+        function applyFilters() {
+            // Read Sort Option from Select
+            appState.sortOption = document.getElementById('sortOption').value;
+            
+            // Reload Chapters
+            if (appState.book && appState.book.id) {
+                fetchChapters(appState.book.id, appState.book.name, 1, false);
+            }
+        }
+
+        // New function to switch filter state from Segmented Control
+        function setFilterState(state) {
+            if (appState.filterState === state) return; // No change
+            appState.filterState = state;
+            applyFilters();
+        }
+
+        // --- Render Row Helper ---
+        function renderChapterRow(c) {
+            const isPending = c.state === 'PENDING';
+            return `
+                <div class="chapter-row ${isPending ? 'pending-row' : ''}" onclick="setupReader('${c.chapterId}')">
+                    <div>
+                        <div class="ch-title">${c.title}</div>
+                        <div class="ch-sub">
+                            <span>Chương ${c.chapterNumber}</span>
+                            ${isPending ? '<span class="badge-pending">CHỜ DỊCH</span>' : ''}
+                        </div>
+                    </div>
                     <div style="color:var(--accent); font-weight:bold;">›</div>
                 </div>
-            `).join('');
-            renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
+            `;
+        }
+        
+        // --- Handle Manage Pending Click ---
+        async function handleManagePending() {
+            document.getElementById('batchLoadMode').value = 'pending';
+            // 1. Open Translation Sheet
+            openSheet('translationSheet');
+            
+            // 2. Switch to Batch Chapter Tab
+            switchTransTab('batch_chapter');
+            
+            // 3. No need to load anything initially, user will choose
         }
 
         async function setupReader(cid, updateHistory = true)
@@ -1750,15 +2045,15 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="padding: 0.5rem 0; display: inline-block;">${t}</section>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section>${t}</br></section>`).join('');
 
             let header = isInitial ?
-                `<div style="text-align:center; margin-bottom:1rem;">
+                `<section style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
-                 </div>` :
+                 </section>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<div class="reader-text">${content}</div>`;
+            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -1881,9 +2176,10 @@
 
         function handleReportClick()
         {
+            
             const sel = window.getSelection();
             if (sel.rangeCount > 0 && !sel.isCollapsed) openReportSheet();
-            else showToast('Vui lòng bôi đen văn bản cần sửa!');
+            else openReportSheet();
         }
 
         /* --- TRANSLATION LOGIC (UPDATED) --- */
@@ -1917,8 +2213,10 @@
 
             if (tab === 'batch_chapter')
             {
-                if (appState.book?.id) loadTranslationChapters();
-                else document.getElementById('transChapterList').innerHTML = '<div style="padding:10px;color:#d63031;">Chưa mở truyện</div>';
+                // Auto load if empty or if book changed
+                if (!appState.currentBookChaptersCache || appState.currentBookChaptersCache.bid !== appState.book.id) {
+                     loadBatchChapters();
+                }
             }
             else if (tab === 'story')
             {
@@ -1979,10 +2277,10 @@
         // New functions for Chapters Tab
         async function loadTranslationChapters()
         {
+            // Only used if needed, currently batch loading is manual
             const listEl = document.getElementById('transChapterList');
             const bid = appState.book.id;
 
-            // Simple cache reset if book changes
             if (appState.currentBookChaptersCache && appState.currentBookChaptersCache.bid !== bid)
             {
                 appState.currentBookChaptersCache = null;
@@ -2016,12 +2314,20 @@
                 return;
             }
 
-            listEl.innerHTML = chapters.map(c => `
+            listEl.innerHTML = chapters.map(c => {
+                const isPending = c.state === 'PENDING';
+                return `
                 <label class="book-checkbox-item">
-                    <input type="checkbox" value="${c.chapterId}" data-name="Chương ${c.chapterNumber}" ${c.chapterId === activeCid ? 'checked' : ''} name="transChapters" data-idx="${c.chapterNumber}">
+                    <input type="checkbox" value="${c.chapterId}" 
+                           data-name="Chương ${c.chapterNumber}" 
+                           ${c.chapterId === activeCid ? 'checked' : ''} 
+                           name="transChapters" 
+                           data-idx="${c.chapterNumber}"
+                           data-state="${c.state || 'SUCCEEDED'}">
                     <span class="book-checkbox-name" title="${c.title}">Chương ${c.chapterNumber}: ${c.title}</span>
+                    ${isPending ? '<span class="badge-pending-list">Pending</span>' : ''}
                 </label>
-            `).join('');
+            `}).join('');
         }
 
         function filterTranslationChapters(query)
@@ -2034,30 +2340,64 @@
             renderTranslationChapters(filtered);
         }
 
-        // --- FAST SELECT LOGIC ---
-        function fastSelectChapters(action)
-        {
-            const checkboxes = document.querySelectorAll('input[name="transChapters"]');
-            if (!checkboxes.length) return;
+        // --- BATCH LOAD LOGIC (NEW) ---
+        async function loadBatchChapters() {
+            const listEl = document.getElementById('transChapterList');
+            const bid = appState.book?.id;
+            if (!bid) { showToast("Vui lòng mở một truyện trước."); return; }
 
-            if (action === 'all')
-            {
-                checkboxes.forEach(cb => cb.checked = true);
-            } else if (action === 'none')
-            {
-                checkboxes.forEach(cb => cb.checked = false);
-            } else if (action === 'range')
-            {
-                const start = parseInt(prompt("Nhập số chương bắt đầu:", "1"));
-                const end = parseInt(prompt("Nhập số chương kết thúc:", "100"));
-                if (!isNaN(start) && !isNaN(end) && start <= end)
-                {
-                    checkboxes.forEach(cb =>
-                    {
-                        const idx = parseInt(cb.getAttribute('data-idx'));
-                        if (idx >= start && idx <= end) cb.checked = true;
-                    });
+            const mode = document.getElementById('batchLoadMode').value;
+            const limit = document.getElementById('batchLoadLimit').value || 50;
+
+            listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Đang tải dữ liệu...</div>';
+
+            let url = `/api/books/${bid}/chapters?limit=${limit}`;
+            if (mode === 'pending') {
+                url += '&state=PENDING';
+            } else {
+                // For 'all', sort by chapter number ascending by default
+                url += '&sortBy=chapterNumber&sortOrder=ASC'; 
+            }
+
+            try {
+                const data = await api(url);
+                if (data && data.chapters) {
+                    appState.currentBookChaptersCache = { bid: bid, chapters: data.chapters };
+                    renderTranslationChapters(data.chapters);
+                    if (data.chapters.length === 0) {
+                        listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Không tìm thấy chương nào phù hợp.</div>';
+                    } else {
+                        // Auto-select helps user
+                        toggleBatchSelection(true);
+                    }
+                } else {
+                    listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi tải dữ liệu.</div>';
                 }
+            } catch (e) {
+                listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi kết nối.</div>';
+            }
+        }
+
+        function toggleBatchSelection(state) {
+            const checkboxes = document.querySelectorAll('#transChapterList input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = state);
+        }
+        
+        function selectBatchRange() {
+            const start = parseInt(prompt("Từ chương số:", "1"));
+            const end = parseInt(prompt("Đến chương số:", ""));
+            
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+                const checkboxes = document.querySelectorAll('#transChapterList input[type="checkbox"]');
+                let count = 0;
+                checkboxes.forEach(cb => {
+                    const idx = parseInt(cb.getAttribute('data-idx'));
+                    if (idx >= start && idx <= end) {
+                        cb.checked = true;
+                        count++;
+                    }
+                });
+                showToast(`Đã chọn ${count} chương`);
             }
         }
 
