@@ -1475,6 +1475,11 @@
                     <label class="form-label">Max Words</label>
                     <input type="number" id="transMaxWords" class="report-input" value="500" style="margin-bottom:0">
                 </div>
+
+                <div style="flex:1">
+                    <label class="form-label">Temperature</label>
+                    <input type="number" id="transTemperature" class="report-input" value="0" step="0.01" min="0" max="1" style="margin-bottom:0">
+                </div>
             </div>
 
             <!-- Toggle Scope -->
@@ -2412,6 +2417,7 @@
                     if (opts.model) document.getElementById('aiModelSelect').value = opts.model;
                     if (opts.minWords) document.getElementById('transMinWords').value = opts.minWords;
                     if (opts.maxWords) document.getElementById('transMaxWords').value = opts.maxWords;
+                    if (opts.temperature) document.getElementById('transTemperature').value = opts.temperature;
                     if (opts.scope !== undefined) document.getElementById('transScopeToggle').checked = opts.scope;
                 }
             } catch (e) { console.error('Load opts error', e); }
@@ -2423,6 +2429,7 @@
                 model: document.getElementById('aiModelSelect').value,
                 minWords: document.getElementById('transMinWords').value,
                 maxWords: document.getElementById('transMaxWords').value,
+                temperature: document.getElementById('transTemperature').value,
                 scope: document.getElementById('transScopeToggle').checked
             };
             localStorage.setItem(TRANS_OPTIONS_KEY, JSON.stringify(opts));
@@ -2436,6 +2443,7 @@
             const model = document.getElementById('aiModelSelect').value;
             const minW = parseInt(document.getElementById('transMinWords').value) || 100;
             const maxW = parseInt(document.getElementById('transMaxWords').value) || 500;
+            const temperature = parseFloat(document.getElementById('transTemperature').value) || 0;
             const isFullScope = document.getElementById('transScopeToggle').checked;
             const mode = appState.activeTranslateTab;
 
@@ -2452,6 +2460,7 @@
                 try
                 {
                     const payload = {
+                        temperature,
                         model, minWords: minW, maxWords: maxW, retryTranslate: isFullScope,
                         mode: 'current',
                         bookId: appState.book.id,
@@ -2522,7 +2531,8 @@
                 retryTranslate: isFullScope,
                 ids: selectedIds,
                 names: selectedNames, // For display only
-                activeBookId: appState.book?.id
+                activeBookId: appState.book?.id,
+                temperature: temperature
             };
 
             // Show Confirmation
@@ -2731,9 +2741,9 @@
             {
                 el.setAttribute('data-bid', appState.book.id);
                 el.innerHTML = data.chapters.map(c =>
-                    `<div class="drawer-item" id="menu-ch-${c.chapterId}" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
-                        <div style="font-weight:600; font-size:0.9rem;">Chương ${c.chapterNumber}</div>
-                        <div style="font-size:0.85rem; color:#888;">${c.title}</div>
+                    `<div class="drawer-item" id="menu-ch-${c.chapterId}" aria-hidden="true" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
+                        <div aria-hidden="true" style="font-weight:600; font-size:0.9rem;">Chương ${c.chapterNumber}</div>
+                        <div aria-hidden="true" style="font-size:0.85rem; color:#888;">${c.title}</div>
                     </div>`
                 ).join('');
             }
@@ -2753,9 +2763,9 @@
             const el = document.getElementById('historyBody');
             const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             el.innerHTML = hist.length ? hist.map(h =>
-                `<div class="drawer-item" onclick="closeAllDrawers(); appState.book={id:'${h.bid}',name:'${h.bname}'}; setupReader('${h.cid}')">
-                    <div style="font-weight:700; font-size:0.9rem; color:white;">${h.bname}</div>
-                    <div style="font-size:0.85rem; color:var(--accent);">Đọc tiếp Chương ${h.cnum}</div>
+                `<div class="drawer-item" aria-hidden="true" onclick="closeAllDrawers(); appState.book={id:'${h.bid}',name:'${h.bname}'}; setupReader('${h.cid}')">
+                    <div aria-hidden="true" style="font-weight:700; font-size:0.9rem; color:white;">${h.bname}</div>
+                    <div aria-hidden="true" style="font-size:0.85rem; color:var(--accent);">Đọc tiếp Chương ${h.cnum}</div>
                 </div>`
             ).join('') : '<div style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</div>';
         }
@@ -2779,9 +2789,9 @@
             window[cbName] = cb;
             const btnStyle = "width:36px; height:36px; border-radius:8px; background:#1e293b; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;";
             el.innerHTML = `
-                ${c > 1 ? `<div style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</div>` : ''}
-                <div style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
-                ${c < pg.totalPages ? `<div style="${btnStyle}" onclick="window['${cbName}'](${c + 1})">→</div>` : ''}
+                ${c > 1 ? `<div aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</div>` : ''}
+                <div aria-hidden="true" style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
+                ${c < pg.totalPages ? `<div aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c + 1})">→</div>` : ''}
             `;
         }
 
