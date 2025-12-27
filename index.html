@@ -26,7 +26,7 @@
             --accent: #ff4757;
             --accent-dark: #d63031;
             --accent-glow: rgba(255, 71, 87, 0.3);
-            
+
             --warning: #f1c40f;
             --warning-bg: rgba(241, 196, 15, 0.15);
 
@@ -332,7 +332,7 @@
             border-radius: 12px;
             margin-bottom: 8px;
         }
-        
+
         .chapter-row.pending-row {
             border-left: 3px solid var(--warning);
             background: rgba(241, 196, 15, 0.05);
@@ -356,7 +356,7 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .badge-pending {
             font-size: 0.65rem;
             color: var(--warning);
@@ -367,7 +367,7 @@
             text-transform: uppercase;
             font-weight: 700;
         }
-        
+
         .badge-pending-list {
             font-size: 0.7rem;
             color: var(--warning);
@@ -415,7 +415,7 @@
         .segment-item.active {
             background: var(--accent);
             color: var(--text-main);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .segment-item.active.pending {
@@ -679,10 +679,10 @@
             border-radius: 24px 24px 0 0;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 5101;
+            z-index: 5501;
             display: flex;
             flex-direction: column;
-            max-height: 90vh;
+            max-height: 85vh;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
             padding-bottom: var(--safe-area-bottom);
@@ -701,6 +701,7 @@
         }
 
         .sheet-title {
+            flex: 1;
             font-weight: 700;
             font-size: 1.1rem;
         }
@@ -709,6 +710,7 @@
             font-size: 1.5rem;
             color: var(--text-sub);
             padding: 5px;
+            margin-left: 20px;
             cursor: pointer;
         }
 
@@ -799,7 +801,7 @@
         .btn-primary:active {
             transform: scale(0.98);
         }
-        
+
         .btn-warning {
             background: var(--warning);
             color: #443200;
@@ -811,7 +813,7 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
         }
-        
+
         .btn-warning:active {
             transform: scale(0.95);
         }
@@ -913,8 +915,8 @@
 
         /* --- EDIT WORD SHEET STYLES --- */
         .word-list-container {
-            max-height: 380px;
-            min-height: 380px;
+            max-height: 200px;
+            min-height: 200px;
             overflow-y: auto;
             margin-bottom: 16px;
             border: 1px solid #2e3a52;
@@ -926,7 +928,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
+            padding: 12px;
             border-bottom: 1px solid #2e3a52;
         }
 
@@ -938,11 +940,14 @@
             flex: 1;
             font-size: 0.9rem;
             margin-left: 20px;
+            display: flex;
+            text-align: center;
         }
 
         .word-orig {
             color: #e2e8f0;
             font-weight: 600;
+            width: 50%;
         }
 
         .word-arrow {
@@ -952,6 +957,7 @@
 
         .word-replace {
             color: var(--accent);
+            width: 50%;
         }
 
         .word-actions {
@@ -976,8 +982,7 @@
         }
 
 
-        * --- TRANSLATION SHEET STYLES --- */
-        .form-group {
+        * --- TRANSLATION SHEET STYLES --- */ .form-group {
             /* margin: 150px 0px; */
         }
 
@@ -1217,19 +1222,25 @@
             align-items: center;
             flex-direction: column;
         }
-        
+
         .active-filter {
             background: rgba(241, 196, 15, 0.2) !important;
             font-weight: 700 !important;
         }
 
         .form-group-header {
-            display: flex;
+            /* display: flex; */
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 8px;
         }
 
+        .form-label-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 
@@ -1247,7 +1258,7 @@
     <header class="header" id="mainHeader" aria-hidden="true">
         <div class="header-inner">
             <div style="display:flex; align-items:center; gap:0.5rem; flex:1; min-width:0;">
-                
+
                 <button class="icon-btn hidden" id="backBtn" onclick="handleBack()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1266,26 +1277,26 @@
             </div>
 
             <button class="dock-btn" onclick="handleTranslate()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                stroke-linejoin="round" width="20" height="20">
-                <!-- left stylized 'A' card -->
-                <rect x="2" y="3.5" width="8" height="13" rx="1" />
-                <path d="M4.2 11h3" />
-                <path d="M3.2 14.2L5.2 8.6L7.2 14.2" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" width="20" height="20">
+                    <!-- left stylized 'A' card -->
+                    <rect x="2" y="3.5" width="8" height="13" rx="1" />
+                    <path d="M4.2 11h3" />
+                    <path d="M3.2 14.2L5.2 8.6L7.2 14.2" />
 
-                <!-- right '文'-like card -->
-                <rect x="14" y="3.5" width="8" height="13" rx="1" />
-                <path d="M16.5 8.5h4" />
-                <path d="M16.5 11.5h4" />
-                <path d="M16.5 14.5h4" />
+                    <!-- right '文'-like card -->
+                    <rect x="14" y="3.5" width="8" height="13" rx="1" />
+                    <path d="M16.5 8.5h4" />
+                    <path d="M16.5 11.5h4" />
+                    <path d="M16.5 14.5h4" />
 
-                <!-- two small curved arrows between them -->
-                <path d="M11 9.5c0.8-1 2-1.7 3.3-1.9" />
-                <polyline points="14.8 7.3 15.6 6 13.6 6.4" />
-                <path d="M13.5 16.5c-0.9 1-2.1 1.7-3.4 1.9" />
-                <polyline points="9.8 18.7 9 20 11 19.6" />
-            </svg>
-        </button>
+                    <!-- two small curved arrows between them -->
+                    <path d="M11 9.5c0.8-1 2-1.7 3.3-1.9" />
+                    <polyline points="14.8 7.3 15.6 6 13.6 6.4" />
+                    <path d="M13.5 16.5c-0.9 1-2.1 1.7-3.4 1.9" />
+                    <polyline points="9.8 18.7 9 20 11 19.6" />
+                </svg>
+            </button>
             <!-- Header Actions: History & Settings (moved up) -->
             <div class="header-actions">
                 <button class="icon-btn small hidden" id="headerSettingsBtn" onclick="toggleDrawer('settings')">
@@ -1323,10 +1334,10 @@
 
         <!-- CHAPTERS LIST -->
         <div id="screen-chapters" class="container hidden">
-            
+
             <div class="pagination" id="chapterPagination"
                 style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
-            
+
             <div
                 style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
                 Danh sách chương</div>
@@ -1341,8 +1352,9 @@
 
                 <!-- Styled Sort Button -->
                 <div class="sort-btn-wrapper">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18M7 12h10M10 18h4"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18M7 12h10M10 18h4" />
                     </svg>
                     <select id="sortOption" class="sort-select" onchange="applyFilters()">
                         <option value="num_asc">Chương: Thấp → Cao</option>
@@ -1356,7 +1368,9 @@
             <!-- BATCH ACTION (Appears only when Pending is filtered) -->
             <div id="batchActionBar" class="batch-action-bar hidden">
                 <span style="font-size: 0.9rem; font-weight: 600;">Danh sách chưa dịch</span>
-                <button class="btn-xs" onclick="handleManagePending()" style="background: var(--warning); color: #443200; border: none; font-weight: 700; padding: 8px 16px;">Dịch nhanh</button>
+                <button class="btn-xs" onclick="handleManagePending()"
+                    style="background: var(--warning); color: #443200; border: none; font-weight: 700; padding: 8px 16px;">Dịch
+                    nhanh</button>
             </div>
 
             <div id="chapterList" class="chapter-list"></div>
@@ -1497,19 +1511,24 @@
                 <div class="form-group">
                     <label class="form-label">Cấu hình tải danh sách</label>
                     <div style="display:flex; gap:10px; margin-bottom:16px;">
-                        <select id="batchLoadMode" class="form-select" style="margin-bottom:0; flex:1;" onchange="loadBatchChapters()">
+                        <select id="batchLoadMode" class="form-select" style="margin-bottom:0; flex:1;"
+                            onchange="loadBatchChapters()">
                             <option value="all">Tất cả chương</option>
                             <option value="pending">Chương chưa dịch</option>
                         </select>
-                        <input type="number" id="batchLoadLimit" class="report-input" value="50" placeholder="Limit" style="margin-bottom:0; width: 80px;" onchange="loadBatchChapters()">
+                        <input type="number" id="batchLoadLimit" class="report-input" value="50" placeholder="Limit"
+                            style="margin-bottom:0; width: 80px;" onchange="loadBatchChapters()">
                     </div>
 
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <label class="form-label" style="margin-bottom:0">Danh sách chương</label>
                         <div style="display:flex; gap:8px;">
                             <span class="tag" onclick="toggleBatchSelection(true)" style="cursor:pointer;">Tất cả</span>
-                            <span class="tag" onclick="selectBatchRange()" style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#2ecc71;">Phạm vi</span>
-                            <span class="tag" onclick="toggleBatchSelection(false)" style="background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer;">Bỏ</span>
+                            <span class="tag" onclick="selectBatchRange()"
+                                style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#2ecc71;">Phạm
+                                vi</span>
+                            <span class="tag" onclick="toggleBatchSelection(false)"
+                                style="background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer;">Bỏ</span>
                         </div>
                     </div>
 
@@ -1517,7 +1536,8 @@
                         <input type="text" class="book-search-input" id="transChapterSearch"
                             placeholder="Lọc trong danh sách đã tải..." oninput="filterTranslationChapters(this.value)">
                         <div class="book-checkbox-list" id="transChapterList">
-                            <div style="padding:10px;color:#888;text-align:center;">Hãy chọn chế độ và tải danh sách</div>
+                            <div style="padding:10px;color:#888;text-align:center;">Hãy chọn chế độ và tải danh sách
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1551,13 +1571,16 @@
 
                 <div style="flex:1">
                     <label class="form-label">Temperature</label>
-                    <input type="number" id="transTemperature" class="report-input" value="0" step="0.01" min="0" max="1" style="margin-bottom:0">
+                    <input type="number" id="transTemperature" class="report-input" value="0" step="0.01" min="0"
+                        max="1" style="margin-bottom:0">
                 </div>
             </div>
 
             <!-- Toggle Scope -->
-            <div aria-hidden="true" class="form-group" style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0px;">
-                <label aria-hidden="true" class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành công)</label>
+            <div aria-hidden="true" class="form-group"
+                style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0px;">
+                <label aria-hidden="true" class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành
+                    công)</label>
                 <label class="toggle-switch">
                     <input type="checkbox" id="transScopeToggle">
                     <span class="toggle-slider"></span>
@@ -1568,7 +1591,8 @@
             </div>
 
             <!-- Actions -->
-            <button aria-hidden="true" class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt đầu dịch</button>
+            <button aria-hidden="true" class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt
+                đầu dịch</button>
             <div style="height:20px"></div>
         </div>
     </div>
@@ -1608,28 +1632,41 @@
     <div class="bottom-sheet" id="editWordSheet" aria-hidden="true">
         <div class="sheet-header">
             <div class="sheet-title">Quản lý từ thay thế</div>
+
+            <label class="toggle-switch">
+                <input type="checkbox" id="wordReplaceToggle" onchange="toggleWordReplacement(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+
             <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
+
+            
         </div>
         <div class="sheet-body">
-            
+
             <!-- List of Words -->
             <div class="form-group">
+                <!-- <label class="form-label">Danh sách từ</label> -->
                 <div class="form-group-header">
-                    <label class="form-label">Danh sách từ</label>
-                    <select id="wordFilterSelect" class="form-select" style="width:35%; margin-left:auto;" onchange="filterWordList()">
+                    <input type="text" id="wordSearchInput" class="report-input" placeholder="Tìm từ..."
+                        style="width:55%; height: 100%; margin:15px;" oninput="searchWordList()">
+
+                    <select id="wordFilterSelect" class="form-select" style="width:25%; height: 100%; margin-left:auto;"
+                        onchange="filterWordList()">
                         <option value="all">Tất cả</option>
                         <option value="chapter">Chapter</option>
                         <option value="book">Book</option>
                         <option value="global">Global</option>
                     </select>
+
                 </div>
-                
+
                 <div class="word-list-container" id="wordListContainer">
                     <div style="padding:20px; text-align:center; color:#888;">Đang tải...</div>
                 </div>
             </div>
 
-           
+
 
 
 
@@ -1642,17 +1679,22 @@
                     <div class="segment-item" onclick="selectWordScope('global')" id="scope-global">Global</div>
                 </div>
                 <input type="hidden" id="selectedWordScope" value="book">
-            </div>  
+            </div>
 
-             <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:16px 0;">
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:16px 0;">
 
             <!-- Add/Edit Form -->
             <div class="form-group">
                 <label class="form-label">Thêm / Sửa từ</label>
-                <input type="text" class="report-input" id="wordOriginal" placeholder="Từ gốc (ví dụ: name1)">
-                <input type="text" class="report-input" id="wordReplace" placeholder="Từ thay thế (ví dụ: Tên Một)">
-            </div>
+                <div class="form-label-input">
+                    <input type="text" style="width: 50%; margin: 5px" class="report-input" id="wordOriginal"
+                        placeholder="Match">
+                    <input type="text" style="width: 50%; margin: 5px" class="report-input" id="wordReplace"
+                        placeholder="Replacement">
+                </div>
 
+            </div>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:16px 0;">
 
             <!-- Actions -->
             <button class="btn-primary" onclick="saveWordReplacement()">Lưu thay đổi</button>
@@ -1704,11 +1746,11 @@
                     </div>
                 </div>
 
-        
+
             </div>
 
-             <div class="setting-row">
-               
+            <div class="setting-row">
+
 
                 <div class="row-items">
                     <span>Group Lines</span>
@@ -1788,7 +1830,7 @@
             prevChapterId: null,
             isLoading: false,
             errorType: 'spelling',
-            settings: { fontSize: 18, fontFamily: "'Merriweather', serif", lazyLoad: true, groupLines: 1, wordSpacing: 0 },
+            settings: { fontSize: 18, fontFamily: "'Merriweather', serif", lazyLoad: true, groupLines: 1, wordSpacing: 0, isEnabledReplaceToggle: false },
             // Translation cache
             allBooksCache: null,
             currentBookChaptersCache: null,
@@ -1801,7 +1843,7 @@
             editingWordId: null // To track editing item
         };
         let observer;
-
+        
         window.onload = () =>
         {
             loadSettings();
@@ -1971,7 +2013,6 @@
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
             if (data.pagination) data.pagination.currentPage = pageNum;
-            console.log('data', JSON.stringify(data, null, 2))
             el.innerHTML = data.data.map(b => `
                 <div class="book-row" onclick="fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
                     <div class="book-icon">${b.bookName.charAt(0)}</div>
@@ -2007,28 +2048,30 @@
             const batchBar = document.getElementById('batchActionBar');
             const segAll = document.getElementById('seg-all');
             const segPending = document.getElementById('seg-pending');
-            
+
             el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
-            
+
             const pageNum = parseInt(page) || 1;
-            
+
             // Build Query Params for Server-Side Filtering & Sorting
             let sortBy = 'chapterNumber';
             let sortOrder = 'ASC';
-            
+
             if (appState.sortOption === 'num_desc') sortOrder = 'DESC';
             else if (appState.sortOption === 'time_new') { sortBy = 'updatedAt'; sortOrder = 'DESC'; }
             else if (appState.sortOption === 'time_old') { sortBy = 'updatedAt'; sortOrder = 'ASC'; }
-            
+
             let filterParam = '';
-            
+
             // Update UI State for Filter
-            if (appState.filterState === 'pending') {
+            if (appState.filterState === 'pending')
+            {
                 filterParam = '&state=PENDING';
                 batchBar.classList.remove('hidden');
                 segPending.classList.add('active', 'pending');
                 segAll.classList.remove('active');
-            } else {
+            } else
+            {
                 batchBar.classList.add('hidden');
                 segAll.classList.add('active');
                 segPending.classList.remove('active', 'pending');
@@ -2036,9 +2079,9 @@
 
             const limit = 50; // Reduce limit for faster loading since we use server pagination
             const url = `/api/books/${bid}/chapters?page=${pageNum}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}${filterParam}`;
-            
+
             const data = await api(url);
-            
+
             if (!data || !data.chapters.length)
             {
                 el.innerHTML = '<div style="padding:2rem; text-align:center;">Không tìm thấy chương nào.</div>';
@@ -2050,34 +2093,38 @@
             if (data.pagination) data.pagination.currentPage = pageNum;
 
             appState.currentChapterList = data.chapters;
-            
+
             // Render directly
             el.innerHTML = data.chapters.map(c => renderChapterRow(c)).join('');
-            
+
             renderPager('chapterPagination', data.pagination, (p) => fetchChapters(bid, bname, p, false));
             renderPager('chapterPagination2', data.pagination, (p) => fetchChapters(bid, bname, p, false));
         }
-        
+
         // --- Filtering & Sorting Logic (Triggered by UI) ---
-        function applyFilters() {
+        function applyFilters()
+        {
             // Read Sort Option from Select
             appState.sortOption = document.getElementById('sortOption').value;
-            
+
             // Reload Chapters
-            if (appState.book && appState.book.id) {
+            if (appState.book && appState.book.id)
+            {
                 fetchChapters(appState.book.id, appState.book.name, 1, false);
             }
         }
 
         // New function to switch filter state from Segmented Control
-        function setFilterState(state) {
+        function setFilterState(state)
+        {
             if (appState.filterState === state) return; // No change
             appState.filterState = state;
             applyFilters();
         }
 
         // --- Render Row Helper ---
-        function renderChapterRow(c) {
+        function renderChapterRow(c)
+        {
             const isPending = c.state === 'PENDING';
             return `
                 <div class="chapter-row ${isPending ? 'pending-row' : ''}" onclick="setupReader('${c.chapterId}')">
@@ -2092,15 +2139,16 @@
                 </div>
             `;
         }
-        
+
         // --- Handle Manage Pending Click ---
-        async function handleManagePending() {
+        async function handleManagePending()
+        {
             // 1. Open Translation Sheet
             openSheet('translationSheet');
-            
+
             // 2. Switch to Batch Chapter Tab
             switchTransTab('batch_chapter');
-            
+
             // 3. No need to load anything initially, user will choose
         }
 
@@ -2140,7 +2188,7 @@
             appState.isLoading = true;
             if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
 
-            const data = await api(`/api/chapters/${cid}/?groupLines=${appState.settings.groupLines}`);
+            const data = await api(`/api/chapters/${cid}/?groupLines=${appState.settings.groupLines}&isEnabledReplace=${appState.settings.isEnabledReplaceToggle ?? false}`);
             appState.isLoading = false;
             document.getElementById('loadingNext').classList.add('hidden');
 
@@ -2289,59 +2337,100 @@
         }
 
         // --- NEW: EDIT WORD SHEET LOGIC ---
-        function openEditWordSheet() {
+        function openEditWordSheet()
+        {
             // Pre-fill input if text selected
             const sel = window.getSelection();
             const text = sel.rangeCount > 0 ? sel.toString().trim() : '';
-            if (text) {
+            if (text)
+            {
                 document.getElementById('wordOriginal').value = text;
             }
-            
+
             // Clear edit state
             appState.editingWordId = null;
             document.getElementById('wordReplace').value = '';
-            
+
             openSheet('editWordSheet');
-            loadWordList();
+            isEnabledReplaceToggle = appState.settings.isEnabledReplaceToggle ?? false;
+            document.getElementById('wordReplaceToggle').checked = isEnabledReplaceToggle;
+        
+            loadWordList({ scope: null, search: null  });
         }
 
-        function selectWordScope(scope) {
+        function selectWordScope(scope)
+        {
             document.querySelectorAll('#wordScopeControl .segment-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`scope-${scope}`).classList.add('active');
             document.getElementById('selectedWordScope').value = scope;
         }
 
-        function filterWordList() {
+        function filterWordList()
+        {
             const filter = document.getElementById('wordFilterSelect').value;
-            loadWordList(filter)
+            loadWordList({ scope: filter, search: null });
         }
 
-        async function loadWordList(filter) {
+        let debounceTimer;
+        function searchWordList()
+        {
+            const query = document.getElementById('wordSearchInput').value.trim().toLowerCase();
+
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() =>
+            {
+                loadWordList({ search: query });
+            }, 500);
+        }   
+
+        function toggleWordReplacement(checkbox)
+        {   
+            appState.settings.isEnabledReplaceToggle = checkbox;
+            saveSettings();
+            closeAllDrawers()
+            setupReader(appState.activeChapterId, true);
+           
+        }
+
+        async function loadWordList({ scope, search } = {})
+        {   
             const container = document.getElementById('wordListContainer');
             const bid = appState.book?.id;
             const cid = appState.activeChapterId;
+
             if (!bid) { container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa mở truyện</div>'; return; }
 
             // Assuming API endpoint pattern
-            try {
-                const data = await api(`/api/replacements?bookId=${bid}&chapterId=${cid}&scope=${filter || 'all'}`);
-                if (data && Array.isArray(data)) {
+            try
+            {
+                let query = `/api/replacements?bookId=${bid}`;
+                if (cid) query += `&chapterId=${cid}`;
+                if (scope) query += `&scope=${scope}`;
+                if (search) query += `&search=${encodeURIComponent(search)}`;
+
+                const data = await api(query);
+                if (data && Array.isArray(data))
+                {
                     renderWordList(data);
-                } else {
+                } else
+                {
                     container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</div>';
                 }
-            } catch (e) {
+            } catch (e)
+            {
                 container.innerHTML = '<div style="padding:15px;text-align:center;color:#d63031;">Lỗi tải dữ liệu.</div>';
             }
         }
 
 
-    
 
 
-        function renderWordList(words) {
+
+        function renderWordList(words)
+        {
             const container = document.getElementById('wordListContainer');
-            if (words.length === 0) {
+            if (words.length === 0)
+            {
                 container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</div>';
                 return;
             }
@@ -2350,20 +2439,21 @@
                 <div class="word-item" onclick="editWordItem('${w.id}', '${w.original}', '${w.replacement}', '${w.scope}')">
                     <div class="word-content">
                         <span class="word-orig">${w.original}</span>
-                        <span class="word-arrow">→</span>
                         <span class="word-replace">${w.replacement}</span>
                     </div>
 
-                    <span style="padding: 2px 10px; border-radius: 4px; border-left: 1px solid var(--accent); margin-right: 10px;">${w.scope.slice(0,1).toUpperCase()}</span>
+                    <span style="padding: 2px 10px; border-radius: 4px; border-left: 1px solid var(--accent); margin-right: 10px;">${w.scope.slice(0, 1).toUpperCase()}</span>
 
                     <div class="word-actions">
                         <button class="icon-action delete" onclick="event.stopPropagation(); deleteWordReplacement('${w.id}')">✕</button>
                     </div>
                 </div>
+                <hr style="margin:0; border:none; border-bottom:1px solid #eee;">
             `).join('');
         }
 
-        function editWordItem(id, orig, rep, scope) {
+        function editWordItem(id, orig, rep, scope)
+        {
             appState.editingWordId = id;
             document.getElementById('wordOriginal').value = orig;
             document.getElementById('wordReplace').value = rep;
@@ -2373,13 +2463,14 @@
             selectWordScope(safeScope);
         }
 
-        async function saveWordReplacement() {
+        async function saveWordReplacement()
+        {
             const original = document.getElementById('wordOriginal').value.trim();
             const replacement = document.getElementById('wordReplace').value.trim();
             const scope = document.getElementById('selectedWordScope').value;
             const bid = appState.book?.id;
             const cid = appState.activeChapterId;
-            
+
 
             if (!original || !replacement) { showToast("Vui lòng nhập đủ thông tin"); return; }
             if (!bid) { showToast("Lỗi: Không xác định được truyện"); return; }
@@ -2394,11 +2485,12 @@
             };
 
             // Call API
-            try {
+            try
+            {
                 // If ID exists -> Update, else Create
                 const url = appState.editingWordId ? `/api/replacements/${appState.editingWordId}` : `/api/replacements`;
                 const method = appState.editingWordId ? 'PUT' : 'POST';
-                
+
                 await fetch(API_BASE + url, {
                     method: method,
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
@@ -2406,28 +2498,33 @@
                 });
 
                 showToast(appState.editingWordId ? "Đã cập nhật" : "Đã thêm từ mới");
-                
+
                 // Clear and Reload
                 document.getElementById('wordOriginal').value = '';
                 document.getElementById('wordReplace').value = '';
                 appState.editingWordId = null;
-                loadWordList();
-                
-            } catch (e) {
+                loadWordList({ scope: null, search: null });
+                setupReader(cid, false);
+            } catch (e)
+            {
                 showToast("Lỗi khi lưu");
             }
         }
 
-        async function deleteWordReplacement(id) {
-            if(!confirm("Xóa từ thay thế này?")) return;
-            try {
+        async function deleteWordReplacement(id)
+        {
+            if (!confirm("Xóa từ thay thế này?")) return;
+            try
+            {
                 await fetch(`${API_BASE}/api/replacements/${id}`, {
                     method: 'DELETE',
                     headers: { 'ngrok-skip-browser-warning': 'true' }
                 });
                 showToast("Đã xóa");
-                loadWordList();
-            } catch (e) {
+                loadWordList({ scope: null, search: null });
+                fetchAndRenderChapter(appState.activeChapterId, false, true);
+            } catch (e)
+            {
                 showToast("Lỗi khi xóa");
             }
         }
@@ -2464,8 +2561,9 @@
             if (tab === 'batch_chapter')
             {
                 // Auto load if empty or if book changed
-                if (!appState.currentBookChaptersCache || appState.currentBookChaptersCache.bid !== appState.book.id) {
-                     loadBatchChapters();
+                if (!appState.currentBookChaptersCache || appState.currentBookChaptersCache.bid !== appState.book.id)
+                {
+                    loadBatchChapters();
                 }
             }
             else if (tab === 'story')
@@ -2564,7 +2662,8 @@
                 return;
             }
 
-            listEl.innerHTML = chapters.map(c => {
+            listEl.innerHTML = chapters.map(c =>
+            {
                 const isPending = c.state === 'PENDING';
                 return `
                 <label class="book-checkbox-item">
@@ -2591,7 +2690,8 @@
         }
 
         // --- BATCH LOAD LOGIC (NEW) ---
-        async function loadBatchChapters() {
+        async function loadBatchChapters()
+        {
             const listEl = document.getElementById('transChapterList');
             const bid = appState.book?.id;
             if (!bid) { showToast("Vui lòng mở một truyện trước."); return; }
@@ -2602,47 +2702,60 @@
             listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Đang tải dữ liệu...</div>';
 
             let url = `/api/books/${bid}/chapters?limit=${limit}`;
-            if (mode === 'pending') {
+            if (mode === 'pending')
+            {
                 url += '&state=PENDING';
-            } else {
+            } else
+            {
                 // For 'all', sort by chapter number ascending by default
-                url += '&sortBy=chapterNumber&sortOrder=ASC'; 
+                url += '&sortBy=chapterNumber&sortOrder=ASC';
             }
 
-            try {
+            try
+            {
                 const data = await api(url);
-                if (data && data.chapters) {
+                if (data && data.chapters)
+                {
                     appState.currentBookChaptersCache = { bid: bid, chapters: data.chapters };
                     renderTranslationChapters(data.chapters);
-                    if (data.chapters.length === 0) {
+                    if (data.chapters.length === 0)
+                    {
                         listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Không tìm thấy chương nào phù hợp.</div>';
-                    } else {
+                    } else
+                    {
                         // Auto-select helps user
                         toggleBatchSelection(true);
                     }
-                } else {
+                } else
+                {
                     listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi tải dữ liệu.</div>';
                 }
-            } catch (e) {
+            } catch (e)
+            {
                 listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi kết nối.</div>';
             }
         }
 
-        function toggleBatchSelection(state) {
+        function toggleBatchSelection(state)
+        {
             const checkboxes = document.querySelectorAll('#transChapterList input[type="checkbox"]');
             checkboxes.forEach(cb => cb.checked = state);
         }
-        
-        function selectBatchRange() {
+
+        function selectBatchRange()
+        {
             const start = parseInt(prompt("Từ chương số:", "1"));
             const end = parseInt(prompt("Đến chương số:", ""));
-            
-            if (!isNaN(start) && !isNaN(end) && start <= end) {
+
+            if (!isNaN(start) && !isNaN(end) && start <= end)
+            {
                 const checkboxes = document.querySelectorAll('#transChapterList input[type="checkbox"]');
                 let count = 0;
-                checkboxes.forEach(cb => {
+                checkboxes.forEach(cb =>
+                {
                     const idx = parseInt(cb.getAttribute('data-idx'));
-                    if (idx >= start && idx <= end) {
+                    if (idx >= start && idx <= end)
+                    {
                         cb.checked = true;
                         count++;
                     }
