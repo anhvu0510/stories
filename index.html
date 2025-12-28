@@ -2255,7 +2255,7 @@
                 document.getElementById('glassDock').classList.toggle('hide', hideUI);
                 document.getElementById('mainHeader').classList.toggle('hide', hideUI);
 
-                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1000))
+                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1200))
                 {
                     fetchAndRenderChapter(appState.nextChapterId);
                 }
@@ -2838,7 +2838,8 @@
 
                     showToast("Dịch thành công:  " + result[appState.activeChapterId]?.chapter?.totalTokens + " tokens");
                     closeAllDrawers();
-                    setupReader(appState.activeChapterId, false); // Reload content
+                    // setupReader(appState.activeChapterId, false); // Reload content
+                    fetchAndRenderChapter(appState.activeChapterId, false, true); // Force reload
                 } catch (e)
                 {
                     showToast("Lỗi: " + e.message);
