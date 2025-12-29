@@ -2077,7 +2077,7 @@
                 segPending.classList.remove('active', 'pending');
             }
 
-            const limit = 50; // Reduce limit for faster loading since we use server pagination
+            const limit = 500; // Reduce limit for faster loading since we use server pagination
             const url = `/api/books/${bid}/chapters?page=${pageNum}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}${filterParam}`;
 
             const data = await api(url);
@@ -2201,15 +2201,15 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="display:block; margin: 0.95rem 0">${t}</section>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="margin: 0.95rem 0">${t}</section>`).join('');
 
             let header = isInitial ?
-                `<section style="text-align:center; margin-bottom:1rem;">
+                `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
-                 </section>` :
+                 </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<section lang="vi" class="reader-text">${content}</section>`;
+            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -2255,7 +2255,7 @@
                 document.getElementById('glassDock').classList.toggle('hide', hideUI);
                 document.getElementById('mainHeader').classList.toggle('hide', hideUI);
 
-                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1200))
+                if (appState.settings.lazyLoad && !appState.isLoading && appState.nextChapterId && (totalH - y < 1500))
                 {
                     fetchAndRenderChapter(appState.nextChapterId);
                 }
