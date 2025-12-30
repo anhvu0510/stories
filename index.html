@@ -501,7 +501,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .reader-text div {
+        .reader-text section {
             margin-bottom: 1.4em;
         }
 
@@ -1379,14 +1379,14 @@
         </div>
 
         <!-- READER -->
-        <div id="screen-reader" class="reader-view hidden">
-            <div class="reader-container" id="readerContainer"></div>
+        <section id="screen-reader" class="reader-view hidden">
+            <section class="reader-container" id="readerContainer"></section>
 
             <div id="loadingNext" aria-hidden="true" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
                 <div class="fade-in">✦ Đang tải chương tiếp...</div>
             </div>
             <!-- <div style="height: 100px;"></div> -->
-        </div>
+        </section>
     </main>
 
     <!-- GLASS DOCK (Mobile Navigation) -->
@@ -2203,7 +2203,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<div>${t}</div>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section>${t}</section>`).join('');
 
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
@@ -2211,7 +2211,7 @@
                  </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<div class="reader-text">${content}</div>`;
+            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
