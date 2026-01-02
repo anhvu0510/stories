@@ -2838,7 +2838,7 @@
                     }
 
 
-                    
+                    showToast("Dịch thành công:  " + result[appState.activeChapterId]?.chapter?.totalTokens + " tokens");
                     closeAllDrawers();
                     setupReader(appState.activeChapterId, false); // Reload content
                     // fetchAndRenderChapter(appState.activeChapterId, false, true); // Force reload
