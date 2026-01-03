@@ -2014,16 +2014,18 @@
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
             if (data.pagination) data.pagination.currentPage = pageNum;
             el.innerHTML = data.data.map(b => `
-                <div class="book-row" onclick="fetchChapters('${b.bookId}', '${b.bookName.replace(/'/g, "\\'")}')">
-                    <div class="book-icon">${b.bookName.charAt(0)}</div>
-                    <div class="book-info">
-                        <div class="book-title">${b.bookName}</div>
-                        <div class="book-meta">
-                            <span class="tag"> Tổng: ${b.chapterCount || 0} - Đã dịch: ${b.totalTranslated || 0} - Chưa dịch: ${b.totalPending || 0}</span>
-                            <span style="padding: 0px 4px">   ${b.createdAt || 'Đang cập nhật'}  </span> 
+                <a href="?view=chapters&bookId=${b.bookId}&bookName=${encodeURIComponent(b.bookName)}" target="_blank" style="display: block; text-decoration: none;">
+                    <div class="book-row">
+                        <div class="book-icon">${b.bookName.charAt(0)}</div>
+                        <div class="book-info">
+                            <div class="book-title">${b.bookName}</div>
+                            <div class="book-meta">
+                                <span class="tag"> Tổng: ${b.chapterCount || 0} - Đã dịch: ${b.totalTranslated || 0} - Chưa dịch: ${b.totalPending || 0}</span>
+                                <span style="padding: 0px 4px">   ${b.createdAt || 'Đang cập nhật'}  </span> 
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             `).join('');
             renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
         }
@@ -2165,6 +2167,7 @@
                 window.location.href = url.toString();
                 return;
             }
+
 
             setScreen('reader', false);
             if (updateHistory) pushState('reader', { chapterId: cid, bookId: appState.book?.id, bookName: appState.book?.name });
@@ -2507,6 +2510,7 @@
                 appState.editingWordId = null;
                 loadWordList({ scope: null, search: null });
                 setupReader(cid, false);
+                restoreReadProgress(cid);
             } catch (e)
             {
                 showToast("Lỗi khi lưu");
