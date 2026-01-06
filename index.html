@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -501,8 +502,9 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .reader-text section {
-            margin-bottom: 1.4em;
+        .reader-text p {
+            /* margin-bottom: 0.2em; */
+            /* display: block; */
         }
 
         .chapter-header-compact {
@@ -2163,7 +2165,7 @@
                 url.searchParams.set('view', 'reader');
                 url.searchParams.set('chapterId', cid);
                 url.searchParams.set('bookId', appState.book?.id || '');
-                url.searchParams.set('bookName', appState.book?.name || '');
+                // url.searchParams.set('bookName', appState.book?.name || '');
                 window.location.href = url.toString();
                 return;
             }
@@ -2206,7 +2208,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section>${t}</section>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p>${t}</p>`).join('</br>');
 
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
@@ -2214,7 +2216,7 @@
                  </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
+            div.innerHTML = header + `<div class="reader-text">${content}</div>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
