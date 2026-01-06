@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -1382,7 +1381,7 @@
 
         <!-- READER -->
         <section id="screen-reader" class="reader-view hidden">
-            <section class="reader-container" id="readerContainer"></section>
+            <div class="reader-container" id="readerContainer"></div>
 
             <div id="loadingNext" aria-hidden="true" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
                 <div class="fade-in">✦ Đang tải chương tiếp...</div>
@@ -2208,7 +2207,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<p>${t}</p>`).join('</br>');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="margin: 0.95rem 0">${t}</section>`).join('');
 
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
@@ -2216,7 +2215,7 @@
                  </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<div class="reader-text">${content}</div>`;
+            div.innerHTML = header + `<section class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
