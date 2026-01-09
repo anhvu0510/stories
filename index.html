@@ -501,9 +501,9 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .reader-text p {
-            /* margin-bottom: 0.2em; */
-            /* display: block; */
+        .reader-text  section {
+            margin-bottom: 0.95rem;
+            display: block;
         }
 
         .chapter-header-compact {
@@ -2207,7 +2207,7 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section style="margin: 0.95rem 0">${t}</section>`).join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `<section>${t}</section>`).join('');
 
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
@@ -2395,6 +2395,7 @@
             saveSettings();
             closeAllDrawers()
             setupReader(appState.activeChapterId, true);
+            restoreReadProgress(appState.activeChapterId);
            
         }
 
@@ -2530,6 +2531,7 @@
                 showToast("Đã xóa");
                 loadWordList({ scope: null, search: null });
                 fetchAndRenderChapter(appState.activeChapterId, false, true);
+                restoreReadProgress(appState.activeChapterId);
             } catch (e)
             {
                 showToast("Lỗi khi xóa");
