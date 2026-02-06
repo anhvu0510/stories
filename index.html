@@ -2649,7 +2649,7 @@
                 return;
             }
 
-            const data = await api(`/api/books/${bid}/chapters?page=1&limit=50000`);
+            const data = await api(`/api/books/${bid}/chapters?page=1&limit=500`);
             if (data && data.chapters)
             {
                 appState.currentBookChaptersCache = { bid: bid, chapters: data.chapters };
@@ -3104,7 +3104,7 @@
             if (!appState.book) return;
             if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
             el.innerHTML = '<div style="padding:2rem;text-align:center;color:#888;">Đang tải...</div>';
-            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=500`);
+            const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=5000000`);
             if (data)
             {
                 el.setAttribute('data-bid', appState.book.id);
