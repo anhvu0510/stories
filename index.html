@@ -2649,7 +2649,7 @@
                 return;
             }
 
-            const data = await api(`/api/books/${bid}/chapters?page=1&limit=500`);
+            const data = await api(`/api/books/${bid}/chapters?page=1&limit=50000`);
             if (data && data.chapters)
             {
                 appState.currentBookChaptersCache = { bid: bid, chapters: data.chapters };
