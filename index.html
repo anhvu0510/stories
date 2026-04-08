@@ -510,6 +510,10 @@
             margin-bottom: 1rem;
         }
 
+        .reader-text p {
+            margin-bottom: 1rem;
+        }
+
         .chapter-header-compact {
             margin: 3rem 0 2rem;
             padding: 1rem 0;
@@ -2211,18 +2215,18 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            // let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
-            let content = data.chapter.content
-                .filter(t => t.trim())
-                .reduce((acc, t, i) =>
-                {
-                    const chunkIndex = Math.floor(i / 3);
-                    if (!acc[chunkIndex]) acc[chunkIndex] = [];
-                    acc[chunkIndex].push(t);
-                    return acc;
-                }, [])
-                .map(group => `<div lang="vi">${group.join('')}</div>`)
-                .join('');
+            let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
+            // let content = data.chapter.content
+            //     .filter(t => t.trim())
+            //     .reduce((acc, t, i) =>
+            //     {
+            //         const chunkIndex = Math.floor(i / 3);
+            //         if (!acc[chunkIndex]) acc[chunkIndex] = [];
+            //         acc[chunkIndex].push(t);
+            //         return acc;
+            //     }, [])
+            //     .map(group => `<div lang="vi">${group.join('')}</div>`)
+            //     .join('');
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
