@@ -506,6 +506,10 @@
             display: block;
         }
 
+        .reader-text div p {
+            margin-bottom: 1rem;
+        }
+
         .chapter-header-compact {
             margin: 3rem 0 2rem;
             padding: 1rem 0;
@@ -2010,7 +2014,7 @@
             const el = document.getElementById('bookList');
             el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
             const pageNum = parseInt(page) || 1;
-            const data = await api(`/api/books?page=${pageNum}&limit=20&search=${encodeURIComponent(q)}`);
+            const data = await api(`/api/books?page=${pageNum}&limit=100&search=${encodeURIComponent(q)}`);
 
             if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
             if (data.pagination) data.pagination.currentPage = pageNum;
@@ -2207,15 +2211,25 @@
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
-
+            // let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
+            let content = data.chapter.content
+                .filter(t => t.trim())
+                .reduce((acc, t, i) =>
+                {
+                    const chunkIndex = Math.floor(i / 3);
+                    if (!acc[chunkIndex]) acc[chunkIndex] = [];
+                    acc[chunkIndex].push(t);
+                    return acc;
+                }, [])
+                .map(group => `<div lang="vi">${group.join('')}</div>`)
+                .join('');
             let header = isInitial ?
                 `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
                  </div>` :
                 `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
 
-            div.innerHTML = header + `<div class="reader-text">${content}</div>`;
+            div.innerHTML = header + `<article class="reader-text">${content}</article>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -3188,3 +3202,4 @@
 </body>
 
 </html>
+
