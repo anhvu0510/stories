@@ -1256,17 +1256,17 @@
 <body>
 
     <!-- Progress Bar -->
-    <div id="readProgress"
+    <section id="readProgress"
         style="position: fixed; top: 0; left:0; height:3px; background:var(--accent); width:0%; z-index: 1100; transition: width 0.1s;"
-        aria-hidden="true"></div>
+        aria-hidden="true"></section>
 
     <!-- Toast -->
-    <div id="toast" class="toast" aria-hidden="true">Nội dung thông báo</div>
+    <section id="toast" class="toast" aria-hidden="true">Nội dung thông báo</section>
 
     <!-- Header -->
     <header class="header" id="mainHeader" aria-hidden="true">
-        <div class="header-inner">
-            <div style="display:flex; align-items:center; flex:1; min-width:0;">
+        <section class="header-inner">
+            <section style="display:flex; align-items:center; flex:1; min-width:0;">
 
                 <button class="icon-btn hidden" id="backBtn" onclick="handleBack()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -1281,9 +1281,9 @@
                         <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
                 </button>
-                <div class="brand" id="pageTitle" onclick="window.scrollTo({top:0, behavior:'smooth'})">NovelReader
-                </div>
-            </div>
+                <section class="brand" id="pageTitle" onclick="window.scrollTo({top:0, behavior:'smooth'})">NovelReader
+                </section>
+            </section>
 
             <button class="dock-btn" onclick="handleTranslate()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
@@ -1307,7 +1307,7 @@
                 </svg>
             </button>
             <!-- Header Actions: History & Settings (moved up) -->
-            <div class="header-actions">
+            <section class="header-actions">
                 <button class="icon-btn small hidden" id="headerSettingsBtn" onclick="toggleDrawer('settings')">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"><text x="50%" y="55%" dominant-baseline="middle"
@@ -1320,47 +1320,47 @@
                         <polyline points="12 6 12 12 16 14" />
                     </svg>
                 </button>
-            </div>
-        </div>
+            </section>
+        </section>
     </header>
 
     <!-- MAIN CONTENT -->
     <main>
         <!-- HOME -->
-        <div id="screen-home" aria-hidden="true">
-            <div class="search-area" aria-hidden="true">
-                <div style="position:relative; max-width:800px; margin:0 auto;">
+        <section id="screen-home" aria-hidden="true">
+            <section class="search-area" aria-hidden="true">
+                <section style="position:relative; max-width:800px; margin:0 auto;">
                     <span class="search-icon">🔍</span>
                     <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm truyện...">
-                </div>
-            </div>
-            <div class="container" aria-hidden="true">
-                <div class="book-list" id="bookList"></div>
-                <div class="pagination" id="homePagination"
-                    style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
-            </div>
-        </div>
+                </section>
+            </section>
+            <section class="container" aria-hidden="true">
+                <section class="book-list" id="bookList"></section>
+                <section class="pagination" id="homePagination"
+                    style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></section>
+            </section>
+        </section>
 
         <!-- CHAPTERS LIST -->
-        <div id="screen-chapters" aria-hidden="true" class="container hidden">
+        <section id="screen-chapters" aria-hidden="true" class="container hidden">
 
-            <div class="pagination" id="chapterPagination"
-                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
+            <section class="pagination" id="chapterPagination"
+                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></section>
 
-            <div
+            <section
                 style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
-                Danh sách chương</div>
+                Danh sách chương</section>
 
             <!-- REDESIGNED FILTER TOOLBAR -->
-            <div class="filter-toolbar">
+            <section class="filter-toolbar">
                 <!-- Segmented Control for State -->
-                <div class="segmented-control">
-                    <div id="seg-all" class="segment-item active" onclick="setFilterState('all')">Tất cả</div>
-                    <div id="seg-pending" class="segment-item" onclick="setFilterState('pending')">Chưa dịch</div>
-                </div>
+                <section class="segmented-control">
+                    <section id="seg-all" class="segment-item active" onclick="setFilterState('all')">Tất cả</section>
+                    <section id="seg-pending" class="segment-item" onclick="setFilterState('pending')">Chưa dịch</section>
+                </section>
 
                 <!-- Styled Sort Button -->
-                <div class="sort-btn-wrapper">
+                <section class="sort-btn-wrapper">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 6h18M7 12h10M10 18h4" />
@@ -1371,31 +1371,31 @@
                         <option value="time_new">Ngày: Mới nhất</option>
                         <option value="time_old">Ngày: Cũ nhất</option>
                     </select>
-                </div>
-            </div>
+                </section>
+            </section>
 
             <!-- BATCH ACTION (Appears only when Pending is filtered) -->
-            <div id="batchActionBar" class="batch-action-bar hidden">
+            <section id="batchActionBar" class="batch-action-bar hidden">
                 <span style="font-size: 0.9rem; font-weight: 600;">Danh sách chưa dịch</span>
                 <button class="btn-xs" onclick="handleManagePending()"
                     style="background: var(--warning); color: #443200; border: none; font-weight: 700; padding: 8px 16px;">Dịch
                     nhanh</button>
-            </div>
+            </section>
 
-            <div id="chapterList" class="chapter-list"></div>
-            <div class="pagination" id="chapterPagination2"
-                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
-        </div>
+            <section id="chapterList" class="chapter-list"></section>
+            <section class="pagination" id="chapterPagination2"
+                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></section>
+        </section>
 
         <!-- READER -->
-        <div id="screen-reader" class="reader-view hidden">
-            <div class="reader-container" id="readerContainer"></div>
+        <article id="screen-reader" class="reader-view hidden">
+            <section class="reader-container" id="readerContainer"></section>
 
-            <div id="loadingNext" aria-hidden="true" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
-                <div class="fade-in">✦ Đang tải chương tiếp...</div>
-            </div>
-            <!-- <div style="height: 100px;"></div> -->
-        </div>
+            <section id="loadingNext" aria-hidden="true" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
+                <section class="fade-in">✦ Đang tải chương tiếp...</section>
+            </section>
+            <!-- <section style="height: 100px;"></section> -->
+        </article>
     </main>
 
     <!-- GLASS DOCK (Mobile Navigation) -->
@@ -1466,7 +1466,7 @@
     </nav>
 
     <!-- SELECTION ACTION (Pill Shape) -->
-    <div id="selectionTooltip" class="hidden" onmousedown="event.preventDefault(); openEditWordSheet();"
+    <section id="selectionTooltip" class="hidden" onmousedown="event.preventDefault(); openEditWordSheet();"
         ontouchstart="event.preventDefault(); openEditWordSheet()" aria-hidden="true">
         <button class="tooltip-btn">
             <span class="tooltip-icon">✎</span>
@@ -1475,36 +1475,36 @@
         <!-- <button class="tooltip-btn" onclick="event.stopPropagation(); copySelection();">
             <span class="tooltip-icon">📋</span>
         </button> -->
-    </div>
+    </section>
 
     <!-- GLOBAL OVERLAY -->
-    <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllDrawers()" aria-hidden="true"></div>
+    <section class="sheet-overlay" id="sheetOverlay" onclick="closeAllDrawers()" aria-hidden="true"></section>
 
     <!-- TRANSLATION SHEET -->
-    <div class="bottom-sheet" id="translationSheet" aria-hidden="true">
-        <div class="sheet-header">
-            <div class="sheet-title">Cấu hình Dịch AI</div>
-            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
-        </div>
-        <div class="sheet-body">
+    <section class="bottom-sheet" id="translationSheet" aria-hidden="true">
+        <section class="sheet-header">
+            <section class="sheet-title">Cấu hình Dịch AI</section>
+            <section class="sheet-close" onclick="closeAllDrawers()">✕</section>
+        </section>
+        <section class="sheet-body">
             <!-- Tabs -->
-            <div class="tab-group">
-                <div class="tab-item active" id="tabBtnCurrent" onclick="switchTransTab('current')">Hiện tại</div>
-                <div class="tab-item" id="tabBtnBatchChapter" onclick="switchTransTab('batch_chapter')">Nhiều chương
-                </div>
-                <div class="tab-item" id="tabBtnStory" onclick="switchTransTab('story')">Truyện</div>
-            </div>
+            <section class="tab-group">
+                <section class="tab-item active" id="tabBtnCurrent" onclick="switchTransTab('current')">Hiện tại</section>
+                <section class="tab-item" id="tabBtnBatchChapter" onclick="switchTransTab('batch_chapter')">Nhiều chương
+                </section>
+                <section class="tab-item" id="tabBtnStory" onclick="switchTransTab('story')">Truyện</section>
+            </section>
 
 
-            <div id="tabContentCurrent">
-                <div id="tabContentCurrentText"
+            <section id="tabContentCurrent">
+                <section id="tabContentCurrentText"
                     style="padding:10px 0; color:var(--accent); font-weight:600; text-align:center; margin-bottom:10px;">
                     Dịch và đọc ngay chương đang mở
-                </div>
-            </div>
+                </section>
+            </section>
 
             <!-- Model Selection -->
-            <div class="form-group">
+            <section class="form-group">
                 <label class="form-label">Chọn Model AI</label>
                 <select id="aiModelSelect" class="form-select">
                     <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</option>
@@ -1512,16 +1512,16 @@
                     <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
                     <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
                 </select>
-            </div>
+            </section>
 
             <!-- Tab Content: Current -->
 
 
             <!-- Tab Content: Batch Chapter -->
-            <div id="tabContentBatchChapter" class="hidden">
-                <div class="form-group">
+            <section id="tabContentBatchChapter" class="hidden">
+                <section class="form-group">
                     <label class="form-label">Cấu hình tải danh sách</label>
-                    <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <section style="display:flex; gap:10px; margin-bottom:16px;">
                         <select id="batchLoadMode" class="form-select" style="margin-bottom:0; flex:1;"
                             onchange="loadBatchChapters()">
                             <option value="all">Tất cả chương</option>
@@ -1529,66 +1529,67 @@
                         </select>
                         <input type="number" id="batchLoadLimit" class="report-input" value="50000" placeholder="Limit"
                             style="margin-bottom:0; width: 80px;" onchange="loadBatchChapters()">
-                    </div>
+                    </section>
 
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <section style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <label class="form-label" style="margin-bottom:0">Danh sách chương</label>
-                        <div style="display:flex; gap:8px;">
+                        <section style="display:flex; gap:8px;">
                             <span class="tag" onclick="toggleBatchSelection(true)" style="cursor:pointer;">Tất cả</span>
                             <span class="tag" onclick="selectBatchRange()"
-                                style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#2ecc71;">Phạm
-                                vi</span>
+                                style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#2ecc71;">Phạm vi</span>
+                            <span class="tag" onclick="selectPendingChapters()"
+                                style="cursor:pointer; background:rgba(71, 255, 87, 0.15); color:#ccb72e;">Chưa dịch</span>
                             <span class="tag" onclick="toggleBatchSelection(false)"
                                 style="background:rgba(255,255,255,0.1); color:#ccc; cursor:pointer;">Bỏ</span>
-                        </div>
-                    </div>
+                        </section>
+                    </section>
 
-                    <div class="book-select-container">
+                    <section class="book-select-container">
                         <input type="text" class="book-search-input" id="transChapterSearch"
                             placeholder="Lọc trong danh sách đã tải..." oninput="filterTranslationChapters(this.value)">
-                        <div class="book-checkbox-list" id="transChapterList">
-                            <div style="padding:10px;color:#888;text-align:center;">Hãy chọn chế độ và tải danh sách
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <section class="book-checkbox-list" id="transChapterList">
+                            <section style="padding:10px;color:#888;text-align:center;">Hãy chọn chế độ và tải danh sách
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
 
             <!-- Tab Content: Story -->
-            <div aria-hidden="true" id="tabContentStory" class="hidden">
-                <div class="form-group">
+            <section aria-hidden="true" id="tabContentStory" class="hidden">
+                <section class="form-group">
                     <label class="form-label">Chọn truyện cần dịch</label>
-                    <div class="book-select-container">
+                    <section class="book-select-container">
                         <input type="text" class="book-search-input" id="transBookSearch"
                             placeholder="Tìm tên truyện..." oninput="filterTranslationBooks(this.value)">
-                        <div class="book-checkbox-list" id="transBookList">
+                        <section class="book-checkbox-list" id="transBookList">
                             <!-- Populated by JS -->
-                            <div style="padding:10px;color:#888;">Đang tải danh sách...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <section style="padding:10px;color:#888;">Đang tải danh sách...</section>
+                        </section>
+                    </section>
+                </section>
+            </section>
 
             <!-- Word Limits -->
-            <div aria-hidden="true" class="form-group flex-row">
-                <div style="flex:1">
+            <section aria-hidden="true" class="form-group flex-row">
+                <section style="flex:1">
                     <label class="form-label">Min Words</label>
                     <input type="number" id="transMinWords" class="report-input" value="100" style="margin-bottom:0">
-                </div>
-                <div style="flex:1">
+                </section>
+                <section style="flex:1">
                     <label class="form-label">Max Words</label>
                     <input type="number" id="transMaxWords" class="report-input" value="500" style="margin-bottom:0">
-                </div>
+                </section>
 
-                <div style="flex:1">
+                <section style="flex:1">
                     <label class="form-label">Temperature</label>
                     <input type="number" id="transTemperature" class="report-input" value="0" step="0.01" min="0"
                         max="1" style="margin-bottom:0">
-                </div>
-            </div>
+                </section>
+            </section>
 
             <!-- Toggle Scope -->
-            <div aria-hidden="true" class="form-group"
+            <section aria-hidden="true" class="form-group"
                 style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0px;">
                 <label aria-hidden="true" class="form-label" style="margin-bottom:0">Dịch lại tất cả (kể cả đã thành
                     công)</label>
@@ -1596,69 +1597,69 @@
                     <input type="checkbox" id="transScopeToggle">
                     <span class="toggle-slider"></span>
                 </label>
-            </div>
-            <div aria-hidden="true" style="font-size:0.8rem; color:#64748b; margin-top:-10px; margin-bottom:20px;">
+            </section>
+            <section aria-hidden="true" style="font-size:0.8rem; color:#64748b; margin-top:-10px; margin-bottom:20px;">
                 Tắt: Chỉ dịch phần thất bại • Bật: Dịch lại toàn bộ
-            </div>
+            </section>
 
             <!-- Actions -->
             <button aria-hidden="true" class="btn-primary" id="btnSubmitTransSheet" onclick="submitTranslation()">Bắt
                 đầu dịch</button>
-            <div style="height:20px"></div>
-        </div>
-    </div>
+            <section style="height:20px"></section>
+        </section>
+    </section>
 
     <!-- CONFIRM MODAL -->
-    <div class="modal-overlay" id="confirmModal" aria-hidden="true">
-        <div class="confirm-card">
-            <div class="confirm-title">Xác nhận dịch</div>
-            <div style="border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:15px; padding-bottom:5px;">
-                <div class="confirm-detail"><span>Chế độ:</span> <span id="confMode" class="confirm-value"></span></div>
-                <div class="confirm-detail"><span>Model:</span> <span id="confModel" class="confirm-value"></span></div>
-                <div class="confirm-detail"><span>Phạm vi:</span> <span id="confScope" class="confirm-value"></span>
-                </div>
-                <div class="confirm-detail"><span>Batch Size:</span> <span id="confBatch" class="confirm-value"></span>
-                </div>
-                <div class="confirm-detail"><span>Số lượng:</span> <span id="confCount" class="confirm-value"></span>
-                </div>
-            </div>
+    <section class="modal-overlay" id="confirmModal" aria-hidden="true">
+        <section class="confirm-card">
+            <section class="confirm-title">Xác nhận dịch</section>
+            <section style="border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:15px; padding-bottom:5px;">
+                <section class="confirm-detail"><span>Chế độ:</span> <span id="confMode" class="confirm-value"></span></section>
+                <section class="confirm-detail"><span>Model:</span> <span id="confModel" class="confirm-value"></span></section>
+                <section class="confirm-detail"><span>Phạm vi:</span> <span id="confScope" class="confirm-value"></span>
+                </section>
+                <section class="confirm-detail"><span>Batch Size:</span> <span id="confBatch" class="confirm-value"></span>
+                </section>
+                <section class="confirm-detail"><span>Số lượng:</span> <span id="confCount" class="confirm-value"></span>
+                </section>
+            </section>
 
-            <div style="font-size:0.85rem; font-weight:600; color:#cbd5e1; margin-bottom:5px;">Danh sách chọn:</div>
-            <div class="confirm-list-container" id="confList">
+            <section style="font-size:0.85rem; font-weight:600; color:#cbd5e1; margin-bottom:5px;">Danh sách chọn:</section>
+            <section class="confirm-list-container" id="confList">
                 <!-- List Items Here -->
-            </div>
+            </section>
 
-            <div style="font-size:0.8rem; color:#94a3b8; line-height:1.4; margin-top:15px;">
+            <section style="font-size:0.8rem; color:#94a3b8; line-height:1.4; margin-top:15px;">
                 Yêu cầu sẽ được gửi 1 lần duy nhất vào hàng đợi xử lý nền.
-            </div>
-            <div class="modal-actions">
+            </section>
+            <section class="modal-actions">
                 <button class="btn-outline" onclick="closeConfirmModal()">Hủy</button>
                 <button class="btn-primary" id="btnRealSubmit" onclick="confirmTranslation()">Đồng ý</button>
-            </div>
-        </div>
-    </div>
+            </section>
+        </section>
+    </section>
 
 
     <!-- EDIT WORD SHEET (REPLACED REPORT SHEET) -->
-    <div class="bottom-sheet" id="editWordSheet" aria-hidden="true">
-        <div class="sheet-header">
-            <div class="sheet-title">Quản lý từ thay thế</div>
+    <section class="bottom-sheet" id="editWordSheet" aria-hidden="true">
+        <section class="sheet-header">
+            <section class="sheet-title">Quản lý từ thay thế</section>
 
             <label class="toggle-switch">
                 <input type="checkbox" id="wordReplaceToggle" onchange="toggleWordReplacement(this.checked)">
                 <span class="toggle-slider"></span>
             </label>
 
-            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
+            <section class="sheet-close" onclick="closeAllDrawers()">✕</section>
 
             
-        </div>
-        <div class="sheet-body">
+        </section>
+        <section class="sheet-body">
 
             <!-- List of Words -->
-            <div class="form-group">
+            <section class="form-group">
                 <!-- <label class="form-label">Danh sách từ</label> -->
-                <div class="form-group-header">
+                <section class="form-group-header">
                     <input type="text" id="wordSearchInput" class="report-input" placeholder="Tìm từ..."
                         style="width:55%; height: 100%; margin:15px;" oninput="searchWordList()">
 
@@ -1670,145 +1671,145 @@
                         <option value="global">Global</option>
                     </select>
 
-                </div>
+                </section>
 
-                <div class="word-list-container" id="wordListContainer">
-                    <div style="padding:20px; text-align:center; color:#888;">Đang tải...</div>
-                </div>
-            </div>
+                <section class="word-list-container" id="wordListContainer">
+                    <section style="padding:20px; text-align:center; color:#888;">Đang tải...</section>
+                </section>
+            </section>
 
 
 
 
 
             <!-- Scope Selection (Segmented Control) -->
-            <div class="form-group">
+            <section class="form-group">
                 <label class="form-label">Phạm vi áp dụng</label>
-                <div class="segmented-control" id="wordScopeControl">
-                    <div class="segment-item" onclick="selectWordScope('chapter')" id="scope-chapter">Chapter</div>
-                    <div class="segment-item active" onclick="selectWordScope('book')" id="scope-book">Book</div>
-                    <div class="segment-item" onclick="selectWordScope('global')" id="scope-global">Global</div>
-                </div>
+                <section class="segmented-control" id="wordScopeControl">
+                    <section class="segment-item" onclick="selectWordScope('chapter')" id="scope-chapter">Chapter</section>
+                    <section class="segment-item active" onclick="selectWordScope('book')" id="scope-book">Book</section>
+                    <section class="segment-item" onclick="selectWordScope('global')" id="scope-global">Global</section>
+                </section>
                 <input type="hidden" id="selectedWordScope" value="book">
-            </div>
+            </section>
 
             <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:16px 0;">
 
             <!-- Add/Edit Form -->
-            <div class="form-group">
+            <section class="form-group">
                 <label class="form-label">Thêm / Sửa từ</label>
-                <div class="form-label-input">
+                <section class="form-label-input">
                     <input type="text" style="width: 50%; margin: 5px" class="report-input" id="wordOriginal"
                         placeholder="Match">
                     <input type="text" style="width: 50%; margin: 5px" class="report-input" id="wordReplace"
                         placeholder="Replacement">
-                </div>
+                </section>
 
-            </div>
+            </section>
             <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:16px 0;">
 
             <!-- Actions -->
             <button class="btn-primary" onclick="saveWordReplacement()">Lưu thay đổi</button>
-            <div style="height:20px"></div>
-        </div>
-    </div>
+            <section style="height:20px"></section>
+        </section>
+    </section>
 
     <!-- SETTINGS SHEET -->
-    <div class="bottom-sheet" id="settingsSheet" aria-hidden="true">
-        <div class="sheet-header">
-            <div class="sheet-title">Cài đặt giao diện</div>
-            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
-        </div>
-        <div class="sheet-body">
+    <section class="bottom-sheet" id="settingsSheet" aria-hidden="true">
+        <section class="sheet-header">
+            <section class="sheet-title">Cài đặt giao diện</section>
+            <section class="sheet-close" onclick="closeAllDrawers()">✕</section>
+        </section>
+        <section class="sheet-body">
 
-            <div class="setting-row">
+            <section class="setting-row">
                 <span>Tự động tải chương</span>
                 <!-- Simple CSS Switch -->
-                <div style="position:relative; width:44px; height:24px; background:#2e3a52; border-radius:12px; cursor:pointer;"
+                <section style="position:relative; width:44px; height:24px; background:#2e3a52; border-radius:12px; cursor:pointer;"
                     onclick="toggleLazyLoad(this)">
-                    <div id="lazyToggleCircle"
+                    <section id="lazyToggleCircle"
                         style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; transition:0.3s;">
-                    </div>
-                </div>
-            </div>
+                    </section>
+                </section>
+            </section>
 
 
-            <div class="setting-row">
-                <div class="row-items">
+            <section class="setting-row">
+                <section class="row-items">
                     <span>Front Size</span>
-                    <div class="font-controls">
+                    <section class="font-controls">
                         <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
-                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                        <section style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
                             id="fontSizeDisplay">18
-                        </div>
+                        </section>
                         <button class="font-btn" onclick="changeFontSize(1)">A+</button>
-                    </div>
-                </div>
+                    </section>
+                </section>
 
 
-                <div class="row-items">
+                <section class="row-items">
                     <span>Word Spacing</span>
-                    <div class="font-controls">
+                    <section class="font-controls">
                         <button class="font-btn" onclick="changeWordSpacing(-1)">A-</button>
-                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                        <section style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
                             id="wordSpacingDisplay">0
-                        </div>
+                        </section>
                         <button class="font-btn" onclick="changeWordSpacing(1)">A+</button>
-                    </div>
-                </div>
+                    </section>
+                </section>
 
 
-            </div>
+            </section>
 
-            <div class="setting-row">
+            <section class="setting-row">
 
 
-                <div class="row-items">
+                <section class="row-items">
                     <span>Group Lines</span>
-                    <div class="font-controls">
+                    <section class="font-controls">
                         <button class="font-btn" onclick="changeSentenceCount(-1)">A-</button>
-                        <div style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
+                        <section style="display:flex;align-items:center;padding:0 10px;font-weight:bold"
                             id="sentenceCountDisplay">1
-                        </div>
+                        </section>
                         <button class="font-btn" onclick="changeSentenceCount(1)">A+</button>
-                    </div>
-                </div>
-            </div>
+                    </section>
+                </section>
+            </section>
 
 
 
 
 
 
-            <div class="setting-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
+            <section class="setting-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
                 <span>Phông chữ</span>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; width:100%;">
-                    <div class="chip active" style="text-align:center;justify-content:center;"
-                        data-font="'Merriweather', serif" onclick="changeFont(this)">Serif</div>
-                    <div class="chip" style="text-align:center;justify-content:center;"
-                        data-font="'Quicksand', sans-serif" onclick="changeFont(this)">Sans</div>
-                    <div class="chip" style="text-align:center;justify-content:center;"
-                        data-font="'Patrick Hand', cursive" onclick="changeFont(this)">Viết tay</div>
-                </div>
-            </div>
+                <section style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; width:100%;">
+                    <section class="chip active" style="text-align:center;justify-content:center;"
+                        data-font="'Merriweather', serif" onclick="changeFont(this)">Serif</section>
+                    <section class="chip" style="text-align:center;justify-content:center;"
+                        data-font="'Quicksand', sans-serif" onclick="changeFont(this)">Sans</section>
+                    <section class="chip" style="text-align:center;justify-content:center;"
+                        data-font="'Patrick Hand', cursive" onclick="changeFont(this)">Viết tay</section>
+                </section>
+            </section>
 
 
-        </div>
-    </div>
+        </section>
+    </section>
 
     <!-- SIDE DRAWERS -->
-    <div class="side-drawer" id="menuDrawer" aria-hidden="true">
-        <div class="sheet-header">
-            <div class="sheet-title">Danh sách chương</div>
-            <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
-        </div>
-        <div class="sheet-body" id="menuBody" style="padding:0;"></div>
-    </div>
+    <section class="side-drawer" id="menuDrawer" aria-hidden="true">
+        <section class="sheet-header">
+            <section class="sheet-title">Danh sách chương</section>
+            <section class="sheet-close" onclick="closeAllDrawers('CLOSE_MENU')">✕</section>
+        </section>
+        <section class="sheet-body" id="menuBody" style="padding:0;"></section>
+    </section>
 
-    <div class="side-drawer" id="historyDrawer" aria-hidden="true">
-        <div class="sheet-header">
-            <div class="sheet-title">Lịch sử đọc</div>
-            <div style="display:flex; gap:8px; align-items:center;">
+    <section class="side-drawer" id="historyDrawer" aria-hidden="true">
+        <section class="sheet-header">
+            <section class="sheet-title">Lịch sử đọc</section>
+            <section style="display:flex; gap:8px; align-items:center;">
                 <button class="icon-btn small" onclick="clearHistory()" title="Xóa tất cả lịch sử">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1818,11 +1819,11 @@
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
                 </button>
-                <div class="sheet-close" onclick="closeAllDrawers()">✕</div>
-            </div>
-        </div>
-        <div class="sheet-body" id="historyBody" style="padding:0;"></div>
-    </div>
+                <section class="sheet-close" onclick="closeAllDrawers()">✕</section>
+            </section>
+        </section>
+        <section class="sheet-body" id="historyBody" style="padding:0;"></section>
+    </section>
 
     <script>
         const API_BASE = 'https://armorplated-thersa-unstained.ngrok-free.dev';
@@ -2018,24 +2019,24 @@
         async function fetchBooks(page = 1, q = '')
         {
             const el = document.getElementById('bookList');
-            el.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">Đang tải...</div>';
+            el.innerHTML = '<section style="text-align:center; padding:2rem; color:#888;">Đang tải...</section>';
             const pageNum = parseInt(page) || 1;
             const data = await api(`/api/books?page=${pageNum}&limit=100&search=${encodeURIComponent(q)}`);
 
-            if (!data || !data.data.length) { el.innerHTML = '<div style="text-align:center; padding:2rem;">Không tìm thấy truyện.</div>'; return; }
+            if (!data || !data.data.length) { el.innerHTML = '<section style="text-align:center; padding:2rem;">Không tìm thấy truyện.</section>'; return; }
             if (data.pagination) data.pagination.currentPage = pageNum;
             el.innerHTML = data.data.map(b => `
                 <a href="?view=chapters&bookId=${b.bookId}&bookName=${encodeURIComponent(b.bookName)}" target="_blank" style="display: block; text-decoration: none;">
-                    <div class="book-row">
-                        <div class="book-icon">${b.bookName.charAt(0)}</div>
-                        <div class="book-info">
-                            <div class="book-title">${b.bookName}</div>
-                            <div class="book-meta">
+                    <section class="book-row">
+                        <section class="book-icon">${b.bookName.charAt(0)}</section>
+                        <section class="book-info">
+                            <section class="book-title">${b.bookName}</section>
+                            <section class="book-meta">
                                 <span class="tag"> Tổng: ${b.chapterCount || 0} - Đã dịch: ${b.totalTranslated || 0} - Chưa dịch: ${b.totalPending || 0}</span>
                                 <span style="padding: 0px 4px">   ${b.createdAt || 'Đang cập nhật'}  </span> 
-                            </div>
-                        </div>
-                    </div>
+                            </section>
+                        </section>
+                    </section>
                 </a>
             `).join('');
             renderPager('homePagination', data.pagination, (p) => fetchBooks(p, q));
@@ -2063,7 +2064,7 @@
             const segAll = document.getElementById('seg-all');
             const segPending = document.getElementById('seg-pending');
 
-            el.innerHTML = '<div style="padding:2rem; text-align:center;">Đang tải danh sách...</div>';
+            el.innerHTML = '<section style="padding:2rem; text-align:center;">Đang tải danh sách...</section>';
 
             const pageNum = parseInt(page) || 1;
 
@@ -2098,7 +2099,7 @@
 
             if (!data || !data.chapters.length)
             {
-                el.innerHTML = '<div style="padding:2rem; text-align:center;">Không tìm thấy chương nào.</div>';
+                el.innerHTML = '<section style="padding:2rem; text-align:center;">Không tìm thấy chương nào.</section>';
                 // Reset pagination if empty
                 renderPager('chapterPagination', { totalPages: 0, currentPage: 1 }, null);
                 renderPager('chapterPagination2', { totalPages: 0, currentPage: 1 }, null);
@@ -2141,16 +2142,16 @@
         {
             const isPending = c.state === 'PENDING';
             return `
-                <div class="chapter-row ${isPending ? 'pending-row' : ''}" onclick="setupReader('${c.chapterId}')">
-                    <div>
-                        <div class="ch-title">${c.title}</div>
-                        <div class="ch-sub">
+                <section class="chapter-row ${isPending ? 'pending-row' : ''}" onclick="setupReader('${c.chapterId}')">
+                    <section>
+                        <section class="ch-title">${c.title}</section>
+                        <section class="ch-sub">
                             <span>Chương ${c.chapterNumber}</span>
                             ${isPending ? '<span class="badge-pending">CHỜ DỊCH</span>' : ''}
-                        </div>
-                    </div>
-                    <div style="color:var(--accent); font-weight:bold;">›</div>
-                </div>
+                        </section>
+                    </section>
+                    <section style="color:var(--accent); font-weight:bold;">›</section>
+                </section>
             `;
         }
 
@@ -2210,7 +2211,7 @@
 
             if (!data) return;
 
-            const div = document.createElement('div');
+            const div = document.createElement('section');
             div.className = 'chapter-block fade-in';
             div.id = `chap-${cid}`;
             div.dataset.cid = cid;
@@ -2227,15 +2228,15 @@
             //         acc[chunkIndex].push(t);
             //         return acc;
             //     }, [])
-            //     .map(group => `<div lang="vi">${group.join('')}</div>`)
+            //     .map(group => `<section lang="vi">${group.join('')}</section>`)
             //     .join('');
             let header = isInitial ?
-                `<div aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
+                `<section aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
-                 </div>` :
-                `<div class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</div>`;
+                 </section>` :
+                `<section class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</section>`;
 
-            div.innerHTML = header + `<article class="reader-text">${content}</article>`;
+            div.innerHTML = header + `<section lang="vi" class="reader-text">${content}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -2425,7 +2426,7 @@
             const bid = appState.book?.id;
             const cid = appState.activeChapterId;
 
-            if (!bid) { container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa mở truyện</div>'; return; }
+            if (!bid) { container.innerHTML = '<section style="padding:15px;text-align:center;color:#888;">Chưa mở truyện</section>'; return; }
 
             // Assuming API endpoint pattern
             try
@@ -2441,11 +2442,11 @@
                     renderWordList(data);
                 } else
                 {
-                    container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</div>';
+                    container.innerHTML = '<section style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</section>';
                 }
             } catch (e)
             {
-                container.innerHTML = '<div style="padding:15px;text-align:center;color:#d63031;">Lỗi tải dữ liệu.</div>';
+                container.innerHTML = '<section style="padding:15px;text-align:center;color:#d63031;">Lỗi tải dữ liệu.</section>';
             }
         }
 
@@ -2458,23 +2459,23 @@
             const container = document.getElementById('wordListContainer');
             if (words.length === 0)
             {
-                container.innerHTML = '<div style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</div>';
+                container.innerHTML = '<section style="padding:15px;text-align:center;color:#888;">Chưa có từ thay thế nào.</section>';
                 return;
             }
 
             container.innerHTML = words.map(w => `
-                <div class="word-item" onclick="editWordItem('${w.id}', '${w.original}', '${w.replacement}', '${w.scope}')">
-                    <div class="word-content">
+                <section class="word-item" onclick="editWordItem('${w.id}', '${w.original}', '${w.replacement}', '${w.scope}')">
+                    <section class="word-content">
                         <span class="word-orig">${w.original}</span>
                         <span class="word-replace">${w.replacement}</span>
-                    </div>
+                    </section>
 
                     <span style="padding: 2px 10px; border-radius: 4px; border-left: 1px solid var(--accent); margin-right: 10px;">${w.scope.slice(0, 1).toUpperCase()}</span>
 
-                    <div class="word-actions">
+                    <section class="word-actions">
                         <button class="icon-action delete" onclick="event.stopPropagation(); deleteWordReplacement('${w.id}')">✕</button>
-                    </div>
-                </div>
+                    </section>
+                </section>
                 <hr style="margin:0; border:none; border-bottom:1px solid #eee;">
             `).join('');
         }
@@ -2623,7 +2624,7 @@
                 renderTranslationBooks(data.data);
             } else
             {
-                listEl.innerHTML = '<div style="padding:10px;color:#d63031;">Không tải được danh sách truyện</div>';
+                listEl.innerHTML = '<section style="padding:10px;color:#d63031;">Không tải được danh sách truyện</section>';
             }
         }
 
@@ -2632,7 +2633,7 @@
             const listEl = document.getElementById('transBookList');
             if (books.length === 0)
             {
-                listEl.innerHTML = '<div style="padding:10px;color:#888;">Không tìm thấy truyện</div>';
+                listEl.innerHTML = '<section style="padding:10px;color:#888;">Không tìm thấy truyện</section>';
                 return;
             }
             listEl.innerHTML = books.map(b => `
@@ -2676,7 +2677,7 @@
                 renderTranslationChapters(data.chapters);
             } else
             {
-                listEl.innerHTML = '<div style="padding:10px;color:#d63031;">Không tải được danh sách chương</div>';
+                listEl.innerHTML = '<section style="padding:10px;color:#d63031;">Không tải được danh sách chương</section>';
             }
         }
 
@@ -2687,7 +2688,7 @@
 
             if (chapters.length === 0)
             {
-                listEl.innerHTML = '<div style="padding:10px;color:#888;">Chưa có chương nào</div>';
+                listEl.innerHTML = '<section style="padding:10px;color:#888;">Chưa có chương nào</section>';
                 return;
             }
 
@@ -2728,7 +2729,7 @@
             const mode = document.getElementById('batchLoadMode').value;
             const limit = document.getElementById('batchLoadLimit').value || 50;
 
-            listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Đang tải dữ liệu...</div>';
+            listEl.innerHTML = '<section style="padding:10px;color:#888;text-align:center;">Đang tải dữ liệu...</section>';
 
             let url = `/api/books/${bid}/chapters?limit=${limit}`;
             if (mode === 'pending')
@@ -2749,7 +2750,7 @@
                     renderTranslationChapters(data.chapters);
                     if (data.chapters.length === 0)
                     {
-                        listEl.innerHTML = '<div style="padding:10px;color:#888;text-align:center;">Không tìm thấy chương nào phù hợp.</div>';
+                        listEl.innerHTML = '<section style="padding:10px;color:#888;text-align:center;">Không tìm thấy chương nào phù hợp.</section>';
                     } else
                     {
                         // Auto-select helps user
@@ -2757,11 +2758,11 @@
                     }
                 } else
                 {
-                    listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi tải dữ liệu.</div>';
+                    listEl.innerHTML = '<section style="padding:10px;color:#d63031;text-align:center;">Lỗi tải dữ liệu.</section>';
                 }
             } catch (e)
             {
-                listEl.innerHTML = '<div style="padding:10px;color:#d63031;text-align:center;">Lỗi kết nối.</div>';
+                listEl.innerHTML = '<section style="padding:10px;color:#d63031;text-align:center;">Lỗi kết nối.</section>';
             }
         }
 
@@ -2792,6 +2793,20 @@
                 showToast(`Đã chọn ${count} chương`);
             }
         }
+
+        function selectPendingChapters()
+        {
+            const checkboxes = document.querySelectorAll('#transChapterList input[data-state="PENDING"]');
+            console.log('checkboxes', JSON.stringify(checkboxes, null, 2))
+            checkboxes.forEach(cb =>
+            {
+                cb.checked = true;
+            });
+            showToast(`Đã chọn ${checkboxes.length} chương`);
+        }
+
+
+
 
         // --- CACHE LOGIC ---
         function loadTranslationOptions()
@@ -2932,7 +2947,7 @@
 
             // Populate List
             const listEl = document.getElementById('confList');
-            listEl.innerHTML = selectedNames.map(n => `<div class="confirm-list-item">${n}</div>`).join('');
+            listEl.innerHTML = selectedNames.map(n => `<section class="confirm-list-item">${n}</section>`).join('');
 
             closeAllDrawers(); // Close sheet
             document.getElementById('confirmModal').classList.add('show');
@@ -3072,8 +3087,12 @@
             document.getElementById(id).classList.add('show');
         }
 
-        function closeAllDrawers()
+        function closeAllDrawers(action = "CLOSE_ALL")
         {
+            if(action === 'CLOSE_MENU')
+            {
+                document.getElementById('menuBody').innerHTML = '';
+            }
             document.getElementById('sheetOverlay').classList.remove('show');
             document.querySelectorAll('.bottom-sheet, .side-drawer').forEach(el => el.classList.remove('show'));
         }
@@ -3122,17 +3141,17 @@
         {
             const el = document.getElementById('menuBody');
             if (!appState.book) return;
-            if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
-            el.innerHTML = '<div style="padding:2rem;text-align:center;color:#888;">Đang tải...</div>';
+            // if (el.getAttribute('data-bid') === appState.book.id) return highlightActiveChapter();
+            el.innerHTML = '<section style="padding:2rem;text-align:center;color:#888;">Đang tải...</section>';
             const data = await api(`/api/books/${appState.book.id}/chapters?page=1&limit=50000`);
             if (data)
             {
                 el.setAttribute('data-bid', appState.book.id);
                 el.innerHTML = data.chapters.map(c =>
-                    `<div class="drawer-item" id="menu-ch-${c.chapterId}" aria-hidden="true" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
-                        <div aria-hidden="true" style="font-weight:600; font-size:0.9rem;">Chương ${c.chapterNumber}</div>
-                        <div aria-hidden="true" style="font-size:0.85rem; color:#888;">${c.title}</div>
-                    </div>`
+                    `<section class="drawer-item" id="menu-ch-${c.chapterId}" aria-hidden="true" onclick="closeAllDrawers(); setupReader('${c.chapterId}')">
+                        <section aria-hidden="true" style="font-weight:600; font-size:0.9rem;">Chương ${c.chapterNumber}</section>
+                        <section aria-hidden="true" style="font-size:0.85rem; color:#888;">${c.title}</section>
+                    </section>`
                 ).join('');
             }
             highlightActiveChapter();
@@ -3151,11 +3170,11 @@
             const el = document.getElementById('historyBody');
             const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             el.innerHTML = hist.length ? hist.map(h =>
-                `<div class="drawer-item" aria-hidden="true" onclick="closeAllDrawers(); appState.book={id:'${h.bid}',name:'${h.bname}'}; setupReader('${h.cid}')">
-                    <div aria-hidden="true" style="font-weight:700; font-size:0.9rem; color:white;">${h.bname}</div>
-                    <div aria-hidden="true" style="font-size:0.85rem; color:var(--accent);">Đọc tiếp Chương ${h.cnum}</div>
-                </div>`
-            ).join('') : '<div style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</div>';
+                `<section class="drawer-item" aria-hidden="true" onclick="closeAllDrawers(); appState.book={id:'${h.bid}',name:'${h.bname}'}; setupReader('${h.cid}')">
+                    <section aria-hidden="true" style="font-weight:700; font-size:0.9rem; color:white;">${h.bname}</section>
+                    <section aria-hidden="true" style="font-size:0.85rem; color:var(--accent);">Đọc tiếp Chương ${h.cnum}</section>
+                </section>`
+            ).join('') : '<section style="padding:2rem;text-align:center;color:#888;">Chưa có lịch sử.</section>';
         }
 
         function clearHistory()
@@ -3177,9 +3196,9 @@
             window[cbName] = cb;
             const btnStyle = "width:36px; height:36px; border-radius:8px; background:#1e293b; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;";
             el.innerHTML = `
-                ${c > 1 ? `<div aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</div>` : ''}
-                <div aria-hidden="true" style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</div>
-                ${c < pg.totalPages ? `<div aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c + 1})">→</div>` : ''}
+                ${c > 1 ? `<section aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c - 1})">←</section>` : ''}
+                <section aria-hidden="true" style="padding:0 10px; line-height:36px; color:#888; font-size:0.9rem;">Trang ${c}/${pg.totalPages}</section>
+                ${c < pg.totalPages ? `<section aria-hidden="true" style="${btnStyle}" onclick="window['${cbName}'](${c + 1})">→</section>` : ''}
             `;
         }
 
