@@ -1388,14 +1388,15 @@
         </section>
 
         <!-- READER -->
-        <article id="screen-reader" class="reader-view hidden">
-            <section class="reader-container" id="readerContainer"></section>
+        <div id="screen-reader" class="reader-view hidden">
+            <div class="reader-container" id="readerContainer"></div>
 
-            <section id="loadingNext" aria-hidden="true" class="hidden" style="text-align: center; padding: 3rem; color: var(--accent);">
-                <section class="fade-in">✦ Đang tải chương tiếp...</section>
-            </section>
+            <div id="loadingNext" aria-hidden="true" class="hidden"
+                style="text-align: center; padding: 3rem; color: var(--accent);">
+                <div class="fade-in">✦ Đang tải chương tiếp...</div>
+            </div>
             <!-- <section style="height: 100px;"></section> -->
-        </article>
+        </div>
     </main>
 
     <!-- GLASS DOCK (Mobile Navigation) -->
@@ -1826,7 +1827,8 @@
     </section>
 
     <script>
-        const API_BASE = 'https://armorplated-thersa-unstained.ngrok-free.dev';
+        const API_BASE_TUNNEL = 'http://localhost:3200';
+        let API_BASE = '';
         const STORAGE_KEY = 'novel_history_v3';
         const SETTINGS_KEY = 'novel_settings_v3';
         const PROGRESS_KEY = 'novel_progress_v3';
@@ -1855,9 +1857,17 @@
             editingWordId: null // To track editing item
         };
         let observer;
-        
-        window.onload = () =>
-        {
+
+        window.onload = async () => {
+            console.log('window', window.origin)
+            // const tunnels = await fetchTunnel('/public/tunnels');
+            // API_BASE = tunnels[0];
+            if(window.origin?.includes('localhost')) {
+                API_BASE = 'http://localhost:3200'
+            }else {
+                API_BASE = 'https://vocal-apparently-spaniel.ngrok-free.app'
+            }
+
             loadSettings();
             loadTranslationOptions(); // Load saved translation options
             handleInitialRoute();
@@ -2187,7 +2197,7 @@
             document.getElementById('readerContainer').innerHTML = '';
             appState.isLoading = false;
             await fetchAndRenderChapter(cid, true);
-            preloadMenu();
+            // preloadMenu();
         }
 
         async function fetchAndRenderChapter(cid, isInitial = false, forceReload = false)
@@ -2211,7 +2221,7 @@
 
             if (!data) return;
 
-            const div = document.createElement('section');
+            const div = document.createElement('div');
             div.className = 'chapter-block fade-in';
             div.id = `chap-${cid}`;
             div.dataset.cid = cid;
@@ -2236,7 +2246,7 @@
                  </section>` :
                 `<section class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</section>`;
 
-            div.innerHTML = header + `<section lang="vi" class="reader-text">${content}</section>`;
+            div.innerHTML = header + `<div lang="vi" class="reader-text">${content}</div>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -3089,10 +3099,7 @@
 
         function closeAllDrawers(action = "CLOSE_ALL")
         {
-            if(action === 'CLOSE_MENU')
-            {
-                document.getElementById('menuBody').innerHTML = '';
-            }
+            document.getElementById('menuBody').innerHTML = '';
             document.getElementById('sheetOverlay').classList.remove('show');
             document.querySelectorAll('.bottom-sheet, .side-drawer').forEach(el => el.classList.remove('show'));
         }
@@ -3213,15 +3220,32 @@
             }
         }
 
-        async function api(path)
+        async function api(path, retry = 0)
         {
             try
             {
+                console.log('Path ', API_BASE + path, ' Retry', retry);
                 let res = await fetch(API_BASE + path, { headers: { 'ngrok-skip-browser-warning': 'true' } });
                 if (!res.ok) throw new Error('Err');
                 return await res.json();
-            } catch { return null; }
+            } catch(e) { 
+                if(retry < 3) {
+                    API_BASE = 'http://localhost:320022';
+                    return api(path, retry + 1);
+                }
+                return null;
+            }
         }
+
+         async function fetchTunnel(path)
+            {
+                try
+                {
+                    let res = await fetch(API_BASE_TUNNEL + path, { headers: { 'ngrok-skip-browser-warning': 'true' } });
+                    if (!res.ok) throw new Error('Err');
+                    return await res.json();
+                } catch { return null; }
+            }
 
     </script>
 </body>
