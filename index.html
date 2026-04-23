@@ -1448,20 +1448,12 @@
         <article id="screen-reader" class="reader-view"
             itemscope itemtype="https://schema.org/Article"
             lang="vi">
-            <!-- Article metadata (hidden visually but readable by parsers) -->
             <meta itemprop="inLanguage" content="vi">
             <meta itemprop="publisher" content="NovelReader">
 
-            <!-- Chapter title placeholder - updated dynamically for Reader Mode -->
-            <h1 id="readerArticleTitle" itemprop="headline"
-                style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;"></h1>
+            <!-- <h1 id="readerArticleTitle" itemprop="headline"
+                style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;"></h1> -->
 
-            <!-- Main reading container - contains <article> blocks with <p> paragraphs -->
-            <!--
-                Loading skeleton: Provides initial text for Chrome Readability to detect BEFORE API returns.
-                Chrome runs Readability after load event - if API is slow, skeleton ensures Reader Mode activates.
-                The JS will replace this content once data arrives.
-            -->
             <div class="reader-container" id="readerContainer" itemprop="articleBody">
                 <article class="chapter-block" style="padding:1rem 1.2rem;">
                     <header style="text-align:center;margin-bottom:1.5rem;">
@@ -1942,7 +1934,6 @@
         let observer;
 
         window.onload = async () => {
-            console.log('window', window.origin)
             // const tunnels = await fetchTunnel('/public/tunnels');
             // API_BASE = tunnels[0];
             if(window.origin?.includes('localhost')) {
@@ -2315,7 +2306,7 @@
             div.dataset.bookName = data.chapter.bookName;
             // Schema.org attributes for Reader Mode compatibility
             div.setAttribute('itemscope', '');
-            div.setAttribute('itemtype', 'https://schema.org/Article');
+            // div.setAttribute('itemtype', 'https://schema.org/Article');
             div.lang = 'vi';
 
             // Build chapter heading - use proper h1/h2 for Reader Mode
@@ -2339,7 +2330,7 @@
             if (isInitial) {
                 // Primary chapter - use h1 for Reader Mode (most important signal)
                 header = `<header style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
-                    <h1 itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.9rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</h1>
+                    <h5 style="font-family:'Merriweather'; color:var(--accent); font-size:0.9rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</h5>
                 </header>`;
                 // Update document-level metadata for Reader Mode
                 document.title = `${chapterFullTitle} - ${data.chapter.bookName || appState.book?.name || 'NovelReader'}`;
@@ -2347,7 +2338,7 @@
                 const ogDesc = document.getElementById('og-desc');
                 const metaDesc = document.querySelector('meta[name="description"]');
                 const readerH1 = document.getElementById('readerArticleTitle');
-                if (ogTitle) ogTitle.content = chapterFullTitle;
+                // if (ogTitle) ogTitle.content = chapterFullTitle;
                 if (ogDesc) ogDesc.content = `Đọc ${chapterFullTitle} - ${data.chapter.bookName || ''}  online tại NovelReader`;
                 if (metaDesc) metaDesc.content = `Đọc ${chapterFullTitle} - ${data.chapter.bookName || ''} online tại NovelReader`;
                 if (readerH1) readerH1.textContent = chapterFullTitle;
@@ -2372,7 +2363,7 @@
             }
 
             // Main content wrapped in <section> with itemprop
-            div.innerHTML = header + `<article class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</article>`;
+            div.innerHTML = header + `<section class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -3392,3 +3383,4 @@
 </body>
 
 </html>
+
