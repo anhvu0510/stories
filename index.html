@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Removed user-scalable=no: Chrome uses it to classify page as 'web app' and disables Reader Mode -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0b1121">
     <title>Đọc Truyện Online</title>
     <meta name="description" content="Đọc truyện online - NovelReader">
@@ -23,6 +23,21 @@
       "name": "Đọc Truyện Online",
       "inLanguage": "vi"
     }
+    </script>
+
+    <!--
+        CRITICAL FIX: Detect reader URL BEFORE any CSS renders.
+        This lets CSS immediately show #screen-reader (not hidden) so Chrome
+        Readability algorithm sees the article element as visible when it runs.
+        Must be in <head>, NOT deferred.
+    -->
+    <script>
+    (function() {
+        var p = new URLSearchParams(window.location.search);
+        if (p.get('view') === 'reader' || p.get('chapterId')) {
+            document.documentElement.classList.add('is-reader-url');
+        }
+    })();
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,6 +111,31 @@
         /* --- UTILS --- */
         .hidden {
             display: none !important;
+        }
+
+        /*
+         * READER MODE CRITICAL: When URL is a reader URL, override hidden state
+         * for the article IMMEDIATELY (before JS runs).
+         * Chrome Readability skips display:none elements entirely.
+         * By showing the article skeleton early, Chrome can detect the <article>
+         * element even before API content loads.
+         */
+        html.is-reader-url #screen-reader {
+            display: block !important;
+        }
+        html.is-reader-url #screen-home,
+        html.is-reader-url #screen-chapters {
+            display: none !important;
+        }
+        /* Hide non-content UI chrome from Readability scoring */
+        html.is-reader-url .glass-dock,
+        html.is-reader-url .header,
+        html.is-reader-url .bottom-sheet,
+        html.is-reader-url .side-drawer,
+        html.is-reader-url .sheet-overlay,
+        html.is-reader-url .modal-overlay {
+            /* Keep in DOM for JS, but mark as non-content for Readability */
+            /* Readability ignores aria-hidden and data-nosnippet, but respects role=navigation */
         }
 
         .fade-in {
@@ -1405,7 +1445,7 @@
         </section>
 
         <!-- READER - Semantic article container for Browser Reader Mode -->
-        <article id="screen-reader" class="reader-view hidden"
+        <article id="screen-reader" class="reader-view"
             itemscope itemtype="https://schema.org/Article"
             lang="vi">
             <!-- Article metadata (hidden visually but readable by parsers) -->
@@ -1417,7 +1457,23 @@
                 style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;"></h1>
 
             <!-- Main reading container - contains <article> blocks with <p> paragraphs -->
-            <div class="reader-container" id="readerContainer" itemprop="articleBody"></div>
+            <!--
+                Loading skeleton: Provides initial text for Chrome Readability to detect BEFORE API returns.
+                Chrome runs Readability after load event - if API is slow, skeleton ensures Reader Mode activates.
+                The JS will replace this content once data arrives.
+            -->
+            <div class="reader-container" id="readerContainer" itemprop="articleBody">
+                <article class="chapter-block" style="padding:1rem 1.2rem;">
+                    <header style="text-align:center;margin-bottom:1.5rem;">
+                        <h1 style="font-family:'Merriweather';color:var(--accent);font-size:1.3rem;" id="skeletonTitle">Đang tải nội dung...</h1>
+                        <p style="color:var(--text-sub);font-size:0.85rem;">NovelReader • Đọc truyện online</p>
+                    </header>
+                    <section class="reader-text">
+                        <p>Đang tải nội dung chương, vui lòng đợi trong giây lát...</p>
+                        <p>Nội dung truyện sẽ hiện thị ngay sau khi tải xong.</p>
+                    </section>
+                </article>
+            </div>
 
             <div id="loadingNext" aria-hidden="true" class="hidden"
                 style="text-align: center; padding: 3rem; color: var(--accent);">
@@ -2269,10 +2325,13 @@
             const paragraphs = data.chapter.content
                 .filter(t => t.trim())
                 .map(t => {
-                    // If already has block-level HTML tags, keep as-is; otherwise wrap in <p>
                     const trimmed = t.trim();
-                    if (/^<(p|div|h[1-6]|blockquote|figure)/i.test(trimmed)) return trimmed;
-                    return `<p>${trimmed}</p>`;
+                    // If the segment starts with a block-level HTML tag, keep as-is
+                    if (/^<(p|div|h[1-6]|blockquote|figure|ul|ol|li|table)/i.test(trimmed)) return trimmed;
+                    // Strip any bare line-breaks converted to br, wrap content in <p>
+                    // Also handle the case where content has inner <br> tags (convert to new <p>)
+                    const stripped = trimmed.replace(/<br\s*\/?>/gi, '</p><p>');
+                    return `<p>${stripped}</p>`;
                 })
                 .join('\n');
 
