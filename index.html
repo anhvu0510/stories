@@ -2322,7 +2322,7 @@
                     // Strip any bare line-breaks converted to br, wrap content in <p>
                     // Also handle the case where content has inner <br> tags (convert to new <p>)
                     const stripped = trimmed.replace(/<br\s*\/?>/gi, '</p><p>');
-                    return `<p>${stripped}</p>`;
+                    return `${stripped}`;
                 })
                 .join('\n');
 
@@ -2363,7 +2363,7 @@
             }
 
             // Main content wrapped in <section> with itemprop
-            div.innerHTML = header + `<section class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</section>`;
+            div.innerHTML = header + `<article class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</article>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
