@@ -7,6 +7,24 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0b1121">
     <title>Đọc Truyện Online</title>
+    <meta name="description" content="Đọc truyện online - NovelReader">
+
+    <!-- Open Graph / Reader Mode hints -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NovelReader">
+    <meta property="og:title" id="og-title" content="Đọc Truyện Online">
+    <meta property="og:description" id="og-desc" content="Đọc truyện online - NovelReader">
+
+    <!-- Schema.org structured data for article detection -->
+    <script type="application/ld+json" id="schema-article">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "name": "Đọc Truyện Online",
+      "inLanguage": "vi"
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1256,15 +1274,15 @@
 <body>
 
     <!-- Progress Bar -->
-    <section id="readProgress"
-        style="position: fixed; top: 0; left:0; height:3px; background:var(--accent); width:0%; z-index: 1100; transition: width 0.1s;"
-        aria-hidden="true"></section>
+    <div id="readProgress" role="progressbar" aria-hidden="true" aria-label="Tiến trình đọc"
+        style="position: fixed; top: 0; left:0; height:3px; background:var(--accent); width:0%; z-index: 1100; transition: width 0.1s;"></div>
 
     <!-- Toast -->
-    <section id="toast" class="toast" aria-hidden="true">Nội dung thông báo</section>
+    <div id="toast" class="toast" aria-live="polite" aria-atomic="true" aria-hidden="true">Nội dung thông báo</div>
 
     <!-- Header -->
-    <header class="header" id="mainHeader" aria-hidden="true">
+    <!-- Header UI - marked aria-hidden so Reader Mode focuses on article content -->
+    <header class="header" id="mainHeader" aria-hidden="true" data-nosnippet>
         <section class="header-inner">
             <section style="display:flex; align-items:center; flex:1; min-width:0;">
 
@@ -1326,8 +1344,8 @@
 
     <!-- MAIN CONTENT -->
     <main>
-        <!-- HOME -->
-        <section id="screen-home" aria-hidden="true">
+        <!-- HOME (UI only, not article content) -->
+        <section id="screen-home" aria-hidden="true" data-nosnippet>
             <section class="search-area" aria-hidden="true">
                 <section style="position:relative; max-width:800px; margin:0 auto;">
                     <span class="search-icon">🔍</span>
@@ -1341,62 +1359,71 @@
             </section>
         </section>
 
-        <!-- CHAPTERS LIST -->
-        <section id="screen-chapters" aria-hidden="true" class="container hidden">
+        <!-- CHAPTERS LIST (UI only) -->
+        <section id="screen-chapters" aria-hidden="true" class="container hidden" data-nosnippet>
 
-            <section class="pagination" id="chapterPagination"
-                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></section>
+            <nav class="pagination" id="chapterPagination" aria-label="Phân trang chương"
+                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></nav>
 
-            <section
-                style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
-                Danh sách chương</section>
+            <p style="padding: 1.5rem 0 0.5rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                Danh sách chương</p>
 
             <!-- REDESIGNED FILTER TOOLBAR -->
-            <section class="filter-toolbar">
+            <section class="filter-toolbar" aria-label="Bộ lọc chương">
                 <!-- Segmented Control for State -->
-                <section class="segmented-control">
-                    <section id="seg-all" class="segment-item active" onclick="setFilterState('all')">Tất cả</section>
-                    <section id="seg-pending" class="segment-item" onclick="setFilterState('pending')">Chưa dịch</section>
+                <section class="segmented-control" role="tablist">
+                    <div id="seg-all" class="segment-item active" role="tab" onclick="setFilterState('all')">Tất cả</div>
+                    <div id="seg-pending" class="segment-item" role="tab" onclick="setFilterState('pending')">Chưa dịch</div>
                 </section>
 
                 <!-- Styled Sort Button -->
-                <section class="sort-btn-wrapper">
+                <div class="sort-btn-wrapper">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M3 6h18M7 12h10M10 18h4" />
                     </svg>
-                    <select id="sortOption" class="sort-select" onchange="applyFilters()">
+                    <select id="sortOption" class="sort-select" onchange="applyFilters()" aria-label="Sắp xếp chương">
                         <option value="num_asc">Chương: Thấp → Cao</option>
                         <option value="num_desc">Chương: Cao → Thấp</option>
                         <option value="time_new">Ngày: Mới nhất</option>
                         <option value="time_old">Ngày: Cũ nhất</option>
                     </select>
-                </section>
+                </div>
             </section>
 
             <!-- BATCH ACTION (Appears only when Pending is filtered) -->
-            <section id="batchActionBar" class="batch-action-bar hidden">
+            <div id="batchActionBar" class="batch-action-bar hidden" aria-hidden="true">
                 <span style="font-size: 0.9rem; font-weight: 600;">Danh sách chưa dịch</span>
                 <button class="btn-xs" onclick="handleManagePending()"
                     style="background: var(--warning); color: #443200; border: none; font-weight: 700; padding: 8px 16px;">Dịch
                     nhanh</button>
-            </section>
+            </div>
 
-            <section id="chapterList" class="chapter-list"></section>
-            <section class="pagination" id="chapterPagination2"
-                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></section>
+            <section id="chapterList" class="chapter-list" role="list"></section>
+            <nav class="pagination" id="chapterPagination2" aria-label="Phân trang chương"
+                style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></nav>
         </section>
 
-        <!-- READER -->
-        <div id="screen-reader" class="reader-view hidden">
-            <div class="reader-container" id="readerContainer"></div>
+        <!-- READER - Semantic article container for Browser Reader Mode -->
+        <article id="screen-reader" class="reader-view hidden"
+            itemscope itemtype="https://schema.org/Article"
+            lang="vi">
+            <!-- Article metadata (hidden visually but readable by parsers) -->
+            <meta itemprop="inLanguage" content="vi">
+            <meta itemprop="publisher" content="NovelReader">
+
+            <!-- Chapter title placeholder - updated dynamically for Reader Mode -->
+            <h1 id="readerArticleTitle" aria-hidden="true" itemprop="headline"
+                style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;"></h1>
+
+            <!-- Main reading container - contains <article> blocks with <p> paragraphs -->
+            <div class="reader-container" id="readerContainer" itemprop="articleBody"></div>
 
             <div id="loadingNext" aria-hidden="true" class="hidden"
                 style="text-align: center; padding: 3rem; color: var(--accent);">
-                <div class="fade-in">✦ Đang tải chương tiếp...</div>
+                <p class="fade-in">✦ Đang tải chương tiếp...</p>
             </div>
-            <!-- <section style="height: 100px;"></section> -->
-        </div>
+        </article>
     </main>
 
     <!-- GLASS DOCK (Mobile Navigation) -->
@@ -1463,6 +1490,7 @@
                 <path d="M9 18l6-6-6-6" />
             </svg>
         </button>
+
     </nav>
 
     <!-- SELECTION ACTION (Pill Shape) -->
@@ -2215,37 +2243,82 @@
             if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
 
             const data = await api(`/api/chapters/${cid}/?groupLines=${appState.settings.groupLines}&isEnabledReplace=${appState.settings.isEnabledReplaceToggle ?? false}`);
+            console.log(data);
             appState.isLoading = false;
             document.getElementById('loadingNext').classList.add('hidden');
 
             if (!data) return;
 
-            const div = document.createElement('div');
+
+            // Use <article> semantic element for each chapter block
+            const div = document.createElement('article');
             div.className = 'chapter-block fade-in';
             div.id = `chap-${cid}`;
             div.dataset.cid = cid;
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
+            // Schema.org attributes for Reader Mode compatibility
+            div.setAttribute('itemscope', '');
+            div.setAttribute('itemtype', 'https://schema.org/Article');
+            div.lang = 'vi';
 
-            let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
-            // let content = data.chapter.content
-            //     .filter(t => t.trim())
-            //     .reduce((acc, t, i) =>
-            //     {
-            //         const chunkIndex = Math.floor(i / 3);
-            //         if (!acc[chunkIndex]) acc[chunkIndex] = [];
-            //         acc[chunkIndex].push(t);
-            //         return acc;
-            //     }, [])
-            //     .map(group => `<section lang="vi">${group.join('')}</section>`)
-            //     .join('');
-            let header = isInitial ?
-                `<section aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
-                    <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
-                 </section>` :
-                `<section class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</section>`;
+            // Build chapter heading - use proper h1/h2 for Reader Mode
+            const chapterFullTitle = `Chương ${data.chapter.chapterNumber}: ${data.chapter.title}`;
 
-            div.innerHTML = header + `<div lang="vi" class="reader-text">${content}</div>`;
+            // Wrap each paragraph line in <p> tags for Reader Mode paragraph detection
+            const paragraphs = data.chapter.content
+                .filter(t => t.trim())
+                .map(t => {
+                    // If already has block-level HTML tags, keep as-is; otherwise wrap in <p>
+                    const trimmed = t.trim();
+                    if (/^<(p|div|h[1-6]|blockquote|figure)/i.test(trimmed)) return trimmed;
+                    return `<p>${trimmed}</p>`;
+                })
+                .join('\n');
+
+            let header;
+            if (isInitial) {
+                // Primary chapter - use h1 for Reader Mode (most important signal)
+                // header = `<header aria-hidden="true" style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
+                //     <p itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.8rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</p>
+                //     <p itemprop="description" style="font-size:0.8rem; color:var(--text-sub); margin:0;">Chương ${data.chapter.chapterNumber} • <span itemprop="isPartOf">${data.chapter.bookName || appState.book?.name || ''}</span></p>
+                // </header>`;
+
+                header = `<header style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
+                    <p itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.8rem; line-height:1.2; margin-bottom:0.1rem;">${data.chapter.title}</p>
+                </header>`;
+                // Update document-level metadata for Reader Mode
+                document.title = `${chapterFullTitle} - ${data.chapter.bookName || appState.book?.name || 'NovelReader'}`;
+                const ogTitle = document.getElementById('og-title');
+                const ogDesc = document.getElementById('og-desc');
+                const metaDesc = document.querySelector('meta[name="description"]');
+                const readerH1 = document.getElementById('readerArticleTitle');
+                if (ogTitle) ogTitle.content = chapterFullTitle;
+                if (ogDesc) ogDesc.content = `Đọc ${chapterFullTitle} - ${data.chapter.bookName || ''}  online tại NovelReader`;
+                if (metaDesc) metaDesc.content = `Đọc ${chapterFullTitle} - ${data.chapter.bookName || ''} online tại NovelReader`;
+                if (readerH1) readerH1.textContent = chapterFullTitle;
+                // Update schema.org JSON-LD
+                try {
+                    const schema = document.getElementById('schema-article');
+                    if (schema) schema.textContent = JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        "headline": chapterFullTitle,
+                        "name": chapterFullTitle,
+                        "description": `Đọc ${chapterFullTitle} online`,
+                        "inLanguage": "vi",
+                        "isPartOf": { "@type": "Book", "name": data.chapter.bookName || appState.book?.name || '' }
+                    });
+                } catch(e) {}
+            } else {
+                // Subsequent lazy-loaded chapters - use h2
+                header = `<header class="chapter-header-compact">
+                    <h2 itemprop="headline" style="font-size:inherit; font-weight:inherit; display:inline;">${chapterFullTitle}</h2>
+                </header>`;
+            }
+
+            // Main content wrapped in <section> with itemprop
+            div.innerHTML = header + `<section class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</section>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -3208,15 +3281,30 @@
             `;
         }
 
-        function navManual(dir)
+        async function navManual(dir)
         {
-            if (dir === 'prev' && appState.prevChapterId) fetchAndRenderChapter(appState.prevChapterId, false, true);
-            else if (dir === 'next' && appState.nextChapterId)
-            {
-                const el = document.getElementById(`chap-${appState.nextChapterId}`);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                else fetchAndRenderChapter(appState.nextChapterId, false, true);
+            const targetId = dir === 'prev' ? appState.prevChapterId : appState.nextChapterId;
+            if (!targetId) return;
+
+            // Clear container and reload the target chapter as a fresh initial load
+            // This ensures appState (activeChapterId, prevChapterId, nextChapterId) is fully updated
+            const container = document.getElementById('readerContainer');
+            container.innerHTML = '';
+            appState.isLoading = false;
+
+            // Unobserve all previous chapter blocks
+            if (observer) {
+                container.querySelectorAll('article.chapter-block').forEach(el => observer.unobserve(el));
             }
+
+            // Update URL to reflect new chapter
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set('chapterId', targetId);
+                window.history.pushState({}, '', url);
+            } catch(e) {}
+
+            await fetchAndRenderChapter(targetId, true /* isInitial=true to update all state */);
         }
 
         async function api(path, retry = 0)
