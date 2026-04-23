@@ -1388,15 +1388,15 @@
         </section>
 
         <!-- READER -->
-        <article id="screen-reader" class="reader-view hidden" role="article" tabindex="-1">
-            <section class="reader-container" id="readerContainer"></section>
+        <div id="screen-reader" class="reader-view hidden">
+            <div class="reader-container" id="readerContainer"></div>
 
-            <section id="loadingNext" aria-hidden="true" class="hidden"
+            <div id="loadingNext" aria-hidden="true" class="hidden"
                 style="text-align: center; padding: 3rem; color: var(--accent);">
                 <div class="fade-in">✦ Đang tải chương tiếp...</div>
-            </section>
+            </div>
             <!-- <section style="height: 100px;"></section> -->
-        </article>
+        </div>
     </main>
 
     <!-- GLASS DOCK (Mobile Navigation) -->
@@ -1463,13 +1463,6 @@
                 <path d="M9 18l6-6-6-6" />
             </svg>
         </button>
-
-        <a class="dock-btn" id="btnNext2" href="/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 18l6-6-6-6" />
-            </svg>
-        </a>
-
     </nav>
 
     <!-- SELECTION ACTION (Pill Shape) -->
@@ -2222,36 +2215,37 @@
             if (!isInitial) document.getElementById('loadingNext').classList.remove('hidden');
 
             const data = await api(`/api/chapters/${cid}/?groupLines=${appState.settings.groupLines}&isEnabledReplace=${appState.settings.isEnabledReplaceToggle ?? false}`);
-            console.log(data);
             appState.isLoading = false;
             document.getElementById('loadingNext').classList.add('hidden');
 
             if (!data) return;
 
-
-            const div = document.createElement('section');
+            const div = document.createElement('div');
             div.className = 'chapter-block fade-in';
             div.id = `chap-${cid}`;
             div.dataset.cid = cid;
             div.dataset.num = data.chapter.chapterNumber;
             div.dataset.bookName = data.chapter.bookName;
 
-            document.getElementById('screen-reader').setAttribute('tabindex', data.chapter.chapterId);
-            const nextButton = document.querySelector('#btnNext2');
-            if (data.navigation?.next) {
-                nextButton.href = `/?view=reader&bookId=${data.chapter.bookId}&chapterId=${data.navigation.next.chapterId}`;
-            }
-
-
-
             let content = data.chapter.content.filter(t => t.trim()).map(t => `${t}`).join('');
+            // let content = data.chapter.content
+            //     .filter(t => t.trim())
+            //     .reduce((acc, t, i) =>
+            //     {
+            //         const chunkIndex = Math.floor(i / 3);
+            //         if (!acc[chunkIndex]) acc[chunkIndex] = [];
+            //         acc[chunkIndex].push(t);
+            //         return acc;
+            //     }, [])
+            //     .map(group => `<section lang="vi">${group.join('')}</section>`)
+            //     .join('');
             let header = isInitial ?
                 `<section aria-hidden="true" style="text-align:center; margin-bottom:1rem;">
                     <h5 style="font-family:'Merriweather'; color:var(--accent); margin-bottom:0.2rem;">${data.chapter.title}</h5>
                  </section>` :
                 `<section class="chapter-header-compact">Chương ${data.chapter.chapterNumber}: ${data.chapter.title}</section>`;
 
-            div.innerHTML = header + `<article lang="vi" role="article" class="reader-text">${content}</article>`;
+            div.innerHTML = header + `<div lang="vi" class="reader-text">${content}</div>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
