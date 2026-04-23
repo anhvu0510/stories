@@ -2339,8 +2339,7 @@
             if (isInitial) {
                 // Primary chapter - use h1 for Reader Mode (most important signal)
                 header = `<header style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
-                    <h1 itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:1.3rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</h1>
-                    <p itemprop="description" style="font-size:0.8rem; color:var(--text-sub); margin:0;">Chương ${data.chapter.chapterNumber} • <span itemprop="isPartOf">${data.chapter.bookName || appState.book?.name || ''}</span></p>
+                    <h1 itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.9rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</h1>
                 </header>`;
                 // Update document-level metadata for Reader Mode
                 document.title = `${chapterFullTitle} - ${data.chapter.bookName || appState.book?.name || 'NovelReader'}`;
@@ -2373,7 +2372,7 @@
             }
 
             // Main content wrapped in <section> with itemprop
-            div.innerHTML = header + `<section class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</section>`;
+            div.innerHTML = header + `<article class="reader-text" itemprop="articleBody" lang="vi">${paragraphs}</article>`;
             document.getElementById('readerContainer').appendChild(div);
 
             if (isInitial)
@@ -3393,5 +3392,4 @@
 </body>
 
 </html>
-
 
