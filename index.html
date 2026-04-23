@@ -1413,7 +1413,7 @@
             <meta itemprop="publisher" content="NovelReader">
 
             <!-- Chapter title placeholder - updated dynamically for Reader Mode -->
-            <h1 id="readerArticleTitle" aria-hidden="true" itemprop="headline"
+            <h1 id="readerArticleTitle" itemprop="headline"
                 style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;"></h1>
 
             <!-- Main reading container - contains <article> blocks with <p> paragraphs -->
@@ -1490,6 +1490,12 @@
                 <path d="M9 18l6-6-6-6" />
             </svg>
         </button>
+
+        <a class="dock-btn" id="btnNext2" href="/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6" />
+            </svg>
+        </a>
 
     </nav>
 
@@ -2262,6 +2268,11 @@
             div.setAttribute('itemtype', 'https://schema.org/Article');
             div.lang = 'vi';
 
+            const nextButton = document.querySelector('#btnNext2');
+            if (data.navigation?.next) {
+                nextButton.href = `/?view=reader&bookId=${data.chapter.bookId}&chapterId=${data.navigation.next.chapterId}`;
+            }
+
             // Build chapter heading - use proper h1/h2 for Reader Mode
             const chapterFullTitle = `Chương ${data.chapter.chapterNumber}: ${data.chapter.title}`;
 
@@ -2279,13 +2290,9 @@
             let header;
             if (isInitial) {
                 // Primary chapter - use h1 for Reader Mode (most important signal)
-                // header = `<header aria-hidden="true" style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
-                //     <p itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.8rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</p>
-                //     <p itemprop="description" style="font-size:0.8rem; color:var(--text-sub); margin:0;">Chương ${data.chapter.chapterNumber} • <span itemprop="isPartOf">${data.chapter.bookName || appState.book?.name || ''}</span></p>
-                // </header>`;
-
                 header = `<header style="text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,71,87,0.2);">
-                    <p itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:0.8rem; line-height:1.2; margin-bottom:0.1rem;">${data.chapter.title}</p>
+                    <h1 itemprop="headline" style="font-family:'Merriweather'; color:var(--accent); font-size:1.3rem; line-height:1.4; margin-bottom:0.2rem;">${data.chapter.title}</h1>
+                    <p itemprop="description" style="font-size:0.8rem; color:var(--text-sub); margin:0;">Chương ${data.chapter.chapterNumber} • <span itemprop="isPartOf">${data.chapter.bookName || appState.book?.name || ''}</span></p>
                 </header>`;
                 // Update document-level metadata for Reader Mode
                 document.title = `${chapterFullTitle} - ${data.chapter.bookName || appState.book?.name || 'NovelReader'}`;
